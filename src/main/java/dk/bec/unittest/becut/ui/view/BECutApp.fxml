@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:controller="dk.bec.unittest.becut.ui.controller.BECutAppController" xmlns:fx="http://javafx.com/fxml/1">
+	<top>
+		<fx:include source="/dk/bec/unittest/becut/ui/view/Menu.fxml"/>
+	</top>
+	<center>
+		<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCase.fxml"/>
+	</center>
+</BorderPane>

@@ -1,0 +1,14 @@
+
+           STEP;
+      * Jump over SQL statement
+           AT LINE 240
+           PERFORM
+
+       MOVE 0 TO SQLCODE;
+       MOVE 4 TO FIRSTNME-LEN;
+       MOVE 'Adam' TO FIRSTNME-TEXT;
+       MOVE 'M' TO MIDINIT;
+       MOVE 5 TO LASTNAME-LEN;
+       MOVE 'Britt' TO LASTNAME-TEXT;
+           GOTO 244;
+           END-PERFORM;

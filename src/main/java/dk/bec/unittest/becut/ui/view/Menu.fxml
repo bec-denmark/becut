@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+
+<StackPane fx:controller="dk.bec.unittest.becut.ui.controller.MenuController" xmlns:fx="http://javafx.com/fxml/1">
+	<MenuBar fx:id="menuBar">
+		<Menu text="File">
+			<MenuItem text="Save test case" onAction="#save"/>
+			<MenuItem text="Save test case as..." onAction="#saveAs"/>
+			<SeparatorMenuItem />
+			<MenuItem text="Quit" onAction="#exit"/>
+		</Menu>
+		<Menu text="BECut">
+			<MenuItem text="Create unit test" onAction="#createTestCase"/>
+			<MenuItem text="Edit test case" onAction="#editTestCase"/>
+			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
+			<SeparatorMenuItem />
+			<MenuItem text="Create debug script" onAction="#createDebugScript"/>
+		</Menu>
+	</MenuBar>
+</StackPane>

@@ -1,0 +1,110 @@
+{
+	"testCaseName": "TestCaseName",
+	"testCaseId": "TestCaseId",
+	"programName": "MAT510",
+	"externalCalls": [
+		{
+			"name": "TMAT5110",
+			"displayableName": "TMAT5110",
+			"lineNumber": 36,
+			"callType": "DYNAMIC",
+			"parameters": [
+				{
+					"level": 1,
+					"name": "TMAT5110",
+					"dataType": "PIC",
+					"size": 8,
+					"subStructure": [],
+					"isSeventySeven": false,
+					"value": ""
+				},
+				{
+					"level": 1,
+					"name": "MAT511-AREA",
+					"dataType": "GROUP",
+					"size": 30,
+					"subStructure": [
+						{
+							"level": 2,
+							"name": "FILLER",
+							"dataType": "PIC",
+							"size": 8,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "MAT511-DATA-LENGTH",
+							"dataType": "BINARY",
+							"size": 4,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "MAT511-DATA",
+							"dataType": "GROUP",
+							"size": 18,
+							"subStructure": [
+								{
+									"level": 3,
+									"name": "MAT511-RETURKODE",
+									"dataType": "PIC_NUMERIC",
+									"size": 4,
+									"subStructure": [
+										{
+											"level": 88,
+											"name": "MAT511-RETURKODE-OK",
+											"dataType": "EIGHTYEIGHT",
+											"size": 4,
+											"subStructure": [],
+											"isSeventySeven": false,
+											"value": "TRUE"
+										},
+										{
+											"level": 88,
+											"name": "MAT511-RETURKODE-UKENDT",
+											"dataType": "EIGHTYEIGHT",
+											"size": 4,
+											"subStructure": [],
+											"isSeventySeven": false,
+											"value": ""
+										}
+									],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "MAT511-I-NUMBER",
+									"dataType": "PIC_NUMERIC",
+									"size": 4,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "MAT511-SUM",
+									"dataType": "PIC_NUMERIC",
+									"size": 10,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": "42"
+								}
+							],
+							"isSeventySeven": false,
+							"value": ""
+						}
+					],
+					"isSeventySeven": false,
+					"value": ""
+				}
+			]
+		}
+	],
+	"preConditons": [],
+	"postConditions": []
+}

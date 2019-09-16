@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.TreeTableColumn?>
+
+<StackPane fx:controller="dk.bec.unittest.becut.ui.controller.BecutTestCaseController" xmlns:fx="http://javafx.com/fxml/1">
+	<TreeTableView fx:id="unitTestTreeTableView">
+		<columns>
+			<TreeTableColumn fx:id="name" prefWidth="300.0" text="Name"/>
+			<TreeTableColumn fx:id="type" prefWidth="150.0" text="Type"/>
+			<TreeTableColumn fx:id="value" prefWidth="150.0" text="Value"/>
+		</columns>
+	</TreeTableView>
+</StackPane>

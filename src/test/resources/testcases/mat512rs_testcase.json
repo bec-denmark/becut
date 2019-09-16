@@ -1,0 +1,293 @@
+{
+	"testCaseName": "TestCaseName",
+	"testCaseId": "TestCaseId",
+	"programName": "MAT512",
+	"externalCalls": [
+		{
+			"name": "DSNHLI",
+			"displayableName": "SQL statement",
+			"lineNumber": 241,
+			"callType": "SQL",
+			"parameters": [
+				{
+					"level": 1,
+					"name": "SQLCA",
+					"dataType": "GROUP",
+					"size": 136,
+					"subStructure": [
+						{
+							"level": 2,
+							"name": "SQLCAID",
+							"dataType": "PIC",
+							"size": 8,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLCABC",
+							"dataType": "BINARY",
+							"size": 4,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLCODE",
+							"dataType": "BINARY",
+							"size": 4,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": "0"
+						},
+						{
+							"level": 2,
+							"name": "SQLERRM",
+							"dataType": "GROUP",
+							"size": 72,
+							"subStructure": [
+								{
+									"level": 3,
+									"name": "SQLERRML",
+									"dataType": "BINARY",
+									"size": 2,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLERRMC",
+									"dataType": "PIC",
+									"size": 70,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								}
+							],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLERRP",
+							"dataType": "PIC",
+							"size": 8,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLERRD",
+							"dataType": "BINARY",
+							"size": 4,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLWARN",
+							"dataType": "GROUP",
+							"size": 8,
+							"subStructure": [
+								{
+									"level": 3,
+									"name": "SQLWARN0",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN1",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN2",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN3",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN4",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN5",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN6",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN7",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								}
+							],
+							"isSeventySeven": false,
+							"value": ""
+						},
+						{
+							"level": 2,
+							"name": "SQLEXT",
+							"dataType": "GROUP",
+							"size": 8,
+							"subStructure": [
+								{
+									"level": 3,
+									"name": "SQLWARN8",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARN9",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLWARNA",
+									"dataType": "PIC",
+									"size": 1,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								},
+								{
+									"level": 3,
+									"name": "SQLSTATE",
+									"dataType": "PIC",
+									"size": 5,
+									"subStructure": [],
+									"isSeventySeven": false,
+									"value": ""
+								}
+							],
+							"isSeventySeven": false,
+							"value": ""
+						}
+					],
+					"isSeventySeven": false,
+					"value": ""
+				},
+				{
+					"level": 2,
+					"name": "FIRSTNME",
+					"dataType": "GROUP",
+					"size": 14,
+					"subStructure": [
+						{
+							"level": 3,
+							"name": "FIRSTNME-LEN",
+							"dataType": "BINARY",
+							"size": 2,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": "4"
+						},
+						{
+							"level": 3,
+							"name": "FIRSTNME-TEXT",
+							"dataType": "PIC",
+							"size": 12,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": "Adam"
+						}
+					],
+					"isSeventySeven": false,
+					"value": ""
+				},
+				{
+					"level": 2,
+					"name": "MIDINIT",
+					"dataType": "PIC",
+					"size": 1,
+					"subStructure": [],
+					"isSeventySeven": false,
+					"value": "M"
+				},
+				{
+					"level": 2,
+					"name": "LASTNAME",
+					"dataType": "GROUP",
+					"size": 17,
+					"subStructure": [
+						{
+							"level": 3,
+							"name": "LASTNAME-LEN",
+							"dataType": "BINARY",
+							"size": 2,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": "5"
+						},
+						{
+							"level": 3,
+							"name": "LASTNAME-TEXT",
+							"dataType": "PIC",
+							"size": 15,
+							"subStructure": [],
+							"isSeventySeven": false,
+							"value": "Britt"
+						}
+					],
+					"isSeventySeven": false,
+					"value": ""
+				}
+			]
+		}
+	],
+	"preConditons": [],
+	"postConditions": []
+}

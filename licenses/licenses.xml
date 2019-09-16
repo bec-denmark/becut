@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<licenseSummary>
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.6</version>
+			<licenses>
+				<license>
+					<name>The Apache Software License, Version 2.0</name>
+					<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+					<distribution>repo</distribution>
+					<file>the apache software license, version 2.0 - license-2.0.txt
+					</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.6</version>
+			<licenses>
+				<license>
+					<name>The Apache Software License, Version 2.0</name>
+					<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+					<distribution>repo</distribution>
+					<file>the apache software license, version 2.0 - license-2.0.txt
+					</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.6</version>
+			<licenses>
+				<license>
+					<name>The Apache Software License, Version 2.0</name>
+					<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+					<distribution>repo</distribution>
+					<file>the apache software license, version 2.0 - license-2.0.txt
+					</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>koopa.cobol</groupId>
+			<artifactId>koopa</artifactId>
+			<version>1.0.7</version>
+			<licenses>
+				<name>BSD Licence 3</name>
+				<url>http://opensource.org/licenses/BSD-3-Clause</url>
+				<file>bsd licence 3 - bsd-3-clause.html</file>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<licenses>
+				<license>
+					<name>Eclipse Public License 1.0</name>
+					<url>http://www.eclipse.org/legal/epl-v10.html</url>
+					<distribution>repo</distribution>
+					<file>eclipse public license 1.0 - epl-v10.html</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>2.1</version>
+			<licenses>
+				<license>
+					<name>BSD Licence 3</name>
+					<url>http://opensource.org/licenses/BSD-3-Clause</url>
+					<file>bsd licence 3 - bsd-3-clause.html</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>2.1</version>
+			<licenses>
+				<license>
+					<name>BSD Licence 3</name>
+					<url>http://opensource.org/licenses/BSD-3-Clause</url>
+					<file>bsd licence 3 - bsd-3-clause.html</file>
+				</license>
+			</licenses>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>2.1</version>
+			<licenses>
+				<license>
+					<name>BSD Licence 3</name>
+					<url>http://opensource.org/licenses/BSD-3-Clause</url>
+					<file>bsd licence 3 - bsd-3-clause.html</file>
+				</license>
+			</licenses>
+		</dependency>
+	</dependencies>
+</licenseSummary>
