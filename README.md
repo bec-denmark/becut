@@ -9,7 +9,7 @@ library.
 2. Generation of debug script
 
 This library contains a simple gui interface for creating test cases from a
-compile listing and creating debug scripts from test cases. The guih is intended for
+compile listing and creating debug scripts from test cases. The gui is intended for
 demonstration purposes. We suggest integrating this into your development tools
 so that getting the compile listing and submitting the debug job happen automatically.
 
@@ -58,7 +58,7 @@ In the following dialog, point to a valid test case, for example a test case sav
 #### Filling out the return values
 The main table should now contain the test case. Expanding the test case will
 show all of the programs external calls. Expanding each call will show all of
-the parameters of the call and expanding the parameters will should the
+the parameters of the call and expanding the parameters will show the
 substructure of the record, until there are no substructures left.
 
 You only need to fill out the parts of the parameters that are returned from the external call.
