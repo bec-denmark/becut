@@ -1,0 +1,221 @@
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0                         Date 07/30/2019  Time 16:44:47   Page     1
+Invocation parameters:
+ MAP,NOLIST,NOCOMPILE(S),NOOBJECT,OFFSET,NOVBREF,XREF(SHORT), FLAG(W,E),NOOPT,LIB
+Options in effect:
+ NOADATA
+   ADV
+   QUOTE
+   ARITH(COMPAT)
+ NOAWO
+ NOBLOCK0
+   BUFSIZE(4096)
+ NOCICS
+   CODEPAGE(1140)
+ NOCOMPILE(S)
+ NOCURRENCY
+   DATA(31)
+ NODATEPROC
+   DBCS
+ NODECK
+ NODIAGTRUNC
+ NODLL
+ NODUMP
+ NODYNAM
+ NOEXIT
+ NOEXPORTALL
+ NOFASTSRT
+   FLAG(W,E)
+ NOFLAGMIG4
+ NOFLAGSTD
+   INTDATE(ANSI)
+   LANGUAGE(EN)
+   LIB
+   LINECOUNT(60)
+ NOLIST
+   MAP
+ NOMDECK
+ NONAME
+   NSYMBOL(NATIONAL)
+ NONUMBER
+   NUMPROC(NOPFD)
+ NOOBJECT
+   OFFSET
+ NOOPTIMIZE
+   OUTDD(SYSOUT)
+   PGMNAME(COMPAT)
+   RENT
+   RMODE(AUTO)
+   SEQUENCE
+   SIZE(MAX)
+   SOURCE
+   SPACE(1)
+ NOSQL
+   SQLCCSID
+ NOSSRANGE
+ NOTERM
+ NOTEST
+ NOTHREAD
+   TRUNC(STD)
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0                         Date 07/30/2019  Time 16:44:47   Page     2
+ NOVBREF
+ NOWORD
+   XMLPARSE(XMLSS)
+   XREF(SHORT)
+   YEARWINDOW(1900)
+   ZWB
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     3
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference
+  000001                IDENTIFICATION DIVISION.
+  000002                PROGRAM-ID. IDZDUMMY.
+  000003                ENVIRONMENT DIVISION.
+  000004                CONFIGURATION SECTION.
+  000005                DATA DIVISION.
+  000006                WORKING-STORAGE SECTION.
+  000007                 01  MAT514-AREA.                                                         BLW=00000+000         0CL29
+  000008                     03  FILLER                    PIC X(08)    VALUE 'MAT514AR'.         BLW=00000+000,0000000 8C
+  000009                     03  MAT514-RETURKODE           PIC 9(4).                             BLW=00000+008,0000008 4C
+  000010                     88  MAT514-RETURKODE-OK                   VALUE 0000.
+  000011                     88  MAT514-RETURKODE-F-FUNKTION           VALUE 9000.
+  000012                     88  MAT514-RETURKODE-PARMFEJL             VALUE 9003.
+  000013                     88  MAT514-RETURKODE-DB2-FEJL             VALUE 9010.
+  000014                     88  MAT514-RETURKODE-UKENDT               VALUE 9999.
+  000015                     03  MAT514-FUNKTION            PIC 99       VALUE 00.                BLW=00000+00C,000000C 2C
+  000016                     88  MAT514-FUNKTION-PLUS1                 VALUE 01.
+  000017                     88  MAT514-FUNKTION-DOUBLE                VALUE 02.
+  000018                     03  MAT514-I-INPUT             PIC 9(05).                            BLW=00000+00E,000000E 5C
+  000019                     03  MAT514-OUTPUT              PIC 9(10).                            BLW=00000+013,0000013 10C
+  000020
+  000021                PROCEDURE DIVISION.
+  000022                     GOBACK.
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     4
+An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
+ Defined   Cross-reference of data names   References
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     5
+ Defined   Cross-reference of programs     References
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     6
+Data Division Map
+Data Definition Attribute codes (rightmost column) have the following meanings:
+    D = Object of OCCURS DEPENDING    G = GLOBAL                             S = Spanned file
+    E = EXTERNAL                      O = Has OCCURS clause                  U = Undefined format file
+    F = Fixed-length file             OG= Group has own length definition    V = Variable-length file
+    FB= Fixed-length blocked file     R = REDEFINES                          VB= Variable-length blocked file
+Source   Hierarchy and                                    Base       Hex-Displacement  Asmblr Data                    Data Def
+LineID   Data Name                                        Locator    Blk   Structure   Definition      Data Type      Attributes
+     2  PROGRAM-ID IDZDUMMY----------------------------------------------------------------------------------------------------*
+     7   1  MAT514-AREA . . . . . . . . . . . . . . . . . BLW=00000  000               DS 0CL29        Group
+     8     2  FILLER. . . . . . . . . . . . . . . . . . . BLW=00000  000   0 000 000   DS 8C           Display
+     9     2  MAT514-RETURKODE. . . . . . . . . . . . . . BLW=00000  008   0 000 008   DS 4C           Disp-Num
+    10     88 MAT514-RETURKODE-OK . . . . . . . . . . . .
+    11     88 MAT514-RETURKODE-F-FUNKTION . . . . . . . .
+    12     88 MAT514-RETURKODE-PARMFEJL . . . . . . . . .
+    13     88 MAT514-RETURKODE-DB2-FEJL . . . . . . . . .
+    14     88 MAT514-RETURKODE-UKENDT . . . . . . . . . .
+    15     2  MAT514-FUNKTION . . . . . . . . . . . . . . BLW=00000  00C   0 000 00C   DS 2C           Disp-Num
+    16     88 MAT514-FUNKTION-PLUS1 . . . . . . . . . . .
+    17     88 MAT514-FUNKTION-DOUBLE. . . . . . . . . . .
+    18     2  MAT514-I-INPUT. . . . . . . . . . . . . . . BLW=00000  00E   0 000 00E   DS 5C           Disp-Num
+    19     2  MAT514-OUTPUT . . . . . . . . . . . . . . . BLW=00000  013   0 000 013   DS 10C          Disp-Num
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     7
+PROGRAM GLOBAL TABLE BEGINS AT LOCATION 0000FC FOR 00002C BYTES
+THE PGT CONTAINS 000001 CELL(S) FOR ADDRESSABILITY TO THE CGT
+PBL1    AT LOCATION 0001E8 FOR LINE 2
+LITERAL POOL MAP FOR SYSTEM LITERALS IN THE PGT:
+0000FC  (LIT+0)      00000001 40404040 40404040 40404040 40404040 40404040 40404040 40404040  !....                            !
+00011C  (LIT+32)     4040F0F0                                                                 !  00                            !
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     8
+CONSTANT GLOBAL TABLE BEGINS AT LOCATION 000128 FOR 0000BE BYTES
+LITERAL POOL MAP FOR LITERALS IN THE CGT:
+000130  (LIT+0)      FFFFFFFC 00001000 00000001 00000000 C9C4E9C4 E4D4D4E8 D4C1E3F5 F1F4C1D9  !................IDZDUMMYMAT514AR!
+000150  (LIT+32)     E2E8E2D6 E4E34040 C9C7E9E2 D9E3C3C4 00000000 0000012C 00000001 00000130  !SYSOUT  IGZSRTCD................!
+000170  (LIT+64)     00000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000  !................................!
+000190  (LIT+96)     00000000 00000000 80000000 40000000 00000000 00000000 40000000 00000000  !............ ........... .......!
+0001B0  (LIT+128)    00000000 00000000 40000000 0025C000 01C00008 08000024 00184000 00000040  !........ ................. .... !
+0001D0  (LIT+160)    C0000140 00080800 00240018 02C00008 08000024 0018                        !... ..................          !
+LINE Æ  HEXLOC  VERB                        LINE Æ  HEXLOC  VERB                        LINE Æ  HEXLOC  VERB
+000022 000326 GOBACK
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page     9
+                   *** TGT MEMORY MAP ***
+                   TGTLOC
+                   000000  RESERVED - 72 BYTES
+                   000048  TGT IDENTIFIER
+                   00004C  RESERVED - 4 BYTES
+                   000050  TGT LEVEL INDICATOR
+                   000051  RESERVED - 3 BYTES
+                   000054  32 BIT SWITCH
+                   000058  POINTER TO RUNCOM
+                   00005C  POINTER TO COBVEC
+                   000060  POINTER TO PROGRAM DYNAMIC BLOCK TABLE
+                   000064  NUMBER OF FCB'S
+                   000068  WORKING-STORAGE LENGTH
+                   00006C  RESERVED - 4 BYTES
+                   000070  ADDRESS OF IGZESMG WORK AREA
+                   000074  ADDRESS OF 1ST GETMAIN BLOCK (SPACE MGR)
+                   000078  RESERVED - 2 BYTES
+                   00007A  RESERVED - 2 BYTES
+                   00007C  RESERVED - 2 BYTES
+                   00007E  MERGE FILE NUMBER
+                   000080  ADDRESS OF CEL COMMON ANCHOR AREA
+                   000084  LENGTH OF TGT
+                   000088  RESERVED - 1 SINGLE BYTE FIELD
+                   000089  PROGRAM MASK USED BY THIS PROGRAM
+                   00008A  RESERVED - 2 SINGLE BYTE FIELDS
+                   00008C  NUMBER OF SECONDARY FCB CELLS
+                   000090  LENGTH OF THE ALTER VN(VNI) VECTOR
+                   000094  COUNT OF NESTED PROGRAMS IN COMPILE UNIT
+                   000098  DDNAME FOR DISPLAY OUTPUT
+                   0000A0  RESERVED - 8 BYTES
+                   0000A8  POINTER TO COM-REG SPECIAL REGISTER
+                   0000AC  RESERVED - 52 BYTES
+                   0000E0  ALTERNATE COLLATING SEQUENCE TABLE PTR.
+                   0000E4  ADDRESS OF SORT G.N. ADDRESS BLOCK
+                   0000E8  ADDRESS OF PGT
+                   0000EC  RESERVED - 4 BYTES
+                   0000F0  POINTER TO 1ST IPCB
+                   0000F4  ADDRESS OF THE CLLE FOR THIS PROGRAM
+                   0000F8  POINTER TO ABEND INFORMATION TABLE
+                   0000FC  POINTER TO TEST INFO FIELDS IN THE TGT
+                   000100  ADDRESS OF START OF COBOL PROGRAM
+                   000104  POINTER TO ALTER VNI'S IN CGT
+                   000108  POINTER TO ALTER VN'S IN TGT
+                   00010C  POINTER TO FIRST PBL IN THE PGT
+                   000110  POINTER TO FIRST FCB CELL
+                   000114  WORKING-STORAGE ADDRESS
+                   000118  POINTER TO FIRST SECONDARY FCB CELL
+                   00011C  POINTER TO STATIC CLASS INFO BLOCK 1
+                   000120  POINTER TO STATIC CLASS INFO BLOCK 2
+                   *** VARIABLE PORTION OF TGT ***
+                   000124  BASE LOCATORS FOR SPECIAL REGISTERS
+                   00012C  BASE LOCATORS FOR WORKING-STORAGE
+                   000130  BASE LOCATORS FOR LINKAGE-SECTION
+                   000134  INTERNAL PROGRAM CONTROL BLOCKS
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               IDZDUMMY  Date 07/30/2019  Time 16:44:47   Page    10
+                   *** DSA MEMORY MAP ***
+                 DSALOC
+                 00000000  REGISTER SAVE AREA
+                 0000004C  STACK NAB (NEXT AVAILABLE BYTE)
+                 00000058  ADDRESS OF INLINE-CODE PRIMARY DSA
+                 0000005C  ADDRESS OF TGT
+                 00000060  ADDRESS OF CAA
+                 00000080  XML PARSE WORK AREA ANCHOR
+                 00000084  SWITCHES
+                 00000088  CURRENT INT. PROGRAM OR METHOD NUMBER
+                 0000008C  ADDRESS OF CALL STATEMENT PROGRAM NAME
+                 00000090  CALC ROUTINE REGISTER SAVE AREA
+                 000000C4  ADDRESS OF FILE MUTEX USE COUNT CELLS
+                 000000C8  PROCEDURE DIVISION RETURNING VALUE
+                   *** VARIABLE PORTION OF DSA ***
+                 000000D0  BACKSTORE CELLS FOR SYMBOLIC REGISTERS
+                 000000D8  VARIABLE-LENGTH CELLS
+                 000000F0  VARIABLE NAME (VN) CELLS FOR PERFORM
+                 000000F8  PERFORM SAVE CELLS
+                 00000100  TEMPORARY STORAGE-2
+TGT      WILL BE ALLOCATED FOR 00000148 BYTES
+SPEC-REG WILL BE ALLOCATED FOR 00000084 BYTES
+WRK-STOR WILL BE ALLOCATED FOR 0000001D BYTES
+DSA      WILL BE ALLOCATED FOR 00000110 BYTES
+* Statistics for COBOL program IDZDUMMY:
+*    Source records = 22
+*    Data Division statements = 12
+*    Procedure Division statements = 1
+End of compilation 1,  program IDZDUMMY,  no statements flagged.
+Return code 0
