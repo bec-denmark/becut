@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,12 +17,14 @@ import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataNameReference;
+import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.testcase.model.PreConditon;
 import koopa.core.trees.Tree;
 
 public class BecutTestCaseManager {
@@ -42,6 +47,7 @@ public class BecutTestCaseManager {
 		
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement: callStatements) {
+//			System.out.println(callStatement.getAllText());
 			String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			//We are skipping the SQL generated calls
 			if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName))  {
@@ -49,7 +55,48 @@ public class BecutTestCaseManager {
 			}
 		}
 		
+		PreConditon preConditon = new PreConditon();
+		
+		System.out.println("Date: " + new Date());
+
+		preConditon.setWorkingStorage(parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE));
+		preConditon.setLinkageSection(parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION));
+		
+		becutTestCase.setPreConditon(preConditon);
 		return becutTestCase;
+	}
+	
+
+	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
+
+		Tree workingStorage = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection).get(0);
+
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		
+		compileListing.getDataDivisionMap().getRecords().values().stream()
+				.filter(i-> workingStorage.getStartPosition().getLinenumber() < i.getLineNumber() 
+						&& i.getLineNumber() < workingStorage.getEndPosition().getLinenumber())
+				.peek(j -> System.out.println(j.getLevel() 
+										+ " " 
+										+ j.getName() 
+										+ "- " 
+										+ j.getDataType() 
+										+ " (" + j.getSize() + ")"
+									))
+				.forEach(i -> parameters.add(new Parameter(i)));
+		
+		return parameters;
+	}
+
+	public static void listRecord(Map<Integer,Record> recordMap) {
+		List<Integer> keys = Arrays.asList(recordMap.keySet().toArray(new Integer[0]));
+		for (int i : keys) {
+			Record r = recordMap.get(i);
+			System.out.println(r.getLineNumber() + " - " + r.getLevel() + " - " + r.getName() + " - " + r.getDataType() + " - " + r.getSize());
+			if (r.getDataType().equals(DataType.GROUP)) {
+				listRecord(r.getSubRecords());
+			}
+		}
 	}
 	
 	public static BecutTestCase loadTestCase(File file) {

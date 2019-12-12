@@ -1,37 +1,40 @@
 package dk.bec.unittest.becut.testcase.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PreConditon {
 	
-	private String workingStorage;
-	private String localStorage;
-	private String linkageSection;
-	private String fileSection;
+	private List<Parameter> workingStorage = new ArrayList<Parameter>();
+	private List<Parameter> localStorage = new ArrayList<Parameter>();
+	private List<Parameter> linkageSection = new ArrayList<Parameter>();
+	private List<Parameter> fileSection = new ArrayList<Parameter>();
 	
-	
-	public String getWorkingStorage() {
+	public List<Parameter> getWorkingStorage() {
 		return workingStorage;
 	}
-	public void setWorkingStorage(String workingStorage) {
+	public void setWorkingStorage(List<Parameter> workingStorage) {
 		this.workingStorage = workingStorage;
 	}
-	public String getLocalStorage() {
+	public void addWorkingStorageRecord(Parameter record) {
+		workingStorage.add(record);
+	}
+	public List<Parameter> getLocalStorage() {
 		return localStorage;
 	}
-	public void setLocalStorage(String localStorage) {
+	public void setLocalStorage(List<Parameter> localStorage) {
 		this.localStorage = localStorage;
 	}
-	public String getLinkageSection() {
+	public List<Parameter> getLinkageSection() {
 		return linkageSection;
 	}
-	public void setLinkageSection(String linkageSection) {
+	public void setLinkageSection(List<Parameter> linkageSection) {
 		this.linkageSection = linkageSection;
 	}
-	public String getFileSection() {
+	public List<Parameter> getFileSection() {
 		return fileSection;
 	}
-	public void setFileSection(String fileSection) {
+	public void setFileSection(List<Parameter> fileSection) {
 		this.fileSection = fileSection;
 	}
-
-
 }
