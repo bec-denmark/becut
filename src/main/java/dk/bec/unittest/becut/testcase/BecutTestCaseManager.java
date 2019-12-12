@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +14,6 @@ import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataNameReference;
-import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
@@ -57,8 +53,6 @@ public class BecutTestCaseManager {
 		
 		PreConditon preConditon = new PreConditon();
 		
-		System.out.println("Date: " + new Date());
-
 		preConditon.setWorkingStorage(parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE));
 		preConditon.setLinkageSection(parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION));
 		
@@ -67,38 +61,27 @@ public class BecutTestCaseManager {
 	}
 	
 
+	/**
+	 * 	Run through records in the DataDivision and filter records that is declared between start and end line of a section
+	 * 
+	 * @param compileListing - A tree containing the source-code
+	 * @param dataSection - CobolNodeType describing the desired section 
+	 * @return List of parameters in the dataSection
+	 */
 	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
 
-		Tree workingStorage = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection).get(0);
+		Tree sourceSection = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection).get(0);
 
-		List<Parameter> parameters = new ArrayList<Parameter>();
+		List<Parameter> parameterList = new ArrayList<Parameter>();
 		
 		compileListing.getDataDivisionMap().getRecords().values().stream()
-				.filter(i-> workingStorage.getStartPosition().getLinenumber() < i.getLineNumber() 
-						&& i.getLineNumber() < workingStorage.getEndPosition().getLinenumber())
-				.peek(j -> System.out.println(j.getLevel() 
-										+ " " 
-										+ j.getName() 
-										+ "- " 
-										+ j.getDataType() 
-										+ " (" + j.getSize() + ")"
-									))
-				.forEach(i -> parameters.add(new Parameter(i)));
+				.filter(i-> sourceSection.getStartPosition().getLinenumber() < i.getLineNumber() 
+						&& i.getLineNumber() < sourceSection.getEndPosition().getLinenumber())
+				.forEach(i -> parameterList.add(new Parameter(i)));
 		
-		return parameters;
+		return parameterList;
 	}
 
-	public static void listRecord(Map<Integer,Record> recordMap) {
-		List<Integer> keys = Arrays.asList(recordMap.keySet().toArray(new Integer[0]));
-		for (int i : keys) {
-			Record r = recordMap.get(i);
-			System.out.println(r.getLineNumber() + " - " + r.getLevel() + " - " + r.getName() + " - " + r.getDataType() + " - " + r.getSize());
-			if (r.getDataType().equals(DataType.GROUP)) {
-				listRecord(r.getSubRecords());
-			}
-		}
-	}
-	
 	public static BecutTestCase loadTestCase(File file) {
 		BecutTestCase becutTestCase = new BecutTestCase();
 		try {

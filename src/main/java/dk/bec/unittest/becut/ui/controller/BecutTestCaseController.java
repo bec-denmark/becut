@@ -7,7 +7,6 @@ import dk.bec.unittest.becut.Constants;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
-import dk.bec.unittest.becut.testcase.model.PreConditon;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
@@ -82,26 +81,21 @@ public class BecutTestCaseController implements Initializable {
 			unitTestTreeTableView.getRoot().getChildren().add(treeItem);
 		}
 		
+		//add working storage parameters
+		UnitTestTreeObject workingStorageDisplayable = new PreConditionDisplayable("Working Storage");
+		TreeItem<UnitTestTreeObject> workingStorageItem = new TreeItem<UnitTestTreeObject>(workingStorageDisplayable);
+
+		becutTestCase.getPreConditon().getWorkingStorage().stream()
+			.forEach(parameter-> workingStorageItem.getChildren().add(populateParameters(parameter)));
 		
-		PreConditon precondition = becutTestCase.getPreConditon();
-
-		UnitTestTreeObject preConditionsDisplayable = new PreConditionDisplayable("Working Storage");
-		
-		TreeItem<UnitTestTreeObject> workingStorageItem = new TreeItem<UnitTestTreeObject>(preConditionsDisplayable);
-
-		for (Parameter parameter : precondition.getWorkingStorage()) {
-			workingStorageItem.getChildren().add(populateParameters(parameter));
-		}
-
 		unitTestTreeTableView.getRoot().getChildren().add(workingStorageItem);
 		
+		// add linkage section parameters
 		UnitTestTreeObject linkageSectionDisplayable = new PreConditionDisplayable("Linkage Section");
-		
 		TreeItem<UnitTestTreeObject> LinkageItem = new TreeItem<UnitTestTreeObject>(linkageSectionDisplayable);
 
-		for (Parameter parameter : precondition.getLinkageSection()) {
-			LinkageItem.getChildren().add(populateParameters(parameter));
-		}
+		becutTestCase.getPreConditon().getLinkageSection().stream()
+			.forEach(parameter-> LinkageItem.getChildren().add(populateParameters(parameter)));
 
 		unitTestTreeTableView.getRoot().getChildren().add(LinkageItem);
 		

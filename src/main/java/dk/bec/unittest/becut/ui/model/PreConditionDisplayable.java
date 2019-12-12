@@ -5,7 +5,7 @@ public class PreConditionDisplayable extends UnitTestTreeObject {
 //	private PreConditon preCondition;
 	
 	public PreConditionDisplayable(String preConditionType) {
-		super("Precondtions", preConditionType, "");
+		super("Precondtion", preConditionType, "");
 //		this.preCondition = preCondition;
 	}
 

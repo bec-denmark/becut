@@ -20,6 +20,7 @@ public class Parameter {
 
 	public Parameter(Record record) {
 		this.level = record.getLevel();
+		this.lineNumber = record.getLineNumber();
 		this.name = record.getName();
 		this.dataType = record.getDataType();
 		this.size = record.getSize();
