@@ -69,10 +69,15 @@ public class BecutTestCaseManager {
 	 * @return List of parameters in the dataSection
 	 */
 	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
-
-		Tree sourceSection = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection).get(0);
-
 		List<Parameter> parameterList = new ArrayList<Parameter>();
+
+		List<Tree> sourceSectionList = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection);
+		
+		if (sourceSectionList.size() == 0) {
+			return parameterList;
+		}
+		Tree sourceSection = sourceSectionList.get(0);
+
 		
 		compileListing.getDataDivisionMap().getRecords().values().stream()
 				.filter(i-> sourceSection.getStartPosition().getLinenumber() < i.getLineNumber() 

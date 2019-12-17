@@ -82,22 +82,26 @@ public class BecutTestCaseController implements Initializable {
 		}
 		
 		//add working storage parameters
-		UnitTestTreeObject workingStorageDisplayable = new PreConditionDisplayable("Working Storage");
-		TreeItem<UnitTestTreeObject> workingStorageItem = new TreeItem<UnitTestTreeObject>(workingStorageDisplayable);
+		if (becutTestCase.getPreConditon().getWorkingStorage().size() > 0) {
+			UnitTestTreeObject workingStorageDisplayable = new PreConditionDisplayable("Working Storage");
+			TreeItem<UnitTestTreeObject> workingStorageItem = new TreeItem<UnitTestTreeObject>(workingStorageDisplayable);
 
-		becutTestCase.getPreConditon().getWorkingStorage().stream()
-			.forEach(parameter-> workingStorageItem.getChildren().add(populateParameters(parameter)));
-		
-		unitTestTreeTableView.getRoot().getChildren().add(workingStorageItem);
+			becutTestCase.getPreConditon().getWorkingStorage().stream()
+				.forEach(parameter-> workingStorageItem.getChildren().add(populateParameters(parameter)));
+			
+			unitTestTreeTableView.getRoot().getChildren().add(workingStorageItem);
+		}
 		
 		// add linkage section parameters
-		UnitTestTreeObject linkageSectionDisplayable = new PreConditionDisplayable("Linkage Section");
-		TreeItem<UnitTestTreeObject> LinkageItem = new TreeItem<UnitTestTreeObject>(linkageSectionDisplayable);
+		if (becutTestCase.getPreConditon().getLinkageSection().size() > 0) {
+			UnitTestTreeObject linkageSectionDisplayable = new PreConditionDisplayable("Linkage Section");
+			TreeItem<UnitTestTreeObject> LinkageItem = new TreeItem<UnitTestTreeObject>(linkageSectionDisplayable);
 
-		becutTestCase.getPreConditon().getLinkageSection().stream()
-			.forEach(parameter-> LinkageItem.getChildren().add(populateParameters(parameter)));
+			becutTestCase.getPreConditon().getLinkageSection().stream()
+				.forEach(parameter-> LinkageItem.getChildren().add(populateParameters(parameter)));
 
-		unitTestTreeTableView.getRoot().getChildren().add(LinkageItem);
+			unitTestTreeTableView.getRoot().getChildren().add(LinkageItem);
+		}
 		
 	}
 	

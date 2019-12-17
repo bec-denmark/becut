@@ -18,6 +18,6 @@ public class SourceMapAndCrossReference extends AbstractCompileListingSection {
 
 	public Tree getAst() {
 		return ast;
-	}
+	}	
 
 }
