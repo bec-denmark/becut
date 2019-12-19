@@ -30,7 +30,7 @@ public class Breakpoint implements DebugEntity {
 	@Override
 	public String generate() {
 		if (this.lineNumber == 0) {
-			return "           AT ENTRY PROCEDURE DIVISION" + "\n\n" + perform.generate();
+			return perform.generate();
 		}
 		return "           AT LINE " + lineNumber + "\n" + perform.generate();
 	}
