@@ -10,9 +10,11 @@ import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
+import dk.bec.unittest.becut.ui.model.PreConditionDisplayable;
 import dk.bec.unittest.becut.ui.model.UnitTest;
 import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
@@ -20,7 +22,6 @@ import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
-import javafx.beans.value.ObservableValue;
 
 public class BecutTestCaseController implements Initializable {
 
@@ -67,6 +68,7 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.getRoot().getValue().setName("Test Case: " + becutTestCase.getTestCaseName());;
 		unitTestTreeTableView.getRoot().getValue().setValue(becutTestCase.getTestCaseId());;
 		unitTestTreeTableView.getRoot().getChildren().clear();
+		
 		for (ExternalCall externalCall: becutTestCase.getExternalCalls()) {
 			if (Constants.IBMHostVariableMemoryAllocationPrograms.contains(externalCall.getName())) {
 				continue;
@@ -78,6 +80,29 @@ public class BecutTestCaseController implements Initializable {
 			}
 			unitTestTreeTableView.getRoot().getChildren().add(treeItem);
 		}
+		
+		//add working storage parameters
+		if (becutTestCase.getPreConditon().getWorkingStorage().size() > 0) {
+			UnitTestTreeObject workingStorageDisplayable = new PreConditionDisplayable("Working Storage");
+			TreeItem<UnitTestTreeObject> workingStorageItem = new TreeItem<UnitTestTreeObject>(workingStorageDisplayable);
+
+			becutTestCase.getPreConditon().getWorkingStorage().stream()
+				.forEach(parameter-> workingStorageItem.getChildren().add(populateParameters(parameter)));
+			
+			unitTestTreeTableView.getRoot().getChildren().add(workingStorageItem);
+		}
+		
+		// add linkage section parameters
+		if (becutTestCase.getPreConditon().getLinkageSection().size() > 0) {
+			UnitTestTreeObject linkageSectionDisplayable = new PreConditionDisplayable("Linkage Section");
+			TreeItem<UnitTestTreeObject> LinkageItem = new TreeItem<UnitTestTreeObject>(linkageSectionDisplayable);
+
+			becutTestCase.getPreConditon().getLinkageSection().stream()
+				.forEach(parameter-> LinkageItem.getChildren().add(populateParameters(parameter)));
+
+			unitTestTreeTableView.getRoot().getChildren().add(LinkageItem);
+		}
+		
 	}
 	
 	private TreeItem<UnitTestTreeObject> populateParameters(Parameter parameter) {

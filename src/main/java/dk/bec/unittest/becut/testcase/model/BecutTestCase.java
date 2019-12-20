@@ -8,9 +8,9 @@ public class BecutTestCase {
 	private String testCaseName;
 	private String testCaseId;
 	private String programName;
+	private PreConditon preConditon;
+	private PostCondition postCondition;
 	private List<ExternalCall> externalCalls = new ArrayList<>();
-	private List<PreConditon> preConditons = new ArrayList<>();
-	private List<PostCondition> postConditions = new ArrayList<>();
 
 	public String getTestCaseName() {
 		return testCaseName;
@@ -67,20 +67,20 @@ public class BecutTestCase {
 		removeExternalCall(externalCall.getLineNumber());
 	}
 
-	public List<PreConditon> getPreConditons() {
-		return preConditons;
+	public PreConditon getPreConditon() {
+		return preConditon;
 	}
 
-	public void setPreConditons(List<PreConditon> preConditons) {
-		this.preConditons = preConditons;
+	public void setPreConditon(PreConditon preConditon) {
+		this.preConditon = preConditon;
 	}
 
-	public List<PostCondition> getPostConditions() {
-		return postConditions;
+	public PostCondition getPostCondition() {
+		return postCondition;
 	}
 
-	public void setPostConditions(List<PostCondition> postConditions) {
-		this.postConditions = postConditions;
+	public void setPostCondition(PostCondition postCondition) {
+		this.postCondition = postCondition;
 	}
 
 }
