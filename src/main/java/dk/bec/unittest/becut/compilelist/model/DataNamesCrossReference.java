@@ -26,6 +26,10 @@ public class DataNamesCrossReference extends AbstractCompileListingSection {
 			String[] parts = l.split("\\s+");
 			if (parts.length > 0) {
 				if (!l.contains(".")) {
+					//We have XREFS(FULL) and no references, so we skip it
+					if (l.length() < 44) {
+						continue;
+					}
 					DataNameReference lastSeenReference = dataNameReferencesByLineNumber.get(lastSeenReferenceNumber);
 					for (int i = 0; i < parts.length; i++) {
 						Boolean modified = false;
