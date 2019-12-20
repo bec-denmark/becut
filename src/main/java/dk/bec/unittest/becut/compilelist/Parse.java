@@ -65,6 +65,7 @@ public class Parse {
 		boolean programStartFound = false;
 		int dataDivisionStart = 0;
 		int dataDivisionEnd = 0;
+		boolean dataDivisionEndFound = false;
 
 		for (int i = 0; i < cleanCompileList.size(); i++) {
 			String line = cleanCompileList.get(i);
@@ -120,8 +121,9 @@ public class Parse {
 				programEnd = count;
 				dataDivisionStart = count + 1;
 			}
-			else if (line.startsWith("PROGRAM GLOBAL TABLE BEGINS")) {
+			else if (!dataDivisionEndFound && (line.startsWith("PROGRAM GLOBAL TABLE BEGINS") || line.startsWith("Messages    Total    Informational    Warning    Error    Severe    Terminating"))) {
 				dataDivisionEnd = count;
+				dataDivisionEndFound = true;
 			}
 
 			count++;
