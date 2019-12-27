@@ -1,11 +1,11 @@
 package dk.bec.unittest.becut.debugscript.model;
 
-public class Breakpoint implements DebugEntity {
+public class LineBreakpoint implements DebugEntity {
 
 	private Integer lineNumber;
 	private Perform perform;
 
-	public Breakpoint(Integer lineNumber, Perform perform) {
+	public LineBreakpoint(Integer lineNumber, Perform perform) {
 		super();
 		this.lineNumber = lineNumber;
 		this.perform = perform;
@@ -29,9 +29,6 @@ public class Breakpoint implements DebugEntity {
 
 	@Override
 	public String generate() {
-		if (this.lineNumber == 0) {
-			return perform.generate();
-		}
 		return "           AT LINE " + lineNumber + "\n" + perform.generate();
 	}
 

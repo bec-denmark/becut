@@ -3,7 +3,7 @@ package dk.bec.unittest.becut.testcase.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreConditon {
+public class PreCondition {
 	
 	private List<Parameter> workingStorage = new ArrayList<Parameter>();
 	private List<Parameter> localStorage = new ArrayList<Parameter>();

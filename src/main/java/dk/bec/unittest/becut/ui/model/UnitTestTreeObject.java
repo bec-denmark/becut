@@ -51,5 +51,7 @@ public abstract class UnitTestTreeObject {
 		this.valueProperty().set(value);
 	}
 	
-	public abstract void updateValue(String newValue);
+	public void updateValue(String newValue) {
+		this.setValue(newValue);
+	}
 }

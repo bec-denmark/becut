@@ -24,6 +24,8 @@ public enum CobolNodeType {
 	COPY_STATEMENT("copyStatement"),
 	WORKING_STORAGE("workingStorageSection"),
 	LINKAGE_SECTION("linkageSection"),
+	LOCAL_STORAGE_SECTION("localStorageSection"),
+	FILE_SECTION("fileSection"),
 	GOBACK_STATEMENT("gobackStatement"),
 	DEPENDING_ON("dependingOn"),
 	QUALIFIED_DATA_NAME("qualifiedDataName")
