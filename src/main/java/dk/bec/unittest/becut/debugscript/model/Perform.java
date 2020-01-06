@@ -21,7 +21,7 @@ public class Perform implements DebugEntity {
 
 	@Override
 	public String generate() {
-		String perform = "           PERFORM\n";
+		String perform = "           PERFORM";
 		for (Statement statement : statements) {
 			perform = perform + "\n" + statement.generate();
 		}

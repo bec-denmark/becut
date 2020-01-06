@@ -10,7 +10,8 @@ import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
-import dk.bec.unittest.becut.debugscript.model.Breakpoint;
+import dk.bec.unittest.becut.debugscript.model.LineBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.Assertion;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.debugscript.model.Comment;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
@@ -18,6 +19,8 @@ import dk.bec.unittest.becut.debugscript.model.DebugScript;
 import dk.bec.unittest.becut.debugscript.model.Goto;
 import dk.bec.unittest.becut.debugscript.model.Move;
 import dk.bec.unittest.becut.debugscript.model.Perform;
+import dk.bec.unittest.becut.debugscript.model.ProgramStartBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.ProgramTerminationBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.Statement;
 import dk.bec.unittest.becut.debugscript.model.Step;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
@@ -34,16 +37,37 @@ public class ScriptGenerator {
 		List<DebugEntity> debugEntities = debugScript.getEntities();
 		debugEntities.add(new Step());
 
-		debugEntities.add(new Comment("Fill working storage"));
-		List<Statement> statements = new ArrayList<Statement>();
-		for (Parameter parameter : testCase.getPreConditon().getWorkingStorage()) {
-			statements.addAll(createReturnValues(parameter));
-//			if (statements.size() > 0) {
-//				DebugEntity debugEntity = new Perform(statements);
-//				debugEntities.add(debugEntity);
-//			}
+		debugEntities.add(new Comment("Setup preconditions"));
+		List<Statement> preConditionStatements = new ArrayList<Statement>();
+		for (Parameter parameter : testCase.getPreCondition().getFileSection()) {
+			preConditionStatements.addAll(createAssignmentStatements(parameter));
 		}
-		debugEntities.add(new Breakpoint(0, new Perform(statements)));
+		for (Parameter parameter : testCase.getPreCondition().getWorkingStorage()) {
+			preConditionStatements.addAll(createAssignmentStatements(parameter));
+		}
+		for (Parameter parameter : testCase.getPreCondition().getLocalStorage()) {
+			preConditionStatements.addAll(createAssignmentStatements(parameter));
+		}
+		for (Parameter parameter : testCase.getPreCondition().getLinkageSection()) {
+			preConditionStatements.addAll(createAssignmentStatements(parameter));
+		}
+		debugEntities.add(new ProgramStartBreakpoint(new Perform(preConditionStatements)));
+		
+		debugEntities.add(new Comment("Setup postconditions"));
+		List<Statement> postConditionStatements = new ArrayList<Statement>();
+		for (Parameter parameter : testCase.getPostCondition().getFileSection()) {
+			postConditionStatements.addAll(createAssertionStatements(parameter));
+		}
+		for (Parameter parameter : testCase.getPostCondition().getWorkingStorage()) {
+			postConditionStatements.addAll(createAssertionStatements(parameter));
+		}
+		for (Parameter parameter : testCase.getPostCondition().getLocalStorage()) {
+			postConditionStatements.addAll(createAssertionStatements(parameter));
+		}
+		for (Parameter parameter : testCase.getPostCondition().getLinkageSection()) {
+			postConditionStatements.addAll(createAssertionStatements(parameter));
+		}
+		debugEntities.add(new ProgramTerminationBreakpoint(new Perform(postConditionStatements), compileListing.getProgramName()));
 		
 		debugEntities.add(new Step());
 		
@@ -66,11 +90,11 @@ public class ScriptGenerator {
 		Tree reconciledSQLCall = reconcileSQLCall(compileListing, externalCall);
 		List<Statement> statements = new ArrayList<>();
 		for (Parameter parameter: externalCall.getParameters()) {
-			statements.addAll(createReturnValues(parameter));
+			statements.addAll(createAssignmentStatements(parameter));
 		}
 		statements.add(new Goto(findNextStatement(compileListing, reconciledSQLCall)));
 		Perform perform = new Perform(statements);
-		Breakpoint breakpoint = new Breakpoint(reconciledSQLCall.getStartPosition().getLinenumber() - 1, perform);
+		LineBreakpoint breakpoint = new LineBreakpoint(reconciledSQLCall.getStartPosition().getLinenumber() - 1, perform);
 		return breakpoint;
 	}
 	
@@ -78,21 +102,32 @@ public class ScriptGenerator {
 		Tree reconciledExternalCall = reconcileExternalCall(compileListing, externalCall);
 		List<Statement> statements = new ArrayList<>();
 		for (Parameter parameter: externalCall.getParameters()) {
-			statements.addAll(createReturnValues(parameter));
+			statements.addAll(createAssignmentStatements(parameter));
 		}
 		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
 		Perform perform = new Perform(statements);
-		Breakpoint breakpoint = new Breakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
+		LineBreakpoint breakpoint = new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
 		return breakpoint;
 	}
 	
-	private static List<Statement> createReturnValues(Parameter parameter) {
+	private static List<Statement> createAssignmentStatements(Parameter parameter) {
 		List<Statement> returnValues = new ArrayList<>();
 		if (!parameter.getValue().equals("")) {
 			returnValues.add(new Move(parameter));
 		}
 		for (Parameter p: parameter.getSubStructure()) {
-			returnValues.addAll(createReturnValues(p));
+			returnValues.addAll(createAssignmentStatements(p));
+		}
+		return returnValues;
+	}
+	
+	private static List<Statement> createAssertionStatements(Parameter parameter) {
+		List<Statement> returnValues = new ArrayList<>();
+		if (!parameter.getValue().equals("")) {
+			returnValues.add(new Assertion(parameter));
+		}
+		for (Parameter p: parameter.getSubStructure()) {
+			returnValues.addAll(createAssertionStatements(p));
 		}
 		return returnValues;
 	}

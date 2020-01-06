@@ -20,7 +20,8 @@ import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
-import dk.bec.unittest.becut.testcase.model.PreConditon;
+import dk.bec.unittest.becut.testcase.model.PostCondition;
+import dk.bec.unittest.becut.testcase.model.PreCondition;
 import koopa.core.trees.Tree;
 
 public class BecutTestCaseManager {
@@ -43,20 +44,31 @@ public class BecutTestCaseManager {
 		
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement: callStatements) {
-//			System.out.println(callStatement.getAllText());
 			String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			//We are skipping the SQL generated calls
 			if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName))  {
 				becutTestCase.getExternalCalls().add(createExternalCall(callStatement, compileListing));
 			}
 		}
+		List<Parameter> fileSectionParms = parseRecordsFromSection(compileListing, CobolNodeType.FILE_SECTION);
+		List<Parameter> workingStorageParms = parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE);
+		List<Parameter> localStorageParms = parseRecordsFromSection(compileListing, CobolNodeType.LOCAL_STORAGE_SECTION);
+		List<Parameter> linkageSectionParms = parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION);
 		
-		PreConditon preConditon = new PreConditon();
+		PreCondition preCondition = new PreCondition();
+		preCondition.setFileSection(fileSectionParms);
+		preCondition.setWorkingStorage(workingStorageParms);
+		preCondition.setLocalStorage(localStorageParms);
+		preCondition.setLinkageSection(linkageSectionParms);
+		becutTestCase.setPreCondition(preCondition);
 		
-		preConditon.setWorkingStorage(parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE));
-		preConditon.setLinkageSection(parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION));
-		
-		becutTestCase.setPreConditon(preConditon);
+		PostCondition postCondition = new PostCondition();
+		postCondition.setFileSection(fileSectionParms);
+		postCondition.setWorkingStorage(workingStorageParms);
+		postCondition.setLocalStorage(localStorageParms);
+		postCondition.setLinkageSection(linkageSectionParms);
+		becutTestCase.setPostCondition(postCondition);
+
 		return becutTestCase;
 	}
 	
