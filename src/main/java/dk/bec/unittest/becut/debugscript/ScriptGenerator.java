@@ -20,6 +20,7 @@ import dk.bec.unittest.becut.debugscript.model.Goto;
 import dk.bec.unittest.becut.debugscript.model.Move;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 import dk.bec.unittest.becut.debugscript.model.ProgramStartBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.ProgramTerminationBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.Statement;
 import dk.bec.unittest.becut.debugscript.model.Step;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
@@ -66,7 +67,7 @@ public class ScriptGenerator {
 		for (Parameter parameter : testCase.getPostCondition().getLinkageSection()) {
 			postConditionStatements.addAll(createAssertionStatements(parameter));
 		}
-		debugEntities.add(new ProgramStartBreakpoint(new Perform(postConditionStatements)));
+		debugEntities.add(new ProgramTerminationBreakpoint(new Perform(postConditionStatements), compileListing.getProgramName()));
 		
 		debugEntities.add(new Step());
 		
