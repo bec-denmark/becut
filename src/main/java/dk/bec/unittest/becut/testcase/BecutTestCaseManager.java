@@ -20,6 +20,7 @@ import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.testcase.model.PreConditon;
 import koopa.core.trees.Tree;
 
 public class BecutTestCaseManager {
@@ -42,6 +43,7 @@ public class BecutTestCaseManager {
 		
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement: callStatements) {
+//			System.out.println(callStatement.getAllText());
 			String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			//We are skipping the SQL generated calls
 			if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName))  {
@@ -49,9 +51,42 @@ public class BecutTestCaseManager {
 			}
 		}
 		
+		PreConditon preConditon = new PreConditon();
+		
+		preConditon.setWorkingStorage(parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE));
+		preConditon.setLinkageSection(parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION));
+		
+		becutTestCase.setPreConditon(preConditon);
 		return becutTestCase;
 	}
 	
+
+	/**
+	 * 	Run through records in the DataDivision and filter records that is declared between start and end line of a section
+	 * 
+	 * @param compileListing - A tree containing the source-code
+	 * @param dataSection - CobolNodeType describing the desired section 
+	 * @return List of parameters in the dataSection
+	 */
+	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
+		List<Parameter> parameterList = new ArrayList<Parameter>();
+
+		List<Tree> sourceSectionList = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), dataSection);
+		
+		if (sourceSectionList.size() == 0) {
+			return parameterList;
+		}
+		Tree sourceSection = sourceSectionList.get(0);
+
+		
+		compileListing.getDataDivisionMap().getRecords().values().stream()
+				.filter(i-> sourceSection.getStartPosition().getLinenumber() < i.getLineNumber() 
+						&& i.getLineNumber() < sourceSection.getEndPosition().getLinenumber())
+				.forEach(i -> parameterList.add(new Parameter(i)));
+		
+		return parameterList;
+	}
+
 	public static BecutTestCase loadTestCase(File file) {
 		BecutTestCase becutTestCase = new BecutTestCase();
 		try {

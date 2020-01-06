@@ -10,15 +10,17 @@ import dk.bec.unittest.becut.compilelist.model.Record;
 public class Parameter {
 
 	private Integer level = -1;
+	private Integer lineNumber = 0;
 	private String name = "";
 	private DataType dataType = DataType.UNKNOWN;
 	private Integer size = 0;
-	private List<Parameter> subStructure = new ArrayList<>();
 	private Boolean isSeventySeven = Boolean.FALSE;
 	private String value = "";
+	private List<Parameter> subStructure = new ArrayList<>();
 
 	public Parameter(Record record) {
 		this.level = record.getLevel();
+		this.lineNumber = record.getLineNumber();
 		this.name = record.getName();
 		this.dataType = record.getDataType();
 		this.size = record.getSize();
@@ -37,6 +39,14 @@ public class Parameter {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public Integer getLineNumber() {
+		return lineNumber;
+	}
+
+	public void setLineNumber(Integer lineNumber) {
+		this.lineNumber = lineNumber;
 	}
 
 	public String getName() {

@@ -33,6 +33,20 @@ public class ScriptGenerator {
 		DebugScript debugScript = new DebugScript(new ArrayList<>());
 		List<DebugEntity> debugEntities = debugScript.getEntities();
 		debugEntities.add(new Step());
+
+		debugEntities.add(new Comment("Fill working storage"));
+		List<Statement> statements = new ArrayList<Statement>();
+		for (Parameter parameter : testCase.getPreConditon().getWorkingStorage()) {
+			statements.addAll(createReturnValues(parameter));
+//			if (statements.size() > 0) {
+//				DebugEntity debugEntity = new Perform(statements);
+//				debugEntities.add(debugEntity);
+//			}
+		}
+		debugEntities.add(new Breakpoint(0, new Perform(statements)));
+		
+		debugEntities.add(new Step());
+		
 		for (ExternalCall externalCall: testCase.getExternalCalls()) {
 			debugEntities.add(new Comment("Jump over " + externalCall.getDisplayableName().substring(0, Math.min(externalCall.getDisplayableName().length(),  60))));
 			DebugEntity debugEntity = null;
@@ -44,6 +58,7 @@ public class ScriptGenerator {
 			}
 			debugEntities.add(debugEntity);
 		}
+		
 		return debugScript;
 	}
 	
