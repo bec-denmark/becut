@@ -1,9 +1,20 @@
 
            STEP;
+      * Setup preconditions
+           PERFORM
+       MOVE 10 TO MAT511-I-NUMBER;
+       MOVE 42 TO MAT511-SUM;
+           END-PERFORM;
+      * Setup postconditions
+           AT EXIT MAT510
+           PERFORM
+       LIST ("PostCondition", MAT511-I-NUMBER);
+       LIST ("PostCondition", MAT511-SUM);
+           END-PERFORM;
+           STEP;
       * Jump over TMAT5110
            AT LINE 36
            PERFORM
-
        SET MAT511-RETURKODE-OK TO TRUE;
        MOVE 42 TO MAT511-SUM;
            GOTO 37;

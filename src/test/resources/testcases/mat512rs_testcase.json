@@ -1,293 +1,2869 @@
 {
-	"testCaseName": "TestCaseName",
-	"testCaseId": "TestCaseId",
-	"programName": "MAT512",
 	"externalCalls": [
 		{
-			"name": "DSNHLI",
-			"displayableName": "SQL statement",
-			"lineNumber": 241,
 			"callType": "SQL",
+			"displayableName": "EXEC SQL   SELECT EMP.FIRSTNME         ,EMP.MIDINIT         ,EMP.LASTNAME   INTO  :FIRSTNME        ,:MIDINIT        ,:LASTNAME   FROM   DSN8710.EMP EMP   WHERE EMP.EMPNO = :EMPNO   FETCH FIRST ROW ONLYEND-EXEC",
+			"lineNumber": 241,
+			"name": "DSNHLI",
 			"parameters": [
 				{
-					"level": 1,
-					"name": "SQLCA",
 					"dataType": "GROUP",
-					"size": 136,
-					"subStructure": [
-						{
-							"level": 2,
-							"name": "SQLCAID",
-							"dataType": "PIC",
-							"size": 8,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLCABC",
-							"dataType": "BINARY",
-							"size": 4,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLCODE",
-							"dataType": "BINARY",
-							"size": 4,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": "0"
-						},
-						{
-							"level": 2,
-							"name": "SQLERRM",
-							"dataType": "GROUP",
-							"size": 72,
-							"subStructure": [
-								{
-									"level": 3,
-									"name": "SQLERRML",
-									"dataType": "BINARY",
-									"size": 2,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLERRMC",
-									"dataType": "PIC",
-									"size": 70,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								}
-							],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLERRP",
-							"dataType": "PIC",
-							"size": 8,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLERRD",
-							"dataType": "BINARY",
-							"size": 4,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLWARN",
-							"dataType": "GROUP",
-							"size": 8,
-							"subStructure": [
-								{
-									"level": 3,
-									"name": "SQLWARN0",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN1",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN2",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN3",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN4",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN5",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN6",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN7",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								}
-							],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "SQLEXT",
-							"dataType": "GROUP",
-							"size": 8,
-							"subStructure": [
-								{
-									"level": 3,
-									"name": "SQLWARN8",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARN9",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLWARNA",
-									"dataType": "PIC",
-									"size": 1,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "SQLSTATE",
-									"dataType": "PIC",
-									"size": 5,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								}
-							],
-							"isSeventySeven": false,
-							"value": ""
-						}
-					],
 					"isSeventySeven": false,
-					"value": ""
-				},
-				{
 					"level": 2,
+					"lineNumber": 71,
 					"name": "FIRSTNME",
-					"dataType": "GROUP",
 					"size": 14,
 					"subStructure": [
 						{
-							"level": 3,
-							"name": "FIRSTNME-LEN",
 							"dataType": "BINARY",
+							"isSeventySeven": false,
+							"level": 3,
+							"lineNumber": 73,
+							"name": "FIRSTNME-LEN",
 							"size": 2,
 							"subStructure": [],
-							"isSeventySeven": false,
 							"value": "4"
 						},
 						{
-							"level": 3,
-							"name": "FIRSTNME-TEXT",
 							"dataType": "PIC",
+							"isSeventySeven": false,
+							"level": 3,
+							"lineNumber": 75,
+							"name": "FIRSTNME-TEXT",
 							"size": 12,
 							"subStructure": [],
-							"isSeventySeven": false,
 							"value": "Adam"
 						}
 					],
-					"isSeventySeven": false,
 					"value": ""
 				},
 				{
-					"level": 2,
-					"name": "MIDINIT",
 					"dataType": "PIC",
+					"isSeventySeven": false,
+					"level": 2,
+					"lineNumber": 79,
+					"name": "MIDINIT",
 					"size": 1,
 					"subStructure": [],
-					"isSeventySeven": false,
 					"value": "M"
 				},
 				{
-					"level": 2,
-					"name": "LASTNAME",
 					"dataType": "GROUP",
+					"isSeventySeven": false,
+					"level": 2,
+					"lineNumber": 81,
+					"name": "LASTNAME",
 					"size": 17,
 					"subStructure": [
 						{
-							"level": 3,
-							"name": "LASTNAME-LEN",
 							"dataType": "BINARY",
+							"isSeventySeven": false,
+							"level": 3,
+							"lineNumber": 83,
+							"name": "LASTNAME-LEN",
 							"size": 2,
 							"subStructure": [],
-							"isSeventySeven": false,
 							"value": "5"
 						},
 						{
-							"level": 3,
-							"name": "LASTNAME-TEXT",
 							"dataType": "PIC",
+							"isSeventySeven": false,
+							"level": 3,
+							"lineNumber": 85,
+							"name": "LASTNAME-TEXT",
 							"size": 15,
 							"subStructure": [],
-							"isSeventySeven": false,
 							"value": "Britt"
 						}
 					],
+					"value": ""
+				},
+				{
+					"dataType": "GROUP",
 					"isSeventySeven": false,
+					"level": 1,
+					"lineNumber": 7,
+					"name": "SQLCA",
+					"size": 136,
+					"subStructure": [
+						{
+							"dataType": "PIC",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 8,
+							"name": "SQLCAID",
+							"size": 8,
+							"subStructure": [],
+							"value": ""
+						},
+						{
+							"dataType": "BINARY",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 10,
+							"name": "SQLCABC",
+							"size": 4,
+							"subStructure": [],
+							"value": ""
+						},
+						{
+							"dataType": "BINARY",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 11,
+							"name": "SQLCODE",
+							"size": 4,
+							"subStructure": [],
+							"value": "0"
+						},
+						{
+							"dataType": "GROUP",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 12,
+							"name": "SQLERRM",
+							"size": 72,
+							"subStructure": [
+								{
+									"dataType": "BINARY",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 13,
+									"name": "SQLERRML",
+									"size": 2,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 14,
+									"name": "SQLERRMC",
+									"size": 70,
+									"subStructure": [],
+									"value": ""
+								}
+							],
+							"value": ""
+						},
+						{
+							"dataType": "PIC",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 15,
+							"name": "SQLERRP",
+							"size": 8,
+							"subStructure": [],
+							"value": ""
+						},
+						{
+							"dataType": "BINARY",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 16,
+							"name": "SQLERRD",
+							"size": 4,
+							"subStructure": [],
+							"value": ""
+						},
+						{
+							"dataType": "GROUP",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 18,
+							"name": "SQLWARN",
+							"size": 8,
+							"subStructure": [
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 19,
+									"name": "SQLWARN0",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 20,
+									"name": "SQLWARN1",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 21,
+									"name": "SQLWARN2",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 22,
+									"name": "SQLWARN3",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 23,
+									"name": "SQLWARN4",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 24,
+									"name": "SQLWARN5",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 25,
+									"name": "SQLWARN6",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 26,
+									"name": "SQLWARN7",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								}
+							],
+							"value": ""
+						},
+						{
+							"dataType": "GROUP",
+							"isSeventySeven": false,
+							"level": 2,
+							"lineNumber": 27,
+							"name": "SQLEXT",
+							"size": 8,
+							"subStructure": [
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 28,
+									"name": "SQLWARN8",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 29,
+									"name": "SQLWARN9",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 30,
+									"name": "SQLWARNA",
+									"size": 1,
+									"subStructure": [],
+									"value": ""
+								},
+								{
+									"dataType": "PIC",
+									"isSeventySeven": false,
+									"level": 3,
+									"lineNumber": 31,
+									"name": "SQLSTATE",
+									"size": 5,
+									"subStructure": [],
+									"value": ""
+								}
+							],
+							"value": ""
+						}
+					],
 					"value": ""
 				}
 			]
 		}
 	],
-	"preConditons": [],
-	"postConditions": []
+	"postCondition": {
+		"fileSection": [],
+		"linkageSection": [],
+		"localStorage": [],
+		"workingStorage": [
+			{
+				"dataType": "UNKNOWN",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 5,
+				"name": "DISPLAY-SQLCODE",
+				"size": 10,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 7,
+				"name": "SQLCA",
+				"size": 136,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 8,
+						"name": "SQLCAID",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 10,
+						"name": "SQLCABC",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 11,
+						"name": "SQLCODE",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 12,
+						"name": "SQLERRM",
+						"size": 72,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 13,
+								"name": "SQLERRML",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 14,
+								"name": "SQLERRMC",
+								"size": 70,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 15,
+						"name": "SQLERRP",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 16,
+						"name": "SQLERRD",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 18,
+						"name": "SQLWARN",
+						"size": 8,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 19,
+								"name": "SQLWARN0",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 20,
+								"name": "SQLWARN1",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 21,
+								"name": "SQLWARN2",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 22,
+								"name": "SQLWARN3",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 23,
+								"name": "SQLWARN4",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 24,
+								"name": "SQLWARN5",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 25,
+								"name": "SQLWARN6",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 26,
+								"name": "SQLWARN7",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 27,
+						"name": "SQLEXT",
+						"size": 8,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 28,
+								"name": "SQLWARN8",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 29,
+								"name": "SQLWARN9",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 30,
+								"name": "SQLWARNA",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 31,
+								"name": "SQLSTATE",
+								"size": 5,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 66,
+				"name": "EMP",
+				"size": 91,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 69,
+						"name": "EMPNO",
+						"size": 6,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 71,
+						"name": "FIRSTNME",
+						"size": 14,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 73,
+								"name": "FIRSTNME-LEN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 75,
+								"name": "FIRSTNME-TEXT",
+								"size": 12,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 79,
+						"name": "MIDINIT",
+						"size": 1,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 81,
+						"name": "LASTNAME",
+						"size": 17,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 83,
+								"name": "LASTNAME-LEN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 85,
+								"name": "LASTNAME-TEXT",
+								"size": 15,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 89,
+						"name": "WORKDEPT",
+						"size": 3,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 92,
+						"name": "PHONENO",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 95,
+						"name": "HIREDATE",
+						"size": 10,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 98,
+						"name": "JOB",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 101,
+						"name": "EDLEVEL",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 104,
+						"name": "SEX",
+						"size": 1,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 107,
+						"name": "BIRTHDATE",
+						"size": 10,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 110,
+						"name": "SALARY",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 113,
+						"name": "BONUS",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 116,
+						"name": "COMM",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 120,
+				"name": "IEMP",
+				"size": 28,
+				"subStructure": [
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 121,
+						"name": "INDSTRUC",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 126,
+				"name": "SQL-VERS",
+				"size": 68,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 127,
+						"name": "SQL-VERS-PREF",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 128,
+						"name": "SQL-VERS-DATA",
+						"size": 64,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "PIC",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 130,
+				"name": "SQL-TEMP",
+				"size": 128,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 131,
+				"name": "DSN-TEMP",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "PACKED_DECIMAL",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 132,
+				"name": "DSN-TMP2",
+				"size": 10,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 133,
+				"name": "DSNNROWS",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 134,
+				"name": "DSNNTYPE",
+				"size": 2,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 135,
+				"name": "DSNNLEN",
+				"size": 2,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 136,
+				"name": "SQL-NULL",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 137,
+				"name": "SQL-INIT-FLAG",
+				"size": 2,
+				"subStructure": [
+					{
+						"dataType": "EIGHTYEIGHT",
+						"isSeventySeven": false,
+						"level": 88,
+						"lineNumber": 138,
+						"name": "SQL-INIT-DONE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 139,
+				"name": "SQL-FILE-READ",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 140,
+				"name": "SQL-FILE-CREATE",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 141,
+				"name": "SQL-FILE-OVERWRITE",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 142,
+				"name": "SQL-FILE-APPEND",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 143,
+				"name": "SQL-PLIST2",
+				"size": 272,
+				"subStructure": [
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 144,
+						"name": "SQL-PLIST-CON",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 145,
+						"name": "SQL-CALLTYPE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 146,
+						"name": "SQL-PROG-NAME",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 147,
+						"name": "SQL-TIMESTAMP-1",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 148,
+						"name": "SQL-TIMESTAMP-2",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 149,
+						"name": "SQL-SECTION",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 150,
+						"name": "SQL-CODEPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 151,
+						"name": "SQL-VPARMPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 152,
+						"name": "SQL-APARMPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 153,
+						"name": "FILLER",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 154,
+						"name": "SQL-STMT-TYPE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 155,
+						"name": "SQL-STMT-NUM",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 156,
+						"name": "SQL-PLIST-FLG",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 157,
+						"name": "FILLER",
+						"size": 18,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 159,
+						"name": "SQL-PVAR-LIST2",
+						"size": 60,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 160,
+								"name": "PRE-SQLDAID",
+								"size": 8,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 161,
+								"name": "PRE-SQLDABC",
+								"size": 4,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 162,
+								"name": "PRE-SQLN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 163,
+								"name": "PRE-SQLLD",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "GROUP",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 164,
+								"name": "PRE-SQLVAR",
+								"size": 44,
+								"subStructure": [
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 165,
+										"name": "SQLVAR-BASE1",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 166,
+												"name": "SQL-PVAR-TYPE1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 167,
+												"name": "SQL-PVAR-LEN1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 168,
+												"name": "SQL-PVAR-ADDRS1",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 169,
+														"name": "SQL-PVAR-ADDR1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 170,
+														"name": "SQL-PVAR-IND1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 171,
+												"name": "SQL-PVAR-NAME1",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 172,
+														"name": "SQL-PVAR-NAMEL1",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 173,
+														"name": "SQL-PVAR-NAMEC1",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									}
+								],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 174,
+						"name": "SQL-AVAR-LIST2",
+						"size": 148,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 175,
+								"name": "PRE-SQLDAID",
+								"size": 8,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 176,
+								"name": "PRE-SQLDABC",
+								"size": 4,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 177,
+								"name": "PRE-SQLN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 178,
+								"name": "PRE-SQLLD",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "GROUP",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 179,
+								"name": "PRE-SQLVAR",
+								"size": 132,
+								"subStructure": [
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 180,
+										"name": "SQLVAR-BASE1",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 181,
+												"name": "SQL-AVAR-TYPE1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 182,
+												"name": "SQL-AVAR-LEN1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 183,
+												"name": "SQL-AVAR-ADDRS1",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 184,
+														"name": "SQL-AVAR-ADDR1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 185,
+														"name": "SQL-AVAR-IND1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 186,
+												"name": "SQL-AVAR-NAME1",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 187,
+														"name": "SQL-AVAR-NAMEL1",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 188,
+														"name": "SQL-AVAR-NAMEC1",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									},
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 189,
+										"name": "SQLVAR-BASE2",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 190,
+												"name": "SQL-AVAR-TYPE2",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 191,
+												"name": "SQL-AVAR-LEN2",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 192,
+												"name": "SQL-AVAR-ADDRS2",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 193,
+														"name": "SQL-AVAR-ADDR2",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 194,
+														"name": "SQL-AVAR-IND2",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 195,
+												"name": "SQL-AVAR-NAME2",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 196,
+														"name": "SQL-AVAR-NAMEL2",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 197,
+														"name": "SQL-AVAR-NAMEC2",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									},
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 198,
+										"name": "SQLVAR-BASE3",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 199,
+												"name": "SQL-AVAR-TYPE3",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 200,
+												"name": "SQL-AVAR-LEN3",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 201,
+												"name": "SQL-AVAR-ADDRS3",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 202,
+														"name": "SQL-AVAR-ADDR3",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 203,
+														"name": "SQL-AVAR-IND3",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 204,
+												"name": "SQL-AVAR-NAME3",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 205,
+														"name": "SQL-AVAR-NAMEL3",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 206,
+														"name": "SQL-AVAR-NAMEC3",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									}
+								],
+								"value": ""
+							}
+						],
+						"value": ""
+					}
+				],
+				"value": ""
+			}
+		]
+	},
+	"preCondition": {
+		"fileSection": [],
+		"linkageSection": [],
+		"localStorage": [],
+		"workingStorage": [
+			{
+				"dataType": "UNKNOWN",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 5,
+				"name": "DISPLAY-SQLCODE",
+				"size": 10,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 7,
+				"name": "SQLCA",
+				"size": 136,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 8,
+						"name": "SQLCAID",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 10,
+						"name": "SQLCABC",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 11,
+						"name": "SQLCODE",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 12,
+						"name": "SQLERRM",
+						"size": 72,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 13,
+								"name": "SQLERRML",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 14,
+								"name": "SQLERRMC",
+								"size": 70,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 15,
+						"name": "SQLERRP",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 16,
+						"name": "SQLERRD",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 18,
+						"name": "SQLWARN",
+						"size": 8,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 19,
+								"name": "SQLWARN0",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 20,
+								"name": "SQLWARN1",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 21,
+								"name": "SQLWARN2",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 22,
+								"name": "SQLWARN3",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 23,
+								"name": "SQLWARN4",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 24,
+								"name": "SQLWARN5",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 25,
+								"name": "SQLWARN6",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 26,
+								"name": "SQLWARN7",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 27,
+						"name": "SQLEXT",
+						"size": 8,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 28,
+								"name": "SQLWARN8",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 29,
+								"name": "SQLWARN9",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 30,
+								"name": "SQLWARNA",
+								"size": 1,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 31,
+								"name": "SQLSTATE",
+								"size": 5,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 66,
+				"name": "EMP",
+				"size": 91,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 69,
+						"name": "EMPNO",
+						"size": 6,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 71,
+						"name": "FIRSTNME",
+						"size": 14,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 73,
+								"name": "FIRSTNME-LEN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 75,
+								"name": "FIRSTNME-TEXT",
+								"size": 12,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 79,
+						"name": "MIDINIT",
+						"size": 1,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 81,
+						"name": "LASTNAME",
+						"size": 17,
+						"subStructure": [
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 83,
+								"name": "LASTNAME-LEN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 85,
+								"name": "LASTNAME-TEXT",
+								"size": 15,
+								"subStructure": [],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 89,
+						"name": "WORKDEPT",
+						"size": 3,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 92,
+						"name": "PHONENO",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 95,
+						"name": "HIREDATE",
+						"size": 10,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 98,
+						"name": "JOB",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 101,
+						"name": "EDLEVEL",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 104,
+						"name": "SEX",
+						"size": 1,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 107,
+						"name": "BIRTHDATE",
+						"size": 10,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 110,
+						"name": "SALARY",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 113,
+						"name": "BONUS",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PACKED_DECIMAL",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 116,
+						"name": "COMM",
+						"size": 5,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 120,
+				"name": "IEMP",
+				"size": 28,
+				"subStructure": [
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 121,
+						"name": "INDSTRUC",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 126,
+				"name": "SQL-VERS",
+				"size": 68,
+				"subStructure": [
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 127,
+						"name": "SQL-VERS-PREF",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 128,
+						"name": "SQL-VERS-DATA",
+						"size": 64,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "PIC",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 130,
+				"name": "SQL-TEMP",
+				"size": 128,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 131,
+				"name": "DSN-TEMP",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "PACKED_DECIMAL",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 132,
+				"name": "DSN-TMP2",
+				"size": 10,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 133,
+				"name": "DSNNROWS",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 134,
+				"name": "DSNNTYPE",
+				"size": 2,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 135,
+				"name": "DSNNLEN",
+				"size": 2,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 136,
+				"name": "SQL-NULL",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 137,
+				"name": "SQL-INIT-FLAG",
+				"size": 2,
+				"subStructure": [
+					{
+						"dataType": "EIGHTYEIGHT",
+						"isSeventySeven": false,
+						"level": 88,
+						"lineNumber": 138,
+						"name": "SQL-INIT-DONE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					}
+				],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 139,
+				"name": "SQL-FILE-READ",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 140,
+				"name": "SQL-FILE-CREATE",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 141,
+				"name": "SQL-FILE-OVERWRITE",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "BINARY",
+				"isSeventySeven": true,
+				"level": 77,
+				"lineNumber": 142,
+				"name": "SQL-FILE-APPEND",
+				"size": 4,
+				"subStructure": [],
+				"value": ""
+			},
+			{
+				"dataType": "GROUP",
+				"isSeventySeven": false,
+				"level": 1,
+				"lineNumber": 143,
+				"name": "SQL-PLIST2",
+				"size": 272,
+				"subStructure": [
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 144,
+						"name": "SQL-PLIST-CON",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 145,
+						"name": "SQL-CALLTYPE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 146,
+						"name": "SQL-PROG-NAME",
+						"size": 8,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 147,
+						"name": "SQL-TIMESTAMP-1",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 148,
+						"name": "SQL-TIMESTAMP-2",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 149,
+						"name": "SQL-SECTION",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 150,
+						"name": "SQL-CODEPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 151,
+						"name": "SQL-VPARMPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 152,
+						"name": "SQL-APARMPTR",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 153,
+						"name": "FILLER",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 154,
+						"name": "SQL-STMT-TYPE",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 155,
+						"name": "SQL-STMT-NUM",
+						"size": 4,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "BINARY",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 156,
+						"name": "SQL-PLIST-FLG",
+						"size": 2,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "PIC",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 157,
+						"name": "FILLER",
+						"size": 18,
+						"subStructure": [],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 159,
+						"name": "SQL-PVAR-LIST2",
+						"size": 60,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 160,
+								"name": "PRE-SQLDAID",
+								"size": 8,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 161,
+								"name": "PRE-SQLDABC",
+								"size": 4,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 162,
+								"name": "PRE-SQLN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 163,
+								"name": "PRE-SQLLD",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "GROUP",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 164,
+								"name": "PRE-SQLVAR",
+								"size": 44,
+								"subStructure": [
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 165,
+										"name": "SQLVAR-BASE1",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 166,
+												"name": "SQL-PVAR-TYPE1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 167,
+												"name": "SQL-PVAR-LEN1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 168,
+												"name": "SQL-PVAR-ADDRS1",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 169,
+														"name": "SQL-PVAR-ADDR1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 170,
+														"name": "SQL-PVAR-IND1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 171,
+												"name": "SQL-PVAR-NAME1",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 172,
+														"name": "SQL-PVAR-NAMEL1",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 173,
+														"name": "SQL-PVAR-NAMEC1",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									}
+								],
+								"value": ""
+							}
+						],
+						"value": ""
+					},
+					{
+						"dataType": "GROUP",
+						"isSeventySeven": false,
+						"level": 2,
+						"lineNumber": 174,
+						"name": "SQL-AVAR-LIST2",
+						"size": 148,
+						"subStructure": [
+							{
+								"dataType": "PIC",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 175,
+								"name": "PRE-SQLDAID",
+								"size": 8,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 176,
+								"name": "PRE-SQLDABC",
+								"size": 4,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 177,
+								"name": "PRE-SQLN",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "BINARY",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 178,
+								"name": "PRE-SQLLD",
+								"size": 2,
+								"subStructure": [],
+								"value": ""
+							},
+							{
+								"dataType": "GROUP",
+								"isSeventySeven": false,
+								"level": 3,
+								"lineNumber": 179,
+								"name": "PRE-SQLVAR",
+								"size": 132,
+								"subStructure": [
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 180,
+										"name": "SQLVAR-BASE1",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 181,
+												"name": "SQL-AVAR-TYPE1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 182,
+												"name": "SQL-AVAR-LEN1",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 183,
+												"name": "SQL-AVAR-ADDRS1",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 184,
+														"name": "SQL-AVAR-ADDR1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 185,
+														"name": "SQL-AVAR-IND1",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 186,
+												"name": "SQL-AVAR-NAME1",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 187,
+														"name": "SQL-AVAR-NAMEL1",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 188,
+														"name": "SQL-AVAR-NAMEC1",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									},
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 189,
+										"name": "SQLVAR-BASE2",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 190,
+												"name": "SQL-AVAR-TYPE2",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 191,
+												"name": "SQL-AVAR-LEN2",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 192,
+												"name": "SQL-AVAR-ADDRS2",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 193,
+														"name": "SQL-AVAR-ADDR2",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 194,
+														"name": "SQL-AVAR-IND2",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 195,
+												"name": "SQL-AVAR-NAME2",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 196,
+														"name": "SQL-AVAR-NAMEL2",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 197,
+														"name": "SQL-AVAR-NAMEC2",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									},
+									{
+										"dataType": "GROUP",
+										"isSeventySeven": false,
+										"level": 4,
+										"lineNumber": 198,
+										"name": "SQLVAR-BASE3",
+										"size": 44,
+										"subStructure": [
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 199,
+												"name": "SQL-AVAR-TYPE3",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "BINARY",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 200,
+												"name": "SQL-AVAR-LEN3",
+												"size": 2,
+												"subStructure": [],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 201,
+												"name": "SQL-AVAR-ADDRS3",
+												"size": 8,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 202,
+														"name": "SQL-AVAR-ADDR3",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 203,
+														"name": "SQL-AVAR-IND3",
+														"size": 4,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											},
+											{
+												"dataType": "GROUP",
+												"isSeventySeven": false,
+												"level": 5,
+												"lineNumber": 204,
+												"name": "SQL-AVAR-NAME3",
+												"size": 32,
+												"subStructure": [
+													{
+														"dataType": "BINARY",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 205,
+														"name": "SQL-AVAR-NAMEL3",
+														"size": 2,
+														"subStructure": [],
+														"value": ""
+													},
+													{
+														"dataType": "PIC",
+														"isSeventySeven": false,
+														"level": 6,
+														"lineNumber": 206,
+														"name": "SQL-AVAR-NAMEC3",
+														"size": 30,
+														"subStructure": [],
+														"value": ""
+													}
+												],
+												"value": ""
+											}
+										],
+										"value": ""
+									}
+								],
+								"value": ""
+							}
+						],
+						"value": ""
+					}
+				],
+				"value": ""
+			}
+		]
+	},
+	"programName": "MAT512",
+	"testCaseId": "becut-MAT512-54de699c-04e7-4187-87e3-d94923b93654",
+	"testCaseName": "becut-MAT512"
 }

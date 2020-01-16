@@ -1,14 +1,21 @@
 
            STEP;
-      * Jump over SQL statement
+      * Setup preconditions
+           PERFORM
+           END-PERFORM;
+      * Setup postconditions
+           AT EXIT MAT512
+           PERFORM
+           END-PERFORM;
+           STEP;
+      * Jump over EXEC SQL   SELECT EMP.FIRSTNME         ,EMP.MIDINIT         
            AT LINE 240
            PERFORM
-
-       MOVE 0 TO SQLCODE;
        MOVE 4 TO FIRSTNME-LEN;
        MOVE 'Adam' TO FIRSTNME-TEXT;
        MOVE 'M' TO MIDINIT;
        MOVE 5 TO LASTNAME-LEN;
        MOVE 'Britt' TO LASTNAME-TEXT;
+       MOVE 0 TO SQLCODE;
            GOTO 244;
            END-PERFORM;
