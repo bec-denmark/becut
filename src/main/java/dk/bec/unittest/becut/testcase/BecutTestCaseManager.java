@@ -61,6 +61,12 @@ public class BecutTestCaseManager {
 		preCondition.setLocalStorage(localStorageParms);
 		preCondition.setLinkageSection(linkageSectionParms);
 		becutTestCase.setPreCondition(preCondition);
+
+		fileSectionParms = parseRecordsFromSection(compileListing, CobolNodeType.FILE_SECTION);
+		workingStorageParms = parseRecordsFromSection(compileListing, CobolNodeType.WORKING_STORAGE);
+		localStorageParms = parseRecordsFromSection(compileListing, CobolNodeType.LOCAL_STORAGE_SECTION);
+		linkageSectionParms = parseRecordsFromSection(compileListing, CobolNodeType.LINKAGE_SECTION);
+		
 		
 		PostCondition postCondition = new PostCondition();
 		postCondition.setFileSection(fileSectionParms);
