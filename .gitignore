@@ -29,3 +29,5 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 /target/
+
+*_becut.properties
