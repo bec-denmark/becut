@@ -74,7 +74,7 @@ public class ExternalCall {
 	
 	@Override
 	public String toString() {
-		return "CALL " + name + " USING " + String.join(" ", parameters.stream().map(Parameter::getName).collect(Collectors.toList()));
+		return "CALL " + name + " USING " + String.join(" ", parameters.stream().map(Parameter::getGuiName).collect(Collectors.toList()));
 	}
 
 }

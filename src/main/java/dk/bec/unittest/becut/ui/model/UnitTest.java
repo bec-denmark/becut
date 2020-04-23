@@ -1,7 +1,9 @@
 package dk.bec.unittest.becut.ui.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
@@ -31,16 +33,18 @@ public class UnitTest extends UnitTestTreeObject {
 	}
 
 	public void setCompileListing(File compileListingFile) {
-		CompileListing c = null;
 		try {
-			c = Parse.parse(compileListingFile);
+			setCompileListing(new FileInputStream(compileListingFile));
 		} catch (FileNotFoundException e) {
 			//TODO inform the user that there was an error reading the compile listing
 			e.printStackTrace();
 		}
-		this.compileListing = c;
-		
 	}
+	
+	public void setCompileListing(InputStream inputStream) {
+		this.compileListing = Parse.parse(inputStream);
+	}
+
 	public final BecutTestCase getBecutTestCase() {
 		return becutTestCase.get();
 	}

@@ -1,7 +1,9 @@
 package dk.bec.unittest.becut.compilelist;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,8 +38,12 @@ public class Parse {
 	}
 	
 	public static CompileListing parse(File file) throws FileNotFoundException {
+		return parse(new FileInputStream(file));
+	}
+	
+	public static CompileListing parse(InputStream inputStream) {
 		List<String> compileListing = new ArrayList<String>();
-		try (Scanner s = new Scanner(file, "UTF-8")) {
+		try (Scanner s = new Scanner(inputStream, "UTF-8")) {
 			while (s.hasNextLine()) {
 				compileListing.add(s.nextLine());
 			}
@@ -121,7 +127,7 @@ public class Parse {
 				programEnd = count;
 				dataDivisionStart = count + 1;
 			}
-			else if (!dataDivisionEndFound && (line.startsWith("PROGRAM GLOBAL TABLE BEGINS") || line.startsWith("Messages    Total    Informational    Warning    Error    Severe    Terminating"))) {
+			else if (!dataDivisionEndFound && (line.startsWith("PROGRAM GLOBAL TABLE BEGINS") || line.startsWith("Messages    Total    Informational    Warning    Error    Severe    Terminating") || line.startsWith("LineID  Message code  Message text"))) {
 				dataDivisionEnd = count;
 				dataDivisionEndFound = true;
 			}

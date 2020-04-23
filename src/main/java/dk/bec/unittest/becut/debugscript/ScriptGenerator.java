@@ -86,6 +86,14 @@ public class ScriptGenerator {
 		return debugScript;
 	}
 	
+	public static DebugScript generateParameterRecordingScript(CompileListing compileListing) {
+		DebugScript debugScript = new DebugScript(new ArrayList<>());
+		List<DebugEntity> debugEntities = debugScript.getEntities();
+		debugEntities.add(new Step());
+		
+		return debugScript;
+	}
+	
 	private static DebugEntity convertSQLCall(CompileListing compileListing, ExternalCall externalCall) {
 		Tree reconciledSQLCall = reconcileSQLCall(compileListing, externalCall);
 		List<Statement> statements = new ArrayList<>();
@@ -261,7 +269,7 @@ public class ScriptGenerator {
 		return null;
 	}
 	
-	private static Integer findNextStatement(CompileListing compileListing, Tree externalCall) {
+	public static Integer findNextStatement(CompileListing compileListing, Tree externalCall) {
 		List<Tree> statements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.STATEMENT);
 		Collections.sort(statements, new Comparator<Tree>() {
 			@Override

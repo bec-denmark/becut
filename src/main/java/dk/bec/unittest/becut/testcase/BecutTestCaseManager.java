@@ -17,9 +17,13 @@ import dk.bec.unittest.becut.compilelist.model.DataNameReference;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
+import dk.bec.unittest.becut.recorder.model.SessionCall;
+import dk.bec.unittest.becut.recorder.model.SessionRecord;
+import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
 import koopa.core.trees.Tree;
@@ -78,7 +82,81 @@ public class BecutTestCaseManager {
 		return becutTestCase;
 	}
 	
+	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, SessionRecording sessionRecording) {
+		BecutTestCase becutTestCase = createTestCaseFromCompileListing(compileListing);
+		List<SessionRecord> changedSessionRecords = new ArrayList<SessionRecord>();
+		for (SessionCall sessionCall: sessionRecording.getSessionCalls()) {
+			changedSessionRecords.addAll(sessionCall.getChangedParameters());
+		}
+		mapSessionRecordsToTestCase(becutTestCase, sessionRecording, changedSessionRecords);
+		return becutTestCase;
+	}
+	
+	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionRecording sessionRecording, List<SessionRecord> sessionRecords) {
+		
+		// We find the matching call
+		ExternalCall externalCall = null;
+		SessionCall sessionCall = null;;
+		
+		outerloop:
+		for (ExternalCall ec: becutTestCase.getExternalCalls()) {
+			for (SessionCall sc: sessionRecording.getSessionCalls()) {
+				if (ec.getLineNumber() == sc.getLineNumber()) {
+					externalCall = ec;
+					sessionCall = sc;
+					break outerloop;
+				}
+			}
+		}
+		
+		
+		for (SessionRecord sessionRecord: sessionRecords) {
+			// We generate the path from the session record to the level 01
+			List<SessionRecord> ancestorPath = new ArrayList<SessionRecord>();
+			ancestorPath.add(sessionRecord);
+			SessionRecord ancestor = sessionRecord;
+			while (ancestor.getParent() != null) {
+				ancestor = ancestor.getParent();
+				ancestorPath.add(ancestor);
+			}
+			
+			// We find the matching parameter
+			Parameter matchedParameter = null;
+			
+			for (Parameter parameter: externalCall.getParameters()) {
+				if (parameter.getName().equals(ancestor.getName())) {
+					matchedParameter = parameter;
+					break;
+				}
+			}
+			
+			setValueFromSessionRecordToParameter(ancestorPath, matchedParameter);
+		}
+	}
 
+	private static void setValueFromSessionRecordToParameter(List<SessionRecord> ancestorPath, Parameter parameter) {
+		
+		if (ancestorPath.size() == 0) {
+			//Added for completeless, but this shouldn't happen
+			return;
+		}
+		if (ancestorPath.size() == 1) {
+			for (Parameter subParameter: parameter.getSubStructure()) {
+				if (ancestorPath.get(0).getName().equals(subParameter.getName())) {
+					subParameter.setValue(ancestorPath.get(0).getValue());
+					return;
+				}
+			}
+		}
+		//Traverse the path to the sessionRecord we want to set the value of
+		int i = ancestorPath.size() - 1;
+		for (Parameter subParameter: parameter.getSubStructure()) {
+			if (ancestorPath.get(i - 1).getName().equals(subParameter.getName())) {
+				setValueFromSessionRecordToParameter(ancestorPath.subList(0, i - 1), subParameter);
+			}
+		}
+	}
+	
 	/**
 	 * 	Run through records in the DataDivision and filter records that is declared between start and end line of a section
 	 * 
@@ -128,7 +206,7 @@ public class BecutTestCaseManager {
 
 	private static ExternalCall createExternalCall(Tree callStatement, CompileListing compileListing) {
 		ExternalCall externalCall = new ExternalCall();
-		String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
+		String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, CobolNodeType.PROGRAM_NAME).get(0).getProgramText());
 		externalCall.setName(callProgramName);
 		externalCall.setDisplayableName(callProgramName);
 		//FIXME This is currently getting the absolute line number (from the expanded source). 
@@ -181,7 +259,12 @@ public class BecutTestCaseManager {
 			//TODO handle "variable in/of"
 			String argName = getArgName(arg);
 			List<DataNameReference> refs = compileListing.getDataNamesCrossReference().getDataNameReferencesByName().get(argName);
-			if (refs.size() == 1) {
+			//We have a literal in the parameter
+			if (refs == null) {
+				ParameterLiteral parm = new ParameterLiteral(argName);
+				parameters.add(parm);
+			}
+			else if (refs.size() == 1) {
 				Parameter parm = new Parameter(compileListing.getDataDivisionMap().getRecord(refs.get(0).getLineNumber()));
 				parameters.add(parm);
 			}
@@ -198,7 +281,16 @@ public class BecutTestCaseManager {
 	}
 	
 	public static String getArgName(Tree arg) {
-		String argProgramText = TreeUtil.getDescendents(arg, CobolNodeType.QUALIFIED_DATA_NAME).get(0).getAllText();
+		
+		//Variable name
+		List<Tree> argNames = TreeUtil.getDescendents(arg, CobolNodeType.QUALIFIED_DATA_NAME);
+		if (argNames.isEmpty()) {
+			//This is actaully a literal
+			//TODO mark literals as something that can't be changed in the test case
+			argNames = TreeUtil.getDescendents(arg, CobolNodeType.LITERAL);
+		}
+		//
+		String argProgramText = argNames.get(0).getAllText();
 		return handleContinuation(argProgramText);
 	}
 	
@@ -219,4 +311,5 @@ public class BecutTestCaseManager {
 		}
 		return name;
 	}
+
 }

@@ -13,6 +13,7 @@ public class JESFTPDataset extends FTPFile {
 	private String procstep;
 	private Integer bytes;
 	private String dsClass;
+	private boolean containsDD;
 	
 	public HostJobDataset toJobDataset() {
 		HostJobDataset jobDataset = new HostJobDataset();
@@ -83,6 +84,14 @@ public class JESFTPDataset extends FTPFile {
 		this.dsClass = dsClass;
 	}
 	
+	public boolean containsDD() {
+		return containsDD;
+	}
+
+	public void containsDD(boolean containsDD) {
+		this.containsDD = containsDD;
+	}
+
 	@Override
 	public String toString() {
 		return this.getName();

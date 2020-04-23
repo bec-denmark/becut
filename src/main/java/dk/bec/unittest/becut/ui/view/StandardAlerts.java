@@ -3,9 +3,9 @@ package dk.bec.unittest.becut.ui.view;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
-public class StandardDialogs {
+public class StandardAlerts {
 	
-	private StandardDialogs() {}
+	private StandardAlerts() {}
 
 	public static void unimplemented() {
 		Alert alert = new Alert(AlertType.WARNING);

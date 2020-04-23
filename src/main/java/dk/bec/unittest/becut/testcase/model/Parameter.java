@@ -9,14 +9,14 @@ import dk.bec.unittest.becut.compilelist.model.Record;
 
 public class Parameter {
 
-	private Integer level = -1;
-	private Integer lineNumber = 0;
-	private String name = "";
-	private DataType dataType = DataType.UNKNOWN;
-	private Integer size = 0;
-	private Boolean isSeventySeven = Boolean.FALSE;
-	private String value = "";
-	private List<Parameter> subStructure = new ArrayList<>();
+	protected Integer level = -1;
+	protected Integer lineNumber = 0;
+	protected String name = "";
+	protected DataType dataType = DataType.UNKNOWN;
+	protected Integer size = 0;
+	protected Boolean isSeventySeven = Boolean.FALSE;
+	protected String value = "";
+	protected List<Parameter> subStructure = new ArrayList<>();
 
 	public Parameter(Record record) {
 		this.level = record.getLevel();
@@ -95,6 +95,14 @@ public class Parameter {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public String getGuiName() {
+		return name;
+	}
+	
+	public String guiString() {
+		return level.toString() + " " + name;
 	}
 
 	@Override

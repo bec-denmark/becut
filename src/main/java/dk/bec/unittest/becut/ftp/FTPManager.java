@@ -1,6 +1,6 @@
 package dk.bec.unittest.becut.ftp;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,24 +8,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPFileEntryParser;
-import org.apache.commons.net.ftp.parser.FTPFileEntryParserFactory;
-import org.apache.commons.net.ftp.parser.ParserInitializationException;
 
 import dk.bec.unittest.becut.Settings;
+import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
 import dk.bec.unittest.becut.ftp.model.HostJob;
 import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.ftp.model.HostJobStatus;
 import dk.bec.unittest.becut.ftp.model.JESFTPDataset;
-import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 
 public class FTPManager {
 	
@@ -34,14 +29,14 @@ public class FTPManager {
 	//Enforce non-instantiation
 	private FTPManager() {}
 
-	public static void connectAndLogin(FTPClient ftp, String userId, String password) throws Exception {
+	public static void connectAndLogin(FTPClient ftp, Credential credential) throws Exception {
 		
-		ftp.connect(Settings.FTP_HOST);
+		ftp.connect(credential.getHost());
 		if (!ftp.getReplyString().substring(0, 3).equals("220")) {
 			throw new Exception(ftp.getReplyString());
 		}
 		ftp.enterLocalPassiveMode();
-		ftp.login(userId, password);
+		ftp.login(credential.getUsername(), credential.getPassword());
 		if (!ftp.getReplyString().substring(0, 3).equals("230")) {
 			throw new Exception(ftp.getReplyString());
 		}
@@ -83,7 +78,12 @@ public class FTPManager {
 		return ftp.storeFile("'" + datasetName + "'", new FileInputStream(file));
 	}
 	
-	public static Boolean deleteMember(FTPClient ftp, String datasetName, DatasetProperties datasetProperties) throws Exception {
+	public static Boolean allocateDataset(FTPClient ftp, String datasetName, DatasetProperties datasetProperties) throws Exception {
+		setUp(ftp, datasetProperties);
+		return ftp.storeFile("'" + datasetName + "'", new ByteArrayInputStream("".getBytes()));
+	}
+	
+	public static Boolean deleteMember(FTPClient ftp, String datasetName) throws Exception {
 		ftp.site("filetype=seq");
 		if (!ftp.getReplyString().substring(0, 3).equals("200")) {
 			throw new Exception(ftp.getReplyString());
@@ -93,6 +93,28 @@ public class FTPManager {
 			throw new Exception("FTP delete command failed for deleting dataset: " + datasetName);
 		}
 		return result;
+	}
+	
+	public static HostJob getJob(FTPClient ftpClient, String jobId, boolean downloadContent) throws Exception {
+		HostJob job = null;
+
+		JESFTPDataset[] datasets = listJES(ftpClient, jobId);
+		if (datasets.length > 0) {
+			job = datasets[0].getJob();
+			//We have a job without DD cards, so we return the job info only
+			if (!datasets[0].containsDD()) {
+				return job;
+			}
+		}
+		
+		for (int i = 0; i < datasets.length; i++) {
+			HostJobDataset jobDataset = datasets[i].toJobDataset();
+			if (downloadContent) {
+				jobDataset.setContents(retrieveJESDataset(ftpClient, jobDataset));
+			}
+			job.getDatasets().put(datasets[i].getDdname(), jobDataset);
+		}
+		return job;		
 	}
 	
 	public static JESFTPDataset[] listJES(FTPClient ftp, String jobId) throws Exception {
@@ -162,6 +184,31 @@ public class FTPManager {
 		return "";
 	}
 	
+	public static HostJob submitJobAndWaitToComplete(FTPClient ftp, InputStream jcl, Integer waitInSeconds, Boolean downloadContent) throws Exception {
+		String jobId = submitJob(ftp, jcl);
+		boolean jobCompleted = false;
+		
+		for (int i = 0; i < Math.ceil(waitInSeconds.doubleValue()/Settings.JOB_POLLING_RATE); i++) {
+			HostJob hostJob = FTPManager.getJob(ftp, jobId, false);
+			if (hostJob.getStatus().equals(HostJobStatus.OUTPUT)) {
+				jobCompleted = true;
+				break;
+			}
+			Thread.sleep(Settings.JOB_POLLING_RATE * 1000);
+		}
+		
+		//We can't download the content if the job never finished
+		if (!jobCompleted) {
+			downloadContent = false;
+		}
+		
+		return getJob(ftp, jobId, downloadContent);
+	}
+	
+	public static HostJob submitJobAndWaitToComplete(FTPClient ftp, File jcl, Integer waitInSeconds, Boolean downloadContent) throws Exception {
+		return submitJobAndWaitToComplete(ftp, new FileInputStream(jcl), waitInSeconds, downloadContent);
+	}
+	
 	private static void setUp(FTPClient ftp, DatasetProperties datasetProperties) throws Exception {
 		for (String siteCommand: datasetProperties.getFTPSiteCommands()) {
 			ftp.sendSiteCommand(siteCommand);
@@ -180,100 +227,4 @@ public class FTPManager {
 		return jobId;
 	}
 	
-	private static class HostFTPFileEntryParserFactory implements FTPFileEntryParserFactory {
-		
-		private HostJob job;
-		
-		private boolean jobNext = false;
-		private boolean jobRead = true;
-		private boolean dsRead = false;
-
-		private FTPFileEntryParser parser = new FTPFileEntryParser() {
-			
-			@Override
-			public String readNextEntry(BufferedReader reader) throws IOException {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					if (line.contains("spool file")) {
-						dsRead = false;
-					}
-					if (jobRead) {
-						if (jobNext) {
-							String[] jobParts = line.split("\\s+");
-							job = new HostJob();
-							job.setName(jobParts[0]);
-							job.setId(jobParts[1]);
-							job.setOwner(jobParts[2]);
-							job.setStatus(HostJobStatus.valueOf(jobParts[3]));
-							job.setJobClass(jobParts[4]);
-							//No return code if job isn't finished
-							if (jobParts.length > 5) {
-								job.setReturnCode(jobParts[5]);
-							} else {
-								job.setReturnCode("Job still running");
-							}
-							jobNext = false;
-							jobRead = false;
-						}
-						if (line.startsWith("JOBNAME" )) {
-							jobNext = true;
-							continue;
-						}
-					}
-					if (line.trim().startsWith("ID")) {
-						dsRead = true;
-						continue;
-					}
-					if (dsRead) {
-						return line;
-					}
-				}
-				return null;
-			}
-			
-			@Override
-			public List<String> preParse(List<String> arg0) {
-				return null;
-			}
-			
-			@Override
-			public FTPFile parseFTPEntry(String line) {
-				//TODO This might look different on different installations
-				JESFTPDataset ds = new JESFTPDataset();
-				//Zos specific
-				ds.setId(Integer.parseInt(line.substring(9, 12)));
-				ds.setStepname(line.substring(13, 21).trim());
-				ds.setProcstep(line.substring(23, 31).trim());
-				ds.setDsClass(line.substring(31, 32).trim());
-				ds.setDdname(line.substring(33, 41).trim());
-				String bytes = line.substring(42, 50).trim();
-				ds.setBytes(Integer.parseInt(bytes));
-				ds.setJob(job);
-				
-				//General ftpfile
-				ds.setRawListing(line);
-				ds.setName(job.getName() + "::" + ds.getDdname());
-				ds.setType(FTPFile.FILE_TYPE);
-				ds.setUser(job.getOwner());
-				
-				
-				return ds;
-			}
-		};
-
-		@Override
-		public FTPFileEntryParser createFileEntryParser(String arg0) throws ParserInitializationException {
-			// TODO Auto-generated method stub
-			return parser;
-		}
-
-		@Override
-		public FTPFileEntryParser createFileEntryParser(FTPClientConfig arg0) throws ParserInitializationException {
-			// TODO Auto-generated method stub
-			return parser;
-		}
-		
-	}
-	
-
 }

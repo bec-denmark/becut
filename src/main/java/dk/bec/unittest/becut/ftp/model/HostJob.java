@@ -8,7 +8,7 @@ public class HostJob {
 	private String name;
 	private String id;
 	private String owner;
-	private HostJobStatus status;
+	private HostJobStatus status = HostJobStatus.UNKNOWN;
 	private String jobClass;
 	private String returnCode;
 	private Map<String, HostJobDataset> datasets = new HashMap<String, HostJobDataset>();

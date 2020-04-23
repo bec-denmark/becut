@@ -5,5 +5,5 @@ public enum HostJobStatus {
 	OUTPUT,
 	INPUT,
 	ACTIVE,
-	UKNOWN;
+	UNKNOWN;
 }

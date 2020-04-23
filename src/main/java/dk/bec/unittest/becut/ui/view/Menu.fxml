@@ -20,6 +20,12 @@
 			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Create debug script" onAction="#createDebugScript"/>
+			<SeparatorMenuItem />
+			<MenuItem text="Record program execution" onAction="#recordProgramExecution"/>
+		</Menu>
+		<Menu text="Remote">
+			<MenuItem text="Setup credentials" onAction="#setupCredentials"/>
+			<MenuItem text="Retrieve file" onAction="#retrieveFile"/>
 		</Menu>
 	</MenuBar>
 </StackPane>

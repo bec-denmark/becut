@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.Pane?>
 
 <GridPane fx:controller="dk.bec.unittest.becut.ui.controller.LoadCompileListingController" 
 	xmlns:fx="http://javafx.com/fxml/1"
-	alignment="center"
-	hgap="10"
-	vgap="10"
 	>
-	<padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+	<Label text="Select a compile listing from " GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
+	<ComboBox id="CompileListingMethod" fx:id="compileListingMethod" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 	
-	<Label text="Select a file with the compile listing for the program you want to create a test case for." GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3"/>
-	<Label text="Compile Listing:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-	<TextField id="CompileListingPath" fx:id="compileListingPath" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
-	<Button mnemonicParsing="false" onAction="#browse" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-	<Button mnemonicParsing="false" onAction="#ok" text="Ok" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-	<Button mnemonicParsing="false" onAction="#cancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.Halignment="RIGHT"/>
+	<Pane fx:id="content" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3" />
+	
 </GridPane>
 

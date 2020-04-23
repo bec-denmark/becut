@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
@@ -18,9 +19,9 @@
 	<padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
 	
 	<Label text="Select a file with the compile listing for the program you want to create a test case for." GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3"/>
-	<Label text="Compile Listing:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-	<TextField id="CompileListingPath" fx:id="compileListingPath" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
-	<Button mnemonicParsing="false" onAction="#browse" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+	
+	<Pane fx:id="compileListingPane" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3" />
+	
 	<Label text="Test case name:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
 	<TextField id="TestCaseName" fx:id="testCaseName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 	<Label text="Test case ID:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>

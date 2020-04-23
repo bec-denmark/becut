@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ComboBox?>
+
+<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.LoadCompileListingJESController" 
+	xmlns:fx="http://javafx.com/fxml/1"
+	vgap="10"
+	hgap="10"
+	>
+	
+	<padding><Insets top="5" bottom="5"/></padding>
+	
+	<Label text="Job Number:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+	<TextField id="JobNumber" fx:id="jobNumber" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+
+	<Label text="Step Name:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+	<TextField id="StepName" fx:id="stepName" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS"/>
+
+	<Label text="DD Name:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+	<TextField id="DDName" fx:id="DDName" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS"/>
+</GridPane>
+

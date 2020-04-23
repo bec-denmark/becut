@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ComboBox?>
+
+<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.LoadCompileListingFileController" 
+	xmlns:fx="http://javafx.com/fxml/1"
+	vgap="10"
+	hgap="10"
+	>
+	<padding><Insets top="5" bottom="5"/></padding>
+	
+	<Label text="Compile Listing:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+	<TextField id="CompileListingPath" fx:id="compileListingPath" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+	<Button mnemonicParsing="false" onAction="#browse" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+</GridPane>
+
