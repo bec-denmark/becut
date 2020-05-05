@@ -26,6 +26,7 @@
 		<Menu text="Remote">
 			<MenuItem text="Setup credentials" onAction="#setupCredentials"/>
 			<MenuItem text="Retrieve file" onAction="#retrieveFile"/>
+			<MenuItem text="Run debug script" onAction="#runDebugScript"/>
 		</Menu>
 	</MenuBar>
 </StackPane>

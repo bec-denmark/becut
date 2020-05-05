@@ -143,6 +143,22 @@ public class MenuController extends AbstractBECutController {
 		} 
 		retrieveFileStage.showAndWait();
 	}
+	
+	@FXML
+	public void runDebugScript() {
+		Stage runDebugScriptStage = new Stage();
+		runDebugScriptStage.initModality(Modality.WINDOW_MODAL);
+		runDebugScriptStage.initOwner(menuBar.getScene().getWindow());
+		
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/RunDebugScript.fxml"));
+			Scene scene = new Scene(parent, 600, 400);
+			runDebugScriptStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		runDebugScriptStage.showAndWait();
+	}
 
 	@FXML
 	public void recordProgramExecution() {

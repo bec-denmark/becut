@@ -23,6 +23,7 @@ public class Settings {
 
 	public static String COMPILE_STEP_NAME = "";
 	public static String COMPILELIST_DD_NAME= "";
+	public static String BATCH_JOBNAME_EXECUTE_TEST = "";
 
 	public static Integer JOB_POLLING_RATE = 2;
 	public static List<String> STEPLIB = new ArrayList<String>();
@@ -45,9 +46,11 @@ public class Settings {
 				if (USERNAME.isEmpty()) {
 					USERNAME = System.getProperty("user.name", "");
 				}
+				USERNAME = USERNAME.toUpperCase();
 				PASSWORD = properties.getProperty("PASSWORD", "");
 				COMPILE_STEP_NAME = properties.getProperty("COMPILE_STEP_NAME", COMPILE_STEP_NAME);
 				COMPILELIST_DD_NAME = properties.getProperty("COMPILELIST_DD_NAME", COMPILELIST_DD_NAME);
+				BATCH_JOBNAME_EXECUTE_TEST = properties.getProperty("BATCH_JOBNAME_EXECUTE_TEST", BATCH_JOBNAME_EXECUTE_TEST);
 				JOB_POLLING_RATE = Integer.parseInt(properties.getProperty("JOB_POLLING_RATE", JOB_POLLING_RATE.toString())); 
 				STEPLIB.addAll(Arrays.asList(properties.getProperty("STEPLIB", "").split("\\s*,\\s*")));
 			} catch (IOException e) {

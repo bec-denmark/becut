@@ -96,7 +96,8 @@ public class FTPManager {
 	}
 	
 	public static HostJob getJob(FTPClient ftpClient, String jobId, boolean downloadContent) throws Exception {
-		HostJob job = null;
+		HostJob job = new HostJob();
+		job.setId(jobId);
 
 		JESFTPDataset[] datasets = listJES(ftpClient, jobId);
 		if (datasets.length > 0) {

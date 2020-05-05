@@ -8,6 +8,7 @@ import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import dk.bec.unittest.becut.ui.model.RuntimeEnvironment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -65,29 +66,6 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-
-	private enum RuntimeEnvironment {
-		BATCH("Batch"),
-		CICS("CICS");
-		
-		private String runtimeName;
-		
-		private RuntimeEnvironment(String runtimeName) {
-			this.runtimeName = runtimeName;
-		}
-		
-		public String getRuntimeName() {
-			return this.runtimeName;
-		}
-		
-		public static ObservableList<String> getRuntimeOptions() {
-			ObservableList<String> options = FXCollections.observableArrayList();
-			for (RuntimeEnvironment runtimeEnvironment: RuntimeEnvironment.values()) {
-				options.add(runtimeEnvironment.getRuntimeName());
-			}
-			return options;
 		}
 	}
 
