@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ComboBox?>
+
+<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.LoadCompileListingDatasetController" 
+	xmlns:fx="http://javafx.com/fxml/1"
+	vgap="10"
+	hgap="10"
+	>
+	
+	<Label text="Dataset name:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+	<TextField id="DatasetName" fx:id="datasetName" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
+
+</GridPane>
+

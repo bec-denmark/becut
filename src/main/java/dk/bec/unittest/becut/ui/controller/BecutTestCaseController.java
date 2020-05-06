@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
@@ -23,6 +24,8 @@ import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.util.Callback;
+import javafx.util.converter.DefaultStringConverter;
 
 public class BecutTestCaseController implements Initializable {
 
@@ -46,17 +49,48 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.setEditable(true);
 		name.setCellValueFactory(param -> param.getValue().getValue().nameProperty());
 		type.setCellValueFactory(param -> param.getValue().getValue().typeProperty());
-		value.setCellValueFactory(param -> param.getValue().getValue().valueProperty());
-		//value.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
-		value.setCellFactory(col -> {
-			TreeTableCell<UnitTestTreeObject, String> cell = TextFieldTreeTableCell.<UnitTestTreeObject>forTreeTableColumn().call(col);
-			cell.setEditable(true);
-			col.setOnEditCommit(event -> {
-				event.getRowValue().getValue().updateValue(event.getNewValue());
-			});
-			return cell;
+		value.setCellValueFactory(param -> {
+		return param.getValue().getValue().valueProperty();
 		});
 		
+		value.setCellFactory(new Callback<TreeTableColumn<UnitTestTreeObject,String>, TreeTableCell<UnitTestTreeObject,String>>() {
+			
+			@Override
+			public TreeTableCell<UnitTestTreeObject, String> call(TreeTableColumn<UnitTestTreeObject, String> param) {
+				return new TextFieldTreeTableCell<UnitTestTreeObject, String>(new DefaultStringConverter()) {
+					
+					@Override
+					public void updateItem(String item, boolean empty) {
+						super.updateItem(item, empty);
+						boolean isEditable = true;
+						
+						if (getTreeTableRow() != null) {
+							UnitTestTreeObject currentItem = getTreeTableRow().getItem();
+							//Check if cell should be editable or not
+							if (currentItem instanceof ParameterDisplayable) {
+								ParameterDisplayable parameterDisplayable = (ParameterDisplayable) getTreeTableRow().getItem();
+								if (parameterDisplayable.getParameter() instanceof ParameterLiteral) {
+//									getTreeTableRow().setStyle("-fx-background-color:lightgrey");
+									isEditable = false;
+								}
+							} else if (currentItem == null || currentItem instanceof ExternalCallDisplayable || currentItem instanceof PreConditionDisplayable || currentItem instanceof PostConditionDisplayable || currentItem.getClass().isAnonymousClass()) {
+//								getTreeTableRow().setStyle("-fx-background-color:lightgrey");
+								isEditable = false;
+							} else {
+//								getTreeTableRow().setStyle("-fx-background-color:white");
+								isEditable = true;
+							}
+							
+						}
+						getTableColumn().setOnEditCommit(event -> {
+							event.getRowValue().getValue().updateValue(event.getNewValue());
+						});
+						setEditable(isEditable);
+					};
+					
+				};
+			}
+		});
 		
 		currentUnitTest.becutTestCaseProperty().addListener(new ChangeListener<BecutTestCase>() {
 			public void changed(ObservableValue<? extends BecutTestCase> observable, BecutTestCase oldValue, BecutTestCase newValue) {

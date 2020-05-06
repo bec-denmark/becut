@@ -36,7 +36,7 @@ public class LoadTestCaseController {
 	}
 	
 	@FXML 
-	void ok() {
+	private void ok() {
 		testCaseFile = new File(testCasePath.getText());
 
 		BecutTestCase becutTestCase = BecutTestCaseManager.loadTestCase(testCaseFile);

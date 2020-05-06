@@ -14,7 +14,7 @@ import javafx.scene.control.MenuBar;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MenuController {
+public class MenuController extends AbstractBECutController {
 
 
 	@FXML
@@ -28,7 +28,7 @@ public class MenuController {
 		
 		try {
 			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/CreateTestCase.fxml"));
-			Scene scene = new Scene(parent, 500, 200);
+			Scene scene = new Scene(parent, 600, 400);
 			loadCompileListingStage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,7 +113,76 @@ public class MenuController {
 	}
 
 	@FXML
+	public void setupCredentials() {
+		Stage credentialsStage = new Stage();
+		credentialsStage.initModality(Modality.WINDOW_MODAL);
+		credentialsStage.initOwner(menuBar.getScene().getWindow());
+		
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/Credentials.fxml"));
+			Scene scene = new Scene(parent, 500, 200);
+			credentialsStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		credentialsStage.showAndWait();
+	}
+
+	@FXML
+	public void retrieveFile() {
+		Stage retrieveFileStage = new Stage();
+		retrieveFileStage.initModality(Modality.WINDOW_MODAL);
+		retrieveFileStage.initOwner(menuBar.getScene().getWindow());
+		
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/RetrieveFile.fxml"));
+			Scene scene = new Scene(parent, 500, 200);
+			retrieveFileStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		retrieveFileStage.showAndWait();
+	}
+	
+	@FXML
+	public void runDebugScript() {
+		Stage runDebugScriptStage = new Stage();
+		runDebugScriptStage.initModality(Modality.WINDOW_MODAL);
+		runDebugScriptStage.initOwner(menuBar.getScene().getWindow());
+		
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/RunDebugScript.fxml"));
+			Scene scene = new Scene(parent, 600, 400);
+			runDebugScriptStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		runDebugScriptStage.showAndWait();
+	}
+
+	@FXML
+	public void recordProgramExecution() {
+		Stage recordProgramExecutionStage = new Stage();
+		recordProgramExecutionStage.initModality(Modality.WINDOW_MODAL);
+		recordProgramExecutionStage.initOwner(menuBar.getScene().getWindow());
+		
+		try {
+			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/RecordProgramExecution.fxml"));
+			Scene scene = new Scene(parent, 600, 400);
+			recordProgramExecutionStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		recordProgramExecutionStage.showAndWait();
+	}
+
+	@FXML
 	public void exit() {
-		menuBar.getScene().getWindow().hide();
+		closeApplication();
+	}
+
+	@Override
+	protected Stage getStage() {
+		return (Stage) menuBar.getScene().getWindow();
 	}
 }

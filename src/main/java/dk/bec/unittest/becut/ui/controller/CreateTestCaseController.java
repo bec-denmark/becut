@@ -1,19 +1,29 @@
 package dk.bec.unittest.becut.ui.controller;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
-public class CreateTestCaseController {
+public class CreateTestCaseController extends AbstractBECutController implements Initializable {
 	
 	@FXML
-	private TextField compileListingPath;
+	private Pane compileListingPane;
+	
+	private Node compileListingNode;
+	
+	private LoadCompileListingController compileListingController;
 	
 	@FXML
 	private TextField testCaseName;
@@ -21,31 +31,14 @@ public class CreateTestCaseController {
 	@FXML
 	private TextField testCaseID;
 	
-	private File compileListingFile;
-
-	@FXML
-	private void browse() {
-		
-		FileChooser chooser = new FileChooser();
-		compileListingFile = chooser.showOpenDialog(compileListingPath.getScene().getWindow());
-		if (compileListingFile != null) {
-			try {
-				compileListingPath.setText(compileListingFile.getAbsolutePath());
-			} catch (Exception e) {
-				// handle exception...
-			}
-		}
-	}
-	
 	@FXML
 	private void cancel() {
-		compileListingPath.getScene().getWindow().hide();
+		closeWindow();
 	}
 	
 	@FXML 
 	void ok() {
-		compileListingFile = new File(compileListingPath.getText());
-		BECutAppContext.getContext().getUnitTest().setCompileListing(compileListingFile);
+		compileListingController.loadCompileListingIntoContext();
 
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
 		BecutTestCase becutTestCase = BecutTestCaseManager.createTestCaseFromCompileListing(compileListing);
@@ -58,10 +51,25 @@ public class CreateTestCaseController {
 
 		BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
 
-		compileListingPath.getScene().getWindow().hide();
+		closeWindow();
 	}
 
-	public File getCompileListingFile() {
-		return compileListingFile;
+	@Override
+	protected Stage getStage() {
+		return (Stage) testCaseName.getScene().getWindow();
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		FXMLLoader loader = new FXMLLoader();
+		try {
+			compileListingNode = loader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/LoadCompileListing.fxml").openStream());
+			compileListingController = loader.getController();
+			compileListingPane.getChildren().add(compileListingNode);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
