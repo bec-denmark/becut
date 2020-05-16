@@ -21,11 +21,26 @@ public class Perform implements DebugEntity {
 
 	@Override
 	public String generate() {
-		String perform = "           PERFORM";
-		for (Statement statement : statements) {
-			perform = perform + "\n" + statement.generate();
+		String perform = "";
+		if (statements.size() < 2) {
+			//FIXME clean up this logic
+			if (statements.size() == 1 && statements.get(0) instanceof Assertion) {
+				perform = "           PERFORM";
+				for (Statement statement : statements) {
+					perform = perform + "\n" + statement.generate();
+				}
+				perform = perform + "\n           END-PERFORM;";
+			}
+			for (Statement statement : statements) {
+				perform = perform + "\n" + statement.generate();
+			}
+		} else {
+			perform = "           PERFORM";
+			for (Statement statement : statements) {
+				perform = perform + "\n" + statement.generate();
+			}
+			perform = perform + "\n           END-PERFORM;";
 		}
-		perform = perform + "\n           END-PERFORM;";
 		return perform;
 	}
 

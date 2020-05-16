@@ -19,7 +19,7 @@ public class DebugScriptExecutor {
 		try {
 			FTPManager.connectAndLogin(ftpClient, BECutAppContext.getContext().getCredential());
 			InputStream is = new ByteArrayInputStream(createJCL(jobName, programName, debugScript.generate()).getBytes());
-			return FTPManager.submitJobAndWaitToComplete(ftpClient, is, 60, false);
+			return FTPManager.submitJobAndWaitToComplete(ftpClient, is, 60, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,12 +1,9 @@
 
            STEP;
       * Setup preconditions
-           PERFORM
-           END-PERFORM;
+
       * Setup postconditions
-           AT EXIT MAT512
-           PERFORM
-           END-PERFORM;
+
            STEP;
       * Jump over EXEC SQL   SELECT EMP.FIRSTNME         ,EMP.MIDINIT         
            AT LINE 240
