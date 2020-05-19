@@ -30,7 +30,6 @@ public class FTPManager {
 	private FTPManager() {}
 
 	public static void connectAndLogin(FTPClient ftp, Credential credential) throws Exception {
-		
 		ftp.connect(credential.getHost());
 		if (!ftp.getReplyString().substring(0, 3).equals("220")) {
 			throw new Exception(ftp.getReplyString());

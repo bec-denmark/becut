@@ -11,7 +11,12 @@ public class ProgramTerminationBreakpoint implements DebugEntity {
 	}
 	@Override
 	public String generate() {
-		return "           AT EXIT " + blockName + "\n" + perform.generate();
+		String result = "";
+		String performBlock = perform.generate();
+		if (!performBlock.isEmpty()) {
+			result = "           AT EXIT " + blockName + "\n" + perform.generate();
+		}
+		return result;
 	}
 
 }

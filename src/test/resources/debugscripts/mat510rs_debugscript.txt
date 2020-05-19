@@ -8,8 +8,10 @@
       * Setup postconditions
            AT EXIT MAT510
            PERFORM
-       LIST ("PostCondition", MAT511-I-NUMBER);
-       LIST ("PostCondition", MAT511-SUM);
+       LIST ("Start BECUT PostCondition");
+       LIST (MAT511-I-NUMBER);
+       LIST ("Start BECUT PostCondition");
+       LIST (MAT511-SUM);
            END-PERFORM;
            STEP;
       * Jump over TMAT5110

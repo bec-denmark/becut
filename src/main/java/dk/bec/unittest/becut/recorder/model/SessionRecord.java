@@ -78,7 +78,15 @@ public class SessionRecord {
 	
 	@Override
 	public String toString() {
-		return level + " " + compileUnit + ":>" + name + " = " + value;
+		String s = "";
+		if (level <= 0) {
+			s = name + " = " + value;
+		}
+		else {
+			
+			s = level + " " + compileUnit + ":>" + name + " = " + value;
+		}
+		return s;
 	}
 
 }

@@ -1,6 +1,7 @@
 package dk.bec.unittest.becut.debugscript.model;
 
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.recorder.DebugToolLogParser;
 
 public class Assertion implements Statement {
 
@@ -11,7 +12,10 @@ public class Assertion implements Statement {
 	}
 	@Override
 	public String generate() {
-		return "       LIST (\"PostCondition\", " + name + ");";
+		String result = "";
+		result += "       LIST (\"" + DebugToolLogParser.START_POST_CONDITION + "\");\n";
+		result += "       LIST (" + name + ");";
+		return result;
 	}
 
 }

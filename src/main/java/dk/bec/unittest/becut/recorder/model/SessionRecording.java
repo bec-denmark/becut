@@ -6,7 +6,8 @@ import java.util.List;
 public class SessionRecording {
 	
 	private String programName;
-	List<SessionCall> sessionCalls = new ArrayList<SessionCall>();
+	private List<SessionCall> sessionCalls = new ArrayList<SessionCall>();
+	private List<SessionPostCondition> sessionPostConditions = new ArrayList<SessionPostCondition>();
 
 	public SessionRecording(String programName) {
 		this.programName = programName;
@@ -18,5 +19,9 @@ public class SessionRecording {
 
 	public List<SessionCall> getSessionCalls() {
 		return sessionCalls;
+	}
+
+	public List<SessionPostCondition> getSessionPostConditions() {
+		return sessionPostConditions;
 	}
 }

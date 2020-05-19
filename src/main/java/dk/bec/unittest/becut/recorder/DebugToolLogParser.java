@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import dk.bec.unittest.becut.recorder.model.SessionCall;
 import dk.bec.unittest.becut.recorder.model.SessionCallPart;
+import dk.bec.unittest.becut.recorder.model.SessionPostCondition;
+import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 
 public class DebugToolLogParser {
@@ -17,6 +19,8 @@ public class DebugToolLogParser {
 	public static final String END_CALL_MARKER = "END CALL";
 	public static final String START_AFTER_CALL_MARKER = "START AFTER CALL";
 	public static final String END_AFTER_CALL_MARKER = "END AFTER CALL";
+	public static final String START_POST_CONDITION = "Start BECUT PostCondition";
+	public static final String END_POST_CONDITION = "End BECUT PostCondition";
 	
 	private static Pattern HEADER_PATTERN = Pattern.compile("^.*CALL (\\d+):(.*)$");
 	
@@ -50,6 +54,22 @@ public class DebugToolLogParser {
 					SessionCallPart after = new SessionCallPart(callBlock);
 					currentSessionCall.setAfter(after);
 				}
+			} 
+			else if (callBlock.get(0).startsWith(START_POST_CONDITION)) {
+				// We are in a post condition block
+				callBlock.removeIf(s -> s.contains("GO"));
+				if (callBlock.size() == 2) {
+					SessionPostCondition sessionPostCondition = new SessionPostCondition();
+					String[] parts = callBlock.get(1).split("=");
+					String variableName = parts[0].trim();
+					String value = parts[1].trim();
+					SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
+					sessionPostCondition.getSessionRecords().add(record);
+					sessionRecording.getSessionPostConditions().add(sessionPostCondition);
+				}
+				else {
+					System.out.println("Invalid post condition");
+				}
 			}
 		}
 		
@@ -67,7 +87,7 @@ public class DebugToolLogParser {
 					l.setCharAt(6, ' ');
 				}
 				String line = l.toString().trim();
-				if (nonDataLine(line) || line.matches("^\\d{2}.*$")) {
+				if (nonDataLine(line) || line.matches("^\\d{2}.*$") || postConditionLine(line)) {
 					cleanLines.add(line);
 					currentActualLine++;
 				} else {
@@ -88,7 +108,7 @@ public class DebugToolLogParser {
 		List<List<String>> callBlocks = new ArrayList<List<String>>();
 		List<String> block = new ArrayList<String>();
 		for (String line: logLines) {
-			if (line.startsWith(START_CALL_MARKER) || line.startsWith(START_AFTER_CALL_MARKER)) {
+			if (line.startsWith(START_CALL_MARKER) || line.startsWith(START_AFTER_CALL_MARKER) || line.startsWith(START_POST_CONDITION)) {
 				block = new ArrayList<String>();
 				callBlocks.add(block);
 			}
@@ -97,7 +117,11 @@ public class DebugToolLogParser {
 		return callBlocks;
 	}
 
+	private static boolean postConditionLine(String line) {
+		String[] s = line.split(" ");
+		return s.length == 3 && s[1].equals("=");
+	}
 	private static boolean nonDataLine(String line) {
-		return line.startsWith("GO") || line.startsWith(START_CALL_MARKER) || line.startsWith(START_AFTER_CALL_MARKER) || line.startsWith(END_CALL_MARKER) || line.startsWith(END_AFTER_CALL_MARKER) || line.startsWith(RecorderManager.ITERATION_COUNTER_PREFIX);
+		return line.startsWith("GO") || line.startsWith(START_CALL_MARKER) || line.startsWith(START_AFTER_CALL_MARKER) || line.startsWith(END_CALL_MARKER) || line.startsWith(END_AFTER_CALL_MARKER) || line.startsWith(RecorderManager.ITERATION_COUNTER_PREFIX) || line.startsWith(START_POST_CONDITION) || line.startsWith(END_POST_CONDITION);
 	}
 }
