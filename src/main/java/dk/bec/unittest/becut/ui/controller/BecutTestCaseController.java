@@ -2,14 +2,17 @@ package dk.bec.unittest.becut.ui.controller;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
+import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
+import dk.bec.unittest.becut.ui.model.ExternalCallIterationDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
 import dk.bec.unittest.becut.ui.model.PostConditionDisplayable;
 import dk.bec.unittest.becut.ui.model.PreConditionDisplayable;
@@ -119,7 +122,7 @@ public class BecutTestCaseController implements Initializable {
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("Linkage Section"), becutTestCase.getPreCondition().getLinkageSection());
 		
 		for (ExternalCall externalCall: becutTestCase.getExternalCalls()) {
-			populateUnitTestParts(externalCallHeader, new ExternalCallDisplayable(externalCall), externalCall.getParameters());
+			populateUnitTestParts(externalCallHeader, new ExternalCallDisplayable(externalCall), externalCall);
 		}
 
 		populateUnitTestParts(postConditionHeader, new PostConditionDisplayable("File Section"), becutTestCase.getPostCondition().getFileSection());
@@ -132,6 +135,19 @@ public class BecutTestCaseController implements Initializable {
 		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(treeObject);
 		for (Parameter parameter: parameters) {
 			treeItem.getChildren().add(populateParameters(parameter));
+		}
+		parent.getChildren().add(treeItem);
+	}
+	
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, UnitTestTreeObject treeObject, ExternalCall externalCall) {
+		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(treeObject);
+		for (ExternalCallIteration callIteration: externalCall.getIterations().values()) {
+			ExternalCallIterationDisplayable callIterationDisplayable = new ExternalCallIterationDisplayable(callIteration);
+			TreeItem<UnitTestTreeObject> ti = new TreeItem<UnitTestTreeObject>(callIterationDisplayable);
+			treeItem.getChildren().add(ti);
+			for (Parameter parameter: callIteration.getParameters()) {
+				ti.getChildren().add(populateParameters(parameter));
+			}
 		}
 		parent.getChildren().add(treeItem);
 	}
