@@ -104,6 +104,31 @@ public class Parameter {
 	public String guiString() {
 		return level.toString() + " " + name;
 	}
+	
+	public Boolean hasValues() {
+		Boolean v = Boolean.FALSE;
+		if (!value.equals("")) {
+			v = Boolean.TRUE;
+		}
+		for (Parameter p: subStructure) {
+			v = v || p.hasValues();
+		}
+		return v;
+	}
+	
+	public Parameter copyWithNoValues() {
+		Parameter parameter = new Parameter();
+		parameter.setLevel(level);
+		parameter.setLineNumber(lineNumber);
+		parameter.setName(name);
+		parameter.setDataType(dataType);
+		parameter.setSize(size);
+		parameter.setIsSeventySeven(isSeventySeven);
+		for (Parameter p: subStructure) {
+			parameter.getSubStructure().add(p.copyWithNoValues());
+		}
+		return parameter;
+	}
 
 	@Override
 	public String toString() {
