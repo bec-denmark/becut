@@ -20,15 +20,12 @@ public class ExternalCall {
 		this.displayableName = displayableName;
 		this.lineNumber = lineNumber;
 		this.callType = callType;
-		ExternalCallIteration callIteration = new ExternalCallIteration(iterationOrder, iterationName, parameters);
+		ExternalCallIteration callIteration = new ExternalCallIteration(iterationOrder, iterationName, parameters, Boolean.TRUE);
 		iterations.put(iterationName, callIteration);
 	}
 
 	public ExternalCall(String name, Integer lineNumber, CallType callType, List<Parameter> parameters) {
 		this(name, name, lineNumber, callType, 0, "iteration_0", parameters);
-	}
-
-	public ExternalCall() {
 	}
 
 	public String getName() {
@@ -71,6 +68,13 @@ public class ExternalCall {
 		this.iterations = iterations;
 	}
 	
+	public ExternalCallIteration getFirstIteration() {
+		if (iterations.isEmpty()) {
+			return null;
+		}
+		return iterations.entrySet().iterator().next().getValue();
+	}
+	
 	public String addIteration(List<Parameter> parameters) {
 		int i = iterations.size();
 		String iterationName = "iteration_" + i;
@@ -83,12 +87,16 @@ public class ExternalCall {
 		iterations.put(iterationName, externalCallIteration);
 		
 	}
+	
+	public void setDefaultIteration(String iterationName) {
+		throw new java.lang.UnsupportedOperationException("Not supported yet.");
+	}
 
 	@Override
 	public String toString() {
 		String parameters = "";
 		if (!iterations.isEmpty()) {
-			parameters = String.join(" ", iterations.entrySet().iterator().next().getValue().getParameters().stream().map(Parameter::getGuiName).collect(Collectors.toList()));
+			parameters = String.join(" ", getFirstIteration().getParameters().stream().map(Parameter::getGuiName).collect(Collectors.toList()));
 		}
 		return "CALL " + name + " USING " + parameters;
 	}

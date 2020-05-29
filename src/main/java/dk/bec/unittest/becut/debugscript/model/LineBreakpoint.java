@@ -1,6 +1,6 @@
 package dk.bec.unittest.becut.debugscript.model;
 
-public class LineBreakpoint implements DebugEntity {
+public class LineBreakpoint implements DebugEntity, Statement {
 
 	private Integer lineNumber;
 	private Perform perform;
