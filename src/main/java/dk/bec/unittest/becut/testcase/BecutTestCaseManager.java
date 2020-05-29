@@ -111,7 +111,7 @@ public class BecutTestCaseManager {
 		}
 		
 		List<Parameter> iterationParameters = new ArrayList<Parameter>();
-		ExternalCallIteration externalCallIteration = externalCall.getIterations().entrySet().iterator().next().getValue(); 
+		ExternalCallIteration externalCallIteration = externalCall.getFirstIteration(); 
 		if (externalCall.getIterations().size() == 1) {
 			if (externalCallIteration.hasValues()) {
 				//We create a new iteration
@@ -228,15 +228,12 @@ public class BecutTestCaseManager {
 	}
 
 	private static ExternalCall createExternalCall(Tree callStatement, CompileListing compileListing) {
-		ExternalCall externalCall = new ExternalCall();
 		String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, CobolNodeType.PROGRAM_NAME).get(0).getProgramText());
-		externalCall.setName(callProgramName);
-		externalCall.setDisplayableName(callProgramName);
 		//FIXME This is currently getting the absolute line number (from the expanded source). 
 		//      Figure out how to get the original line numbers that the user actually sees.
-		externalCall.setLineNumber(callStatement.getStartPosition().getLinenumber());
-		externalCall.setCallType(CallType.UNKNOWN);
-		String iterationName = externalCall.addIteration(createParameters(callStatement, compileListing));
+		int lineNumber = callStatement.getStartPosition().getLinenumber();
+		ExternalCall externalCall = new ExternalCall(callProgramName, lineNumber, CallType.UNKNOWN, createParameters(callStatement, compileListing));
+		String iterationName = externalCall.getFirstIteration().getName();
 
 		if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
 			//TODO It is here the addition to CICS EXEC can start
