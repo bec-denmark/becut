@@ -1,5 +1,6 @@
 package dk.bec.unittest.becut.debugscript.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Perform implements DebugEntity {
@@ -7,10 +8,17 @@ public class Perform implements DebugEntity {
 	private List<Statement> statements;
 
 	public Perform(List<Statement> statements) {
-		super();
 		this.statements = statements;
 	}
 
+	public Perform(Statement statement) {
+		statements = new ArrayList<Statement>();
+		statements.add(statement);
+	}
+	
+	public Perform() {
+		statements = new ArrayList<Statement>();
+	}
 	public List<Statement> getStatements() {
 		return statements;
 	}
@@ -24,7 +32,7 @@ public class Perform implements DebugEntity {
 		String perform = "";
 		if (statements.size() < 2) {
 			//FIXME clean up this logic
-			if (statements.size() == 1 && statements.get(0) instanceof Assertion) {
+			if (statements.size() == 1 && (statements.get(0) instanceof Assertion || statements.get(0) instanceof If)) {
 				perform = "           PERFORM";
 				for (Statement statement : statements) {
 					perform = perform + "\n" + statement.generate();

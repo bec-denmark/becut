@@ -88,25 +88,20 @@ public class BecutTestCaseManager {
 		List<SessionRecord> changedSessionRecords = new ArrayList<SessionRecord>();
 		for (SessionCall sessionCall: sessionRecording.getSessionCalls()) {
 			changedSessionRecords.addAll(sessionCall.getChangedParameters());
+			mapSessionRecordsToTestCase(becutTestCase, sessionCall);
 		}
-		mapSessionRecordsToTestCase(becutTestCase, sessionRecording, changedSessionRecords);
 		return becutTestCase;
 	}
 	
-	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionRecording sessionRecording, List<SessionRecord> sessionRecords) {
+	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionCall sessionCall) {
 		
 		// We find the matching call
 		ExternalCall externalCall = null;
-		SessionCall sessionCall = null;;
 		
-		outerloop:
 		for (ExternalCall ec: becutTestCase.getExternalCalls()) {
-			for (SessionCall sc: sessionRecording.getSessionCalls()) {
-				if (ec.getLineNumber() == sc.getLineNumber()) {
-					externalCall = ec;
-					sessionCall = sc;
-					break outerloop;
-				}
+			if (ec.getLineNumber() == sessionCall.getLineNumber()) {
+				externalCall = ec;
+				break;
 			}
 		}
 		
@@ -118,6 +113,7 @@ public class BecutTestCaseManager {
 				for (Parameter p: externalCallIteration.getParameters()) {
 					iterationParameters.add(p.copyWithNoValues());
 				}
+				externalCall.addIteration(iterationParameters);
 			} 
 			else {
 				//We use the first iteration
@@ -129,10 +125,11 @@ public class BecutTestCaseManager {
 			for (Parameter p: externalCallIteration.getParameters()) {
 				iterationParameters.add(p.copyWithNoValues());
 			}
+			externalCall.addIteration(iterationParameters);
 			
 		}
 		
-		for (SessionRecord sessionRecord: sessionRecords) {
+		for (SessionRecord sessionRecord: sessionCall.getChangedParameters()) {
 			// We generate the path from the session record to the level 01
 			List<SessionRecord> ancestorPath = new ArrayList<SessionRecord>();
 			ancestorPath.add(sessionRecord);

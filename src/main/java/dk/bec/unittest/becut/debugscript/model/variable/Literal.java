@@ -14,4 +14,9 @@ public class Literal extends Variable {
 		return value;
 	}
 
+	@Override
+	public String declaration() {
+		return "";
+	}
+
 }

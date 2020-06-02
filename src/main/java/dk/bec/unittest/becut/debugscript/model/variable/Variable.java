@@ -5,6 +5,7 @@ public abstract class Variable extends VariableOrLiteral {
 
 	protected String name;
 	protected String type;
+	protected String defaultValue;
 
 	public String getName() {
 		return name;
@@ -13,5 +14,11 @@ public abstract class Variable extends VariableOrLiteral {
 	public String getType() {
 		return type;
 	}
+	
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+	
+	public abstract String declaration();
 
 }
