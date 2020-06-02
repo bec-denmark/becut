@@ -14,7 +14,7 @@ public class Addition implements Expression {
 
 	@Override
 	public String generate() {
-		return leftSide + " + " + rightSide.generate();
+		return leftSide.generate() + " + " + rightSide.generate();
 	}
 
 }

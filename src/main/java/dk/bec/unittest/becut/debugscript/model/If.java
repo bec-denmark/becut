@@ -18,6 +18,10 @@ public class If implements Statement {
 		this.body = new ArrayList<Statement>();
 		this.body.add(body);
 	}
+	
+	public List<Statement> getBody() {
+		return body;
+	}
 
 	@Override
 	public String generate() {
@@ -30,7 +34,7 @@ public class If implements Statement {
 			result += body.get(0).generate();
 		} else {
 			for (Statement statement : body) {
-				result += statement.generate();
+				result += statement.generate() + "\n";
 			}
 
 		}

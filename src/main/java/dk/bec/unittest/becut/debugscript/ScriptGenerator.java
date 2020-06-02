@@ -3,6 +3,7 @@ package dk.bec.unittest.becut.debugscript;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
@@ -89,7 +90,7 @@ public class ScriptGenerator {
 				debugEntities.add(debugEntity);
 			}
 			else {
-				debugEntities.addAll(convertExternalCall(compileListing, externalCall));
+				debugEntities.addAll(convertExternalCall(compileListing, externalCall, debugScript));
 			}
 		}
 		
@@ -117,7 +118,7 @@ public class ScriptGenerator {
 		return breakpoint;
 	}
 	
-	private static List<DebugEntity> convertExternalCall(CompileListing compileListing, ExternalCall externalCall) {
+	private static List<DebugEntity> convertExternalCall(CompileListing compileListing, ExternalCall externalCall, DebugScript debugScript) {
 		List<DebugEntity> debugEntities = new ArrayList<DebugEntity>();
 		Tree reconciledExternalCall = reconcileExternalCall(compileListing, externalCall);
 		// There is only one iteration so we don't need an if statement, we use this one for each iteration
@@ -127,23 +128,34 @@ public class ScriptGenerator {
 		}
 		// We need to create if statements for each iteration
 		else {
-			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + externalCall.getLineNumber() + "-" + externalCall.getName(), 9);
+			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + externalCall.getLineNumber() + "-" + externalCall.getName(), 9, "0");
+			debugScript.getVariableDeclarations().add(counter);
+			Perform perform = new Perform();
+			LineBreakpoint breakpoint = new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
+			
 			for (ExternalCallIteration iteration: externalCall.getIterations().values()) {
-				LineBreakpoint breakpoint = createBreakpoint(externalCall.getFirstIteration(), compileListing, reconciledExternalCall);
-				List<Statement> statements = new ArrayList<Statement>();
-				statements.add(breakpoint);
 				// We need a complex if statement to cover the single iteration and all other iterations
 				if (iteration.isDefault()) {
 					Conditional conditional = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
+					List<Statement> statements = new ArrayList<>();
+					statements.addAll(createAssignmentStatements(iteration));
+					If ifStatement = new If(conditional, statements);
+					perform.getStatements().add(ifStatement);
 					//If ifStatement = new If(conditional, breakpoint);
+					//TODO UNIMPLEMENTED
+					//throw new java.lang.UnsupportedOperationException("Not supported yet.");
 				}
 				else {
 					Conditional conditional = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
-					statements.addAll(incrementCounter(counter));
+					List<Statement> statements = new ArrayList<>();
+					statements.addAll(createAssignmentStatements(iteration));
 					If ifStatement = new If(conditional, statements);
-					debugEntities.add(new DebugEntityStatementContainer(ifStatement));
+					perform.getStatements().add(ifStatement);
 				}
 			}
+			perform.getStatements().addAll(incrementCounter(counter));
+			perform.getStatements().add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
+			debugEntities.add(breakpoint);
 			
 		}
 		return debugEntities;
@@ -154,6 +166,17 @@ public class ScriptGenerator {
 		statements.addAll(createAssignmentStatements(iteration));
 		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
 		Perform perform = new Perform(statements);
+		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
+		
+	}
+
+	private static LineBreakpoint createConditionalBreakpoint(ExternalCallIteration iteration, CompileListing compileListing, Tree reconciledExternalCall, Conditional conditional, Pic9Comp counter) {
+		List<Statement> statements = new ArrayList<>();
+		statements.addAll(createAssignmentStatements(iteration));
+		statements.addAll(incrementCounter(counter));
+		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
+		If ifStatement = new If(conditional, statements);
+		Perform perform = new Perform(ifStatement);
 		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
 		
 	}

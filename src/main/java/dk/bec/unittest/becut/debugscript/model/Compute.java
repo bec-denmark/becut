@@ -16,7 +16,7 @@ public class Compute implements Statement {
 	public String generate() {
 		String result = "";
 		result += "        COMPUTE " + leftSide.getName() + " = \n";
-		result += "        " + rightSide.generate() + ";\n";
+		result += "        " + rightSide.generate() + ";";
 		return result;
 	}
 
