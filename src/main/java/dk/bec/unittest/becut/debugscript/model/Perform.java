@@ -3,6 +3,10 @@ package dk.bec.unittest.becut.debugscript.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.bec.unittest.becut.debugscript.model.statement.Assertion;
+import dk.bec.unittest.becut.debugscript.model.statement.If;
+import dk.bec.unittest.becut.debugscript.model.statement.Statement;
+
 public class Perform implements DebugEntity {
 
 	private List<Statement> statements;

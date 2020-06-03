@@ -3,7 +3,6 @@ package dk.bec.unittest.becut.debugscript;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
@@ -11,26 +10,26 @@ import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
-import dk.bec.unittest.becut.debugscript.model.LineBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.Addition;
-import dk.bec.unittest.becut.debugscript.model.Assertion;
 import dk.bec.unittest.becut.debugscript.model.CallType;
-import dk.bec.unittest.becut.debugscript.model.Comment;
-import dk.bec.unittest.becut.debugscript.model.Compute;
-import dk.bec.unittest.becut.debugscript.model.Conditional;
-import dk.bec.unittest.becut.debugscript.model.ConditionalLeaf;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
-import dk.bec.unittest.becut.debugscript.model.DebugEntityStatementContainer;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
-import dk.bec.unittest.becut.debugscript.model.EqualsConditional;
-import dk.bec.unittest.becut.debugscript.model.Goto;
-import dk.bec.unittest.becut.debugscript.model.If;
-import dk.bec.unittest.becut.debugscript.model.Move;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 import dk.bec.unittest.becut.debugscript.model.ProgramStartBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.ProgramTerminationBreakpoint;
-import dk.bec.unittest.becut.debugscript.model.Statement;
 import dk.bec.unittest.becut.debugscript.model.Step;
+import dk.bec.unittest.becut.debugscript.model.conditional.Conditional;
+import dk.bec.unittest.becut.debugscript.model.conditional.ConditionalLeaf;
+import dk.bec.unittest.becut.debugscript.model.conditional.EqualsConditional;
+import dk.bec.unittest.becut.debugscript.model.conditional.GreaterThanConditional;
+import dk.bec.unittest.becut.debugscript.model.statement.Assertion;
+import dk.bec.unittest.becut.debugscript.model.statement.Comment;
+import dk.bec.unittest.becut.debugscript.model.statement.Compute;
+import dk.bec.unittest.becut.debugscript.model.statement.Goto;
+import dk.bec.unittest.becut.debugscript.model.statement.If;
+import dk.bec.unittest.becut.debugscript.model.statement.LineBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.statement.Move;
+import dk.bec.unittest.becut.debugscript.model.statement.Statement;
 import dk.bec.unittest.becut.debugscript.model.variable.Literal;
 import dk.bec.unittest.becut.debugscript.model.variable.Pic9Comp;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
@@ -136,14 +135,14 @@ public class ScriptGenerator {
 			for (ExternalCallIteration iteration: externalCall.getIterations().values()) {
 				// We need a complex if statement to cover the single iteration and all other iterations
 				if (iteration.isDefault()) {
-					Conditional conditional = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
+					Conditional counterCheck = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
+					Conditional defaultCheck = new GreaterThanConditional(counter, new ConditionalLeaf(String.valueOf(externalCall.getIterations().size() - 1)));
 					List<Statement> statements = new ArrayList<>();
 					statements.addAll(createAssignmentStatements(iteration));
-					If ifStatement = new If(conditional, statements);
+					If ifStatement = new If(counterCheck, statements);
 					perform.getStatements().add(ifStatement);
-					//If ifStatement = new If(conditional, breakpoint);
-					//TODO UNIMPLEMENTED
-					//throw new java.lang.UnsupportedOperationException("Not supported yet.");
+					If defaultIfStatement = new If(defaultCheck, statements);
+					perform.getStatements().add(defaultIfStatement);
 				}
 				else {
 					Conditional conditional = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
@@ -166,17 +165,6 @@ public class ScriptGenerator {
 		statements.addAll(createAssignmentStatements(iteration));
 		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
 		Perform perform = new Perform(statements);
-		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
-		
-	}
-
-	private static LineBreakpoint createConditionalBreakpoint(ExternalCallIteration iteration, CompileListing compileListing, Tree reconciledExternalCall, Conditional conditional, Pic9Comp counter) {
-		List<Statement> statements = new ArrayList<>();
-		statements.addAll(createAssignmentStatements(iteration));
-		statements.addAll(incrementCounter(counter));
-		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
-		If ifStatement = new If(conditional, statements);
-		Perform perform = new Perform(ifStatement);
 		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
 		
 	}

@@ -1,7 +1,9 @@
-package dk.bec.unittest.becut.debugscript.model;
+package dk.bec.unittest.becut.debugscript.model.statement;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dk.bec.unittest.becut.debugscript.model.conditional.Conditional;
 
 public class If implements Statement {
 

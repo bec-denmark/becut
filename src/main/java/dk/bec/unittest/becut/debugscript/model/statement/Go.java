@@ -1,4 +1,4 @@
-package dk.bec.unittest.becut.debugscript.model;
+package dk.bec.unittest.becut.debugscript.model.statement;
 
 public class Go implements Statement {
 
