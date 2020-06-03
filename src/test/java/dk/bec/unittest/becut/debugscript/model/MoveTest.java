@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.model.Record;
+import dk.bec.unittest.becut.debugscript.model.statement.Move;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import junit.framework.TestCase;
 

@@ -1,4 +1,6 @@
-package dk.bec.unittest.becut.debugscript.model;
+package dk.bec.unittest.becut.debugscript.model.conditional;
+
+import dk.bec.unittest.becut.debugscript.model.Expression;
 
 public class EqualsConditional extends BinaryConditional {
 

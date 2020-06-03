@@ -1,5 +1,7 @@
 package dk.bec.unittest.becut.debugscript.model;
 
+import dk.bec.unittest.becut.debugscript.model.statement.Statement;
+
 public class DebugEntityStatementContainer implements DebugEntity {
 	
 	private Statement statement;

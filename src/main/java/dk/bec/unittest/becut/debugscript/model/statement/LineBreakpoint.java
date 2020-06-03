@@ -1,4 +1,7 @@
-package dk.bec.unittest.becut.debugscript.model;
+package dk.bec.unittest.becut.debugscript.model.statement;
+
+import dk.bec.unittest.becut.debugscript.model.DebugEntity;
+import dk.bec.unittest.becut.debugscript.model.Perform;
 
 public class LineBreakpoint implements DebugEntity, Statement {
 
