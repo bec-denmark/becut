@@ -77,7 +77,11 @@ public class BecutTestCaseController implements Initializable {
 										ParameterDisplayable parameterDisplayable = (ParameterDisplayable) getTreeTableRow()
 												.getItem();
 										if (parameterDisplayable.getParameter() instanceof ParameterLiteral
-												|| DataType.EIGHTYEIGHT.equals(parameterDisplayable.getParameter().getDataType())) {
+												|| DataType.EIGHTYEIGHT.equals(parameterDisplayable.getParameter().getDataType())
+												|| DataType.GROUP.equals(parameterDisplayable.getParameter().getDataType())
+												|| parameterDisplayable.getParameter().getIsSeventySeven()
+												|| parameterDisplayable.getParameter().getName().equals("FILLER")
+												) {
 //									getTreeTableRow().setStyle("-fx-background-color:lightgrey");
 											isEditable = false;
 										}
