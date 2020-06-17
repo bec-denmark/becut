@@ -118,9 +118,9 @@ public class DebugToolLogParser {
 	}
 
 	private static boolean postConditionLine(String line) {
-		String[] s = line.split(" ");
-		return s.length == 3 && s[1].equals("=");
+		return line.matches("[^ ]+ = '[^']+'|[^ ]+ = [^ ]+");
 	}
+	
 	private static boolean nonDataLine(String line) {
 		return line.startsWith("GO") || line.startsWith(START_CALL_MARKER) || line.startsWith(START_AFTER_CALL_MARKER) || line.startsWith(END_CALL_MARKER) || line.startsWith(END_AFTER_CALL_MARKER) || line.startsWith(RecorderManager.ITERATION_COUNTER_PREFIX) || line.startsWith(START_POST_CONDITION) || line.startsWith(END_POST_CONDITION);
 	}
