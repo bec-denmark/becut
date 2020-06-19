@@ -28,6 +28,7 @@ public class BecutTestCaseManagerIT extends TestCase {
 			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure(), hasSize(2));
 			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure().get(0).getSubStructure(), hasSize(0));
 
+			
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
