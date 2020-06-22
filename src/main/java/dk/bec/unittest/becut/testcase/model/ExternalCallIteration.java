@@ -23,6 +23,8 @@ public class ExternalCallIteration {
 		this.name = name;
 		this.parameters = parameters;
 	}
+	
+	public ExternalCallIteration() {}
 
 	public Integer getNumericalOrder() {
 		return numericalOrder;

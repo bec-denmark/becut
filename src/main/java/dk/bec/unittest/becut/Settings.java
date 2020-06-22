@@ -1,8 +1,11 @@
 package dk.bec.unittest.becut;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +19,7 @@ public class Settings {
 
 	private static final String PROPERTIES_FILENAME = "becut.properties";
 	private static final String RESOURCES_ROOT = "/";
+	private static final String JAR_LOCATION = Settings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	
 	public static String FTP_HOST = "localhost";
 	public static String USERNAME = "";
@@ -33,8 +37,16 @@ public class Settings {
 	static {
 		Properties properties = new Properties();
 		// TODO lookup properties file based on machine name
+		InputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(JAR_LOCATION + "/" + PROPERTIES_FILENAME);
+		} catch (FileNotFoundException e) {
+			
+		}
 		String hostname = getHostname();
-		InputStream inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + hostname + "_" + PROPERTIES_FILENAME);
+		if (inputStream == null) {
+			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + hostname + "_" + PROPERTIES_FILENAME);
+		}
 		if (inputStream == null) {
 			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + PROPERTIES_FILENAME);
 		}

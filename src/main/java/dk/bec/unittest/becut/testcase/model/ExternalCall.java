@@ -6,12 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -84,11 +90,16 @@ public class ExternalCall {
 		this.iterations = iterations;
 	}
 	
+	@JsonIgnore
 	public ExternalCallIteration getFirstIteration() {
 		if (iterations.isEmpty()) {
 			return null;
 		}
 		return iterations.entrySet().iterator().next().getValue();
+	}
+	
+	public String addIteration() {
+		return addIteration(getFirstIteration().getParameters());
 	}
 	
 	public String addIteration(List<Parameter> parameters) {
@@ -123,18 +134,31 @@ public class ExternalCall {
 		@Override
 		public void serialize(Map<String, ExternalCallIteration> value, JsonGenerator gen,
 				SerializerProvider serializers) throws IOException {
-			System.out.println("Serializing");
+			gen.writeStartArray();
+			for (ExternalCallIteration iteration: value.values()) {
+				gen.writeObject(iteration);
+			}
+			gen.writeEndArray();
 			
 		}
 	}
 	
 	private static class IterationDeserializer extends JsonDeserializer<Map<String, ExternalCallIteration>> {
+		
+		private static ObjectMapper mapper = new ObjectMapper();
 
 		@Override
 		public Map<String, ExternalCallIteration> deserialize(JsonParser p, DeserializationContext ctxt)
 				throws IOException, JsonProcessingException {
-			System.out.println("Deserializing");
-			return null;
+			Map<String, ExternalCallIteration> iterations = new LinkedHashMap<String, ExternalCallIteration>();
+			ObjectCodec objectCodec = p.getCodec();
+			JsonNode node = objectCodec.readTree(p);
+			ObjectReader objectReader = mapper.readerFor(new TypeReference<List<ExternalCallIteration>>() {});
+			List<ExternalCallIteration> callIterations = objectReader.readValue(node);
+			for (ExternalCallIteration callIteration: callIterations) {
+				iterations.put(callIteration.getName(), callIteration);
+			}
+			return iterations;
 		}
 		
 	}
