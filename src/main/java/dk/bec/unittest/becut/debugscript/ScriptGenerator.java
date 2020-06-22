@@ -10,22 +10,32 @@ import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
-import dk.bec.unittest.becut.debugscript.model.LineBreakpoint;
-import dk.bec.unittest.becut.debugscript.model.Assertion;
+import dk.bec.unittest.becut.debugscript.model.Addition;
 import dk.bec.unittest.becut.debugscript.model.CallType;
-import dk.bec.unittest.becut.debugscript.model.Comment;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
-import dk.bec.unittest.becut.debugscript.model.Goto;
-import dk.bec.unittest.becut.debugscript.model.Move;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 import dk.bec.unittest.becut.debugscript.model.ProgramStartBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.ProgramTerminationBreakpoint;
-import dk.bec.unittest.becut.debugscript.model.Statement;
 import dk.bec.unittest.becut.debugscript.model.Step;
+import dk.bec.unittest.becut.debugscript.model.conditional.Conditional;
+import dk.bec.unittest.becut.debugscript.model.conditional.ConditionalLeaf;
+import dk.bec.unittest.becut.debugscript.model.conditional.EqualsConditional;
+import dk.bec.unittest.becut.debugscript.model.conditional.GreaterThanConditional;
+import dk.bec.unittest.becut.debugscript.model.statement.Assertion;
+import dk.bec.unittest.becut.debugscript.model.statement.Comment;
+import dk.bec.unittest.becut.debugscript.model.statement.Compute;
+import dk.bec.unittest.becut.debugscript.model.statement.Goto;
+import dk.bec.unittest.becut.debugscript.model.statement.If;
+import dk.bec.unittest.becut.debugscript.model.statement.LineBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.statement.Move;
+import dk.bec.unittest.becut.debugscript.model.statement.Statement;
+import dk.bec.unittest.becut.debugscript.model.variable.Literal;
+import dk.bec.unittest.becut.debugscript.model.variable.Pic9Comp;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
+import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import koopa.core.trees.Tree;
 
@@ -76,11 +86,11 @@ public class ScriptGenerator {
 			DebugEntity debugEntity = null;
 			if (externalCall.getCallType() == CallType.SQL) {
 				debugEntity = convertSQLCall(compileListing, externalCall);
+				debugEntities.add(debugEntity);
 			}
 			else {
-				debugEntity = convertExternalCall(compileListing, externalCall);
+				debugEntities.addAll(convertExternalCall(compileListing, externalCall, debugScript));
 			}
-			debugEntities.add(debugEntity);
 		}
 		
 		return debugScript;
@@ -94,11 +104,12 @@ public class ScriptGenerator {
 		return debugScript;
 	}
 	
+	//TODO Add support for multiple calls
 	private static DebugEntity convertSQLCall(CompileListing compileListing, ExternalCall externalCall) {
 		Tree reconciledSQLCall = reconcileSQLCall(compileListing, externalCall);
 		List<Statement> statements = new ArrayList<>();
-		for (Parameter parameter: externalCall.getParameters()) {
-			statements.addAll(createAssignmentStatements(parameter));
+		for (ExternalCallIteration iteration: externalCall.getIterations().values()) {
+			statements.addAll(createAssignmentStatements(iteration));
 		}
 		statements.add(new Goto(findNextStatement(compileListing, reconciledSQLCall)));
 		Perform perform = new Perform(statements);
@@ -106,16 +117,56 @@ public class ScriptGenerator {
 		return breakpoint;
 	}
 	
-	private static DebugEntity convertExternalCall(CompileListing compileListing, ExternalCall externalCall) {
+	private static List<DebugEntity> convertExternalCall(CompileListing compileListing, ExternalCall externalCall, DebugScript debugScript) {
+		List<DebugEntity> debugEntities = new ArrayList<DebugEntity>();
 		Tree reconciledExternalCall = reconcileExternalCall(compileListing, externalCall);
-		List<Statement> statements = new ArrayList<>();
-		for (Parameter parameter: externalCall.getParameters()) {
-			statements.addAll(createAssignmentStatements(parameter));
+		// There is only one iteration so we don't need an if statement, we use this one for each iteration
+		if (externalCall.getIterations().size() == 1) {
+			LineBreakpoint breakpoint = createBreakpoint(externalCall.getFirstIteration(), compileListing, reconciledExternalCall);
+			debugEntities.add(breakpoint);
 		}
+		// We need to create if statements for each iteration
+		else {
+			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + externalCall.getLineNumber() + "-" + externalCall.getName(), 9, "0");
+			debugScript.getVariableDeclarations().add(counter);
+			Perform perform = new Perform();
+			LineBreakpoint breakpoint = new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
+			
+			for (ExternalCallIteration iteration: externalCall.getIterations().values()) {
+				// We need a complex if statement to cover the single iteration and all other iterations
+				if (iteration.isDefault()) {
+					Conditional counterCheck = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
+					Conditional defaultCheck = new GreaterThanConditional(counter, new ConditionalLeaf(String.valueOf(externalCall.getIterations().size() - 1)));
+					List<Statement> statements = new ArrayList<>();
+					statements.addAll(createAssignmentStatements(iteration));
+					If ifStatement = new If(counterCheck, statements);
+					perform.getStatements().add(ifStatement);
+					If defaultIfStatement = new If(defaultCheck, statements);
+					perform.getStatements().add(defaultIfStatement);
+				}
+				else {
+					Conditional conditional = new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString()));
+					List<Statement> statements = new ArrayList<>();
+					statements.addAll(createAssignmentStatements(iteration));
+					If ifStatement = new If(conditional, statements);
+					perform.getStatements().add(ifStatement);
+				}
+			}
+			perform.getStatements().addAll(incrementCounter(counter));
+			perform.getStatements().add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
+			debugEntities.add(breakpoint);
+			
+		}
+		return debugEntities;
+	}
+	
+	private static LineBreakpoint createBreakpoint(ExternalCallIteration iteration, CompileListing compileListing, Tree reconciledExternalCall) {
+		List<Statement> statements = new ArrayList<>();
+		statements.addAll(createAssignmentStatements(iteration));
 		statements.add(new Goto(findNextStatement(compileListing, reconciledExternalCall)));
 		Perform perform = new Perform(statements);
-		LineBreakpoint breakpoint = new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
-		return breakpoint;
+		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
+		
 	}
 	
 	private static List<Statement> createAssignmentStatements(Parameter parameter) {
@@ -129,6 +180,19 @@ public class ScriptGenerator {
 		return returnValues;
 	}
 	
+	private static List<Statement> createAssignmentStatements(ExternalCallIteration callIteration) {
+		List<Statement> returnValues = new ArrayList<>();
+		for (Parameter parameter: callIteration.getParameters()) {
+			if (!parameter.getValue().equals("")) {
+				returnValues.add(new Move(parameter));
+			}
+			for (Parameter p: parameter.getSubStructure()) {
+				returnValues.addAll(createAssignmentStatements(p));
+			}
+		}
+		return returnValues;
+	}
+	
 	private static List<Statement> createAssertionStatements(Parameter parameter) {
 		List<Statement> returnValues = new ArrayList<>();
 		if (!parameter.getValue().equals("")) {
@@ -138,6 +202,14 @@ public class ScriptGenerator {
 			returnValues.addAll(createAssertionStatements(p));
 		}
 		return returnValues;
+	}
+	
+	private static List<Statement> incrementCounter(Pic9Comp counter) {
+		List<Statement> statements = new ArrayList<Statement>();
+		Compute compute = new Compute(counter, new Addition(counter, new Literal("1")));
+		statements.add(compute);
+		return statements;
+		
 	}
 	
 	private static Tree reconcileExternalCall(CompileListing compileListing, ExternalCall externalCall) {
@@ -172,7 +244,7 @@ public class ScriptGenerator {
 		List<Tree> parameterLengthMatches = new ArrayList<>();
 		for (Tree callStatement: matches) {
 			List<Tree> args = TreeUtil.getDescendents(callStatement, CobolNodeType.ARG);
-			if (args.size() == externalCall.getParameters().size()) {
+			if (args.size() == externalCall.getFirstIteration().getParameters().size()) {
 				parameterLengthMatches.add(callStatement);
 			}
 		}
@@ -194,10 +266,10 @@ public class ScriptGenerator {
 			int count = 0;
 			for (Tree arg: args) {
 				String argName = BecutTestCaseManager.getArgName(arg);
-				for (Parameter parm: externalCall.getParameters()) {
+				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
 					if (argName.equals(parm.getName())) {
 						count++;
-						if (count == externalCall.getParameters().size()) {
+						if (count == externalCall.getFirstIteration().getParameters().size()) {
 							argNameMatches.add(callStatement);
 						}
 					}
@@ -219,12 +291,12 @@ public class ScriptGenerator {
 				String argName = BecutTestCaseManager.getArgName(arg);
 				//TODO handle variable in/of. Right now we take the first match
 				Record compileListingRecord = compileListing.getDataDivisionMap().getRecord(argName).get(0);
-				for (Parameter parm: externalCall.getParameters()) {
+				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
 					DataType scriptDataType = parm.getDataType();
 					Integer scriptDataTypeSize = parm.getSize();
 					if (scriptDataType == compileListingRecord.getDataType() || scriptDataTypeSize.equals(compileListingRecord.getSize())) {
 						count++;
-						if (count == externalCall.getParameters().size()) {
+						if (count == externalCall.getFirstIteration().getParameters().size()) {
 							argTypeMatches.add(callStatement);
 						}
 					}

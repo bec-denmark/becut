@@ -22,11 +22,11 @@ public class BecutTestCaseManagerIT extends TestCase {
 			BecutTestCase testCase = BecutTestCaseManager.createTestCaseFromCompileListing(compileListing);			
 			
 			assertThat(testCase.getExternalCalls(), hasSize(1));
-			assertThat(testCase.getExternalCalls().get(0).getParameters(), hasSize(1));
-			assertThat(testCase.getExternalCalls().get(0).getParameters().get(0).getSubStructure(), hasSize(3));
-			assertThat(testCase.getExternalCalls().get(0).getParameters().get(0).getSubStructure().get(2).getSubStructure(), hasSize(3));
-			assertThat(testCase.getExternalCalls().get(0).getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure(), hasSize(2));
-			assertThat(testCase.getExternalCalls().get(0).getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure().get(0).getSubStructure(), hasSize(0));
+			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters(), hasSize(1));
+			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure(), hasSize(3));
+			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure().get(2).getSubStructure(), hasSize(3));
+			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure(), hasSize(2));
+			assertThat(testCase.getExternalCalls().get(0).getIterations().get("iteration_0").getParameters().get(0).getSubStructure().get(2).getSubStructure().get(0).getSubStructure().get(0).getSubStructure(), hasSize(0));
 
 
 		} catch (FileNotFoundException e) {

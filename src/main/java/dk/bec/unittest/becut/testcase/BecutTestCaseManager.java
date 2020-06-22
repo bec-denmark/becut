@@ -22,6 +22,7 @@ import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
+import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
@@ -87,30 +88,48 @@ public class BecutTestCaseManager {
 		List<SessionRecord> changedSessionRecords = new ArrayList<SessionRecord>();
 		for (SessionCall sessionCall: sessionRecording.getSessionCalls()) {
 			changedSessionRecords.addAll(sessionCall.getChangedParameters());
+			mapSessionRecordsToTestCase(becutTestCase, sessionCall);
 		}
-		mapSessionRecordsToTestCase(becutTestCase, sessionRecording, changedSessionRecords);
 		return becutTestCase;
 	}
 	
-	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionRecording sessionRecording, List<SessionRecord> sessionRecords) {
+	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionCall sessionCall) {
 		
 		// We find the matching call
 		ExternalCall externalCall = null;
-		SessionCall sessionCall = null;;
 		
-		outerloop:
 		for (ExternalCall ec: becutTestCase.getExternalCalls()) {
-			for (SessionCall sc: sessionRecording.getSessionCalls()) {
-				if (ec.getLineNumber() == sc.getLineNumber()) {
-					externalCall = ec;
-					sessionCall = sc;
-					break outerloop;
-				}
+			if (ec.getLineNumber() == sessionCall.getLineNumber()) {
+				externalCall = ec;
+				break;
 			}
 		}
 		
+		List<Parameter> iterationParameters = new ArrayList<Parameter>();
+		ExternalCallIteration externalCallIteration = externalCall.getFirstIteration(); 
+		if (externalCall.getIterations().size() == 1) {
+			if (externalCallIteration.hasValues()) {
+				//We create a new iteration
+				for (Parameter p: externalCallIteration.getParameters()) {
+					iterationParameters.add(p.copyWithNoValues());
+				}
+				externalCall.addIteration(iterationParameters);
+			} 
+			else {
+				//We use the first iteration
+				iterationParameters = externalCallIteration.getParameters();
+			}
+		}
+		else {
+			//We create a new iteration
+			for (Parameter p: externalCallIteration.getParameters()) {
+				iterationParameters.add(p.copyWithNoValues());
+			}
+			externalCall.addIteration(iterationParameters);
+			
+		}
 		
-		for (SessionRecord sessionRecord: sessionRecords) {
+		for (SessionRecord sessionRecord: sessionCall.getChangedParameters()) {
 			// We generate the path from the session record to the level 01
 			List<SessionRecord> ancestorPath = new ArrayList<SessionRecord>();
 			ancestorPath.add(sessionRecord);
@@ -123,7 +142,8 @@ public class BecutTestCaseManager {
 			// We find the matching parameter
 			Parameter matchedParameter = null;
 			
-			for (Parameter parameter: externalCall.getParameters()) {
+			
+			for (Parameter parameter: iterationParameters) {
 				if (parameter.getName().equals(ancestor.getName())) {
 					matchedParameter = parameter;
 					break;
@@ -205,15 +225,12 @@ public class BecutTestCaseManager {
 	}
 
 	private static ExternalCall createExternalCall(Tree callStatement, CompileListing compileListing) {
-		ExternalCall externalCall = new ExternalCall();
 		String callProgramName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, CobolNodeType.PROGRAM_NAME).get(0).getProgramText());
-		externalCall.setName(callProgramName);
-		externalCall.setDisplayableName(callProgramName);
 		//FIXME This is currently getting the absolute line number (from the expanded source). 
 		//      Figure out how to get the original line numbers that the user actually sees.
-		externalCall.setLineNumber(callStatement.getStartPosition().getLinenumber());
-		externalCall.setCallType(CallType.UNKNOWN);
-		externalCall.setParameters(createParameters(callStatement, compileListing));
+		int lineNumber = callStatement.getStartPosition().getLinenumber();
+		ExternalCall externalCall = new ExternalCall(callProgramName, lineNumber, CallType.UNKNOWN, createParameters(callStatement, compileListing));
+		String iterationName = externalCall.getFirstIteration().getName();
 
 		if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
 			//TODO It is here the addition to CICS EXEC can start
@@ -223,11 +240,12 @@ public class BecutTestCaseManager {
 				//Remove the real call and add host variables instead
 				String sql = SQLParse.findSQLStatement(callStatement);
 				externalCall.setDisplayableName(sql.replaceAll("\\n", ""));
-				externalCall.getParameters().clear();
+				ExternalCallIteration externalCallIteration = externalCall.getIterations().get(iterationName);
+				externalCallIteration.getParameters().clear();
 				try {
 					List<Record> hostVariables = SQLParse.getHostVariables(sql, compileListing);
 					for (Record hostVariable: hostVariables) {
-						externalCall.getParameters().add(new Parameter(hostVariable));
+						externalCallIteration.getParameters().add(new Parameter(hostVariable));
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -237,7 +255,7 @@ public class BecutTestCaseManager {
 				List<DataNameReference> sqlca = compileListing.getDataNamesCrossReference().getDataNameReferencesByName().get("SQLCA");
 				if (sqlca.size() == 1) {
 					Parameter SQLCA = new Parameter(compileListing.getDataDivisionMap().getRecord(sqlca.get(0).getLineNumber()));
-					externalCall.getParameters().add(SQLCA);
+					externalCallIteration.getParameters().add(SQLCA);
 				} 
 				else {
 					//TODO We have no SQLCA or more than one. What do I do?
