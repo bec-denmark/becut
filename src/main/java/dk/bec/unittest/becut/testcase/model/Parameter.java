@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 
@@ -97,6 +99,7 @@ public class Parameter {
 		this.value = value;
 	}
 	
+	@JsonIgnore
 	public String getGuiName() {
 		return name;
 	}
