@@ -30,11 +30,9 @@ public class ExternalCall {
 	private String displayableName;
 	private Integer lineNumber;
 	private CallType callType;
-
 	@JsonSerialize(using = IterationsSerializer.class)
 	@JsonDeserialize(using = IterationDeserializer.class)
 	private Map<String, ExternalCallIteration> iterations = new LinkedHashMap<String, ExternalCallIteration>();
-
 	public ExternalCall(String name, String displayableName, Integer lineNumber, CallType callType, Integer iterationOrder, String iterationName, List<Parameter> parameters) {
 		this.name = name;
 		this.displayableName = displayableName;
