@@ -52,6 +52,39 @@ public class TestCaseSerializationIT extends TestCase {
 			}
 			
 			//TODO: add assertions on the json file
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}	
+	}
+
+	@Test
+	public void testSerializeMAT512RS() {
+		File file = new File("./src/test/resources/compilelistings/mat512rs_compile_listing.txt");
+		try {
+			CompileListing compileListing = Parse.parse(file);
+			
+			BecutTestCase testCase = BecutTestCaseManager.createTestCaseFromCompileListing(compileListing);			
+			ExternalCall externalCall = testCase.getExternalCalls().get(0);
+
+			externalCall.addIteration();
+			
+			try {
+				File tempSerialization = File.createTempFile("becut", ".testcase");
+				tempSerialization.deleteOnExit();
+				System.out.println(tempSerialization.getAbsolutePath());
+				mapper.writer().writeValue(tempSerialization, testCase);
+			} catch (JsonGenerationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//TODO: add assertions on the json file
 			System.out.println("We're done");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

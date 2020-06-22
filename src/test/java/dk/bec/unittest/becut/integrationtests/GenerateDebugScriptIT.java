@@ -20,39 +20,39 @@ public class GenerateDebugScriptIT extends TestCase {
 	
 	@Test
 	public void testCreateDebugScriptMAT510RS() {
-//		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
-//		File testScriptFile = new File("./src/test/resources/testcases/mat510rs_testcase.json");
-//		try {
-//			CompileListing compileListing = Parse.parse(file);
-//			BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
-//			
-//			DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
-//			String actualScript =debugScript.generate();
-//			String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat510rs_debugscript.txt")), StandardCharsets.UTF_8);
-//
-//			assertEquals(expectedScript, actualScript);
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}	
+		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
+		File testScriptFile = new File("./src/test/resources/testcases/mat510rs_testcase.json");
+		try {
+			CompileListing compileListing = Parse.parse(file);
+			BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
+			
+			DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
+			String actualScript =debugScript.generate();
+			String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat510rs_debugscript.txt")), StandardCharsets.UTF_8);
+
+			assertEquals(expectedScript, actualScript);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 	
 	@Test
 	public void testCreateDebugScriptMAT512RS() {
-//		File file = new File("./src/test/resources/compilelistings/mat512rs_compile_listing.txt");
-//		File testScriptFile = new File("./src/test/resources/testcases/mat512rs_testcase.json");
-//		try {
-//			CompileListing compileListing = Parse.parse(file);
-//			BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
-//			
-//			DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
-//			String actualScript =debugScript.generate();
-//			String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat512rs_debugscript.txt")), StandardCharsets.UTF_8);
-//
-//			assertEquals(expectedScript, actualScript);
-//
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}	
+		File file = new File("./src/test/resources/compilelistings/mat512rs_compile_listing.txt");
+		File testScriptFile = new File("./src/test/resources/testcases/mat512rs_testcase.json");
+		try {
+			CompileListing compileListing = Parse.parse(file);
+			BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
+			
+			DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
+			String actualScript =debugScript.generate();
+			String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat512rs_debugscript.txt")), StandardCharsets.UTF_8);
+
+			assertEquals(expectedScript, actualScript);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 	}
 }

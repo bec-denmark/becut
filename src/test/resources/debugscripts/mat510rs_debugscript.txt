@@ -1,23 +1,28 @@
 
+        01 BECUT-IC-36-TMAT5110 PIC 9(9) COMP;
+        MOVE 0 TO BECUT-IC-36-TMAT5110;
+
            STEP;
       * Setup preconditions
-           PERFORM
-       MOVE 10 TO MAT511-I-NUMBER;
-       MOVE 42 TO MAT511-SUM;
-           END-PERFORM;
+
       * Setup postconditions
-           AT EXIT MAT510
-           PERFORM
-       LIST ("Start BECUT PostCondition");
-       LIST (MAT511-I-NUMBER);
-       LIST ("Start BECUT PostCondition");
-       LIST (MAT511-SUM);
-           END-PERFORM;
+
            STEP;
-      * Jump over TMAT5110
+      * Jump over CALL TMAT5110 USING MAT511-AREA
            AT LINE 36
            PERFORM
-       SET MAT511-RETURKODE-OK TO TRUE;
+       IF BECUT-IC-36-TMAT5110 = 0 THEN
+       MOVE 0000 TO MAT511-RETURKODE;
        MOVE 42 TO MAT511-SUM;
+       END-IF;
+
+       IF BECUT-IC-36-TMAT5110 > 1 THEN
+       MOVE 0000 TO MAT511-RETURKODE;
+       MOVE 42 TO MAT511-SUM;
+       END-IF;
+
+
+        COMPUTE BECUT-IC-36-TMAT5110 = 
+        BECUT-IC-36-TMAT5110 + 1;
            GOTO 37;
            END-PERFORM;
