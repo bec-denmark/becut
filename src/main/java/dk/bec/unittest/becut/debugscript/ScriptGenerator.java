@@ -41,7 +41,6 @@ import koopa.core.trees.Tree;
 
 public class ScriptGenerator {
 	
-	
 	public static DebugScript generateDebugScript(CompileListing compileListing, BecutTestCase testCase) {
 		DebugScript debugScript = new DebugScript(new ArrayList<>());
 		List<DebugEntity> debugEntities = debugScript.getEntities();

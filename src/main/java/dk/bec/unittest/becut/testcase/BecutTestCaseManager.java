@@ -3,9 +3,14 @@ package dk.bec.unittest.becut.testcase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.spec.ECField;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -14,6 +19,7 @@ import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataNameReference;
+import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
@@ -83,99 +89,75 @@ public class BecutTestCaseManager {
 		return becutTestCase;
 	}
 	
-	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, SessionRecording sessionRecording) {
+	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, 
+			SessionRecording sessionRecording) {
 		BecutTestCase becutTestCase = createTestCaseFromCompileListing(compileListing);
-		List<SessionRecord> changedSessionRecords = new ArrayList<SessionRecord>();
-		for (SessionCall sessionCall: sessionRecording.getSessionCalls()) {
-			changedSessionRecords.addAll(sessionCall.getChangedParameters());
-			mapSessionRecordsToTestCase(becutTestCase, sessionCall);
+		
+		Map<Integer, ExternalCall> callCache = new HashMap<>();
+		
+		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
+			Integer lineNumber = sessionCall.getLineNumber();
+			//first iteration
+			if(!callCache.containsKey(lineNumber)) {
+				ExternalCall externalCall = becutTestCase.getExternalCalls().stream()
+					.filter(ec -> ec.getLineNumber().equals(lineNumber))
+					.findFirst()
+					.get();
+				
+				externalCall.getFirstIteration()
+					.getParameters()
+					.forEach(p -> setParameterValue(
+							p, 
+							sessionCall.getAfter().getRecords()));
+				
+				callCache.put(lineNumber, externalCall);
+			} else {
+				ExternalCall externalCall = callCache.get(lineNumber);
+				List<Parameter> iterationParameters = externalCall.getFirstIteration().getParameters().stream()
+					.map(Parameter::copyWithNoValues)
+					.collect(Collectors.toList());
+
+				iterationParameters
+					.forEach(p -> setParameterValue(
+							p,
+							sessionCall.getAfter().getRecords()));
+				
+				externalCall.addIteration(iterationParameters);
+			}
 		}
 		return becutTestCase;
 	}
-	
-	private static void mapSessionRecordsToTestCase(BecutTestCase becutTestCase, SessionCall sessionCall) {
-		
-		// We find the matching call
-		ExternalCall externalCall = null;
-		
-		for (ExternalCall ec: becutTestCase.getExternalCalls()) {
-			if (ec.getLineNumber() == sessionCall.getLineNumber()) {
-				externalCall = ec;
-				break;
-			}
-		}
-		
-		List<Parameter> iterationParameters = new ArrayList<Parameter>();
-		ExternalCallIteration externalCallIteration = externalCall.getFirstIteration(); 
-		if (externalCall.getIterations().size() == 1) {
-			if (externalCallIteration.hasValues()) {
-				//We create a new iteration
-				for (Parameter p: externalCallIteration.getParameters()) {
-					iterationParameters.add(p.copyWithNoValues());
+
+	private static void setParameterValue(Parameter p, List<SessionRecord> records) {
+		records.stream()
+			.filter(sr -> sr.getName().equals(p.getName()) && sr.getLevel().equals(p.getLevel()))
+			.forEach(sr -> {
+				//TODO create an util function to exclude 'consts' 
+				if(!DataType.GROUP.equals(p.getDataType()) 
+						&& !DataType.BINARY.equals(p.getDataType())
+						&& !p.getName().equals("FILLER")) {
+					p.setValue(sr.getValue());
 				}
-				externalCall.addIteration(iterationParameters);
-			} 
-			else {
-				//We use the first iteration
-				iterationParameters = externalCallIteration.getParameters();
-			}
-		}
-		else {
-			//We create a new iteration
-			for (Parameter p: externalCallIteration.getParameters()) {
-				iterationParameters.add(p.copyWithNoValues());
-			}
-			externalCall.addIteration(iterationParameters);
-			
-		}
-		
-		for (SessionRecord sessionRecord: sessionCall.getChangedParameters()) {
-			// We generate the path from the session record to the level 01
-			List<SessionRecord> ancestorPath = new ArrayList<SessionRecord>();
-			ancestorPath.add(sessionRecord);
-			SessionRecord ancestor = sessionRecord;
-			while (ancestor.getParent() != null) {
-				ancestor = ancestor.getParent();
-				ancestorPath.add(ancestor);
-			}
-			
-			// We find the matching parameter
-			Parameter matchedParameter = null;
-			
-			
-			for (Parameter parameter: iterationParameters) {
-				if (parameter.getName().equals(ancestor.getName())) {
-					matchedParameter = parameter;
-					break;
-				}
-			}
-			
-			setValueFromSessionRecordToParameter(ancestorPath, matchedParameter);
-		}
+				p.getSubStructure()
+					.forEach(sp -> setParameterValue(sp, sr.getChildren()));
+			});
 	}
 
-	private static void setValueFromSessionRecordToParameter(List<SessionRecord> ancestorPath, Parameter parameter) {
-		
-		if (ancestorPath.size() == 0) {
-			//Added for completeless, but this shouldn't happen
-			return;
-		}
-		if (ancestorPath.size() == 1) {
-			for (Parameter subParameter: parameter.getSubStructure()) {
-				if (ancestorPath.get(0).getName().equals(subParameter.getName())) {
-					subParameter.setValue(ancestorPath.get(0).getValue());
-					return;
-				}
-			}
-		}
-		//Traverse the path to the sessionRecord we want to set the value of
-		int i = ancestorPath.size() - 1;
-		for (Parameter subParameter: parameter.getSubStructure()) {
-			if (ancestorPath.get(i - 1).getName().equals(subParameter.getName())) {
-				setValueFromSessionRecordToParameter(ancestorPath.subList(0, i - 1), subParameter);
-			}
-		}
-	}
+//  TODO mark values that were changed	
+//	private static void setParameterValue(Map<String, String> prevs, String path, Parameter p, List<SessionRecord> records) {
+//		records.stream()
+//			.filter(r -> r.getName().equals(p.getName()) && r.getLevel().equals(p.getLevel()))
+//			.forEach(sr -> {
+//				if(sr.getValue() != null) {
+//					if(!(prevs.containsKey(path) && prevs.get(path).equals(sr.getValue()))) {
+//						p.setValue(sr.getValue());
+//					}
+//					prevs.put(path, sr.getValue());
+//				}
+//				p.getSubStructure()
+//					.forEach(sp -> setParameterValue(prevs, path + "-" + sp.getName(), sp, sr.getChildren()));
+//			});
+//	}
 	
 	/**
 	 * 	Run through records in the DataDivision and filter records that is declared between start and end line of a section

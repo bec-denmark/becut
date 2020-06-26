@@ -132,6 +132,9 @@ public class Parameter {
 
 	@Override
 	public String toString() {
-		return level.toString() + " " + name + ": {" + String.join(", ", subStructure.stream().map(Parameter::toString).collect(Collectors.toList()));
+		return level.toString() + " " + name + ": {" + String.join(", ", 
+				subStructure.stream()
+					.map(Parameter::toString)
+					.collect(Collectors.toList()));
 	}
 }

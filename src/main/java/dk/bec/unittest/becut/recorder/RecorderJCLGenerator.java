@@ -3,49 +3,55 @@ package dk.bec.unittest.becut.recorder;
 import java.util.List;
 
 public class RecorderJCLGenerator {
-	private String programName;
-	private String debugScript;
-	private String jobName;
-	private String userName;
-	private List<String> steplib;
-
-	public RecorderJCLGenerator(String programName, String debugScript, String jobName, String userName,
-			List<String> steplib) {
-		this.programName = programName.toUpperCase();
-		this.debugScript = debugScript;
-		this.jobName = jobName.toUpperCase();
-		this.userName = userName.toUpperCase();
-		this.steplib = steplib;
-	}
-
-	public String getJCL() {
-		String jcl = "//" +  jobName + " JOB ,'" + userName + "',\n";
-		jcl += "//             SCHENV=TSTSYS,\n";
-		jcl += "//             MSGCLASS=Q,\n";
-		jcl += "//             NOTIFY=" + userName +",\n";
-		jcl += "//             UJOBCORR=" + userName +"\n";
-		jcl += "//PGMEXEC  EXEC PGM=" + programName + "\n";
-		jcl += generateSteplib();
-		jcl += "//INSPIN      DD *\n";
-		jcl += debugScript;
-		jcl += "\n";
-		jcl += "/*\n";
-		jcl += "//INSPLOG   DD SYSOUT=*\n";
-		jcl += "//INSPCMD   DD DSN=SYS2.DEBUG.COMMANDS,DISP=SHR\n";
-		jcl += "//CEEOPTS   DD *,DLM='/*'\n";
-		jcl += "TEST(,INSPIN,,)\n";
-		jcl += "/*\n";
+	
+	public static String getJCL(String programName, String datasetName, String jobName, String userName, List<String> steplib) {
+		String jcl = "" +
+				"//" +  jobName + " JOB ,'" + userName + "',\n" +
+				"//             SCHENV=TSTSYS,\n" +
+				"//             MSGCLASS=Q,\n" +
+				"//             NOTIFY=" + userName +",\n" + 
+				"//             UJOBCORR=" + userName +"\n" +
+				"//PGMEXEC  EXEC PGM=" + programName + "\n" +
+				generateSteplib(steplib) +
+				"//INSPIN    DD *\n" + 
+				"            SET LOG ON FILE " + datasetName + ";\n" + 
+				"            SET DYNDEBUG OFF;\n" + 
+				"            AT CALL * BEGIN;\n" + 
+				"               LIST UNTITLED('AT CALL BEGIN');\n" + 
+				"               LIST CALLS;\n" + 
+				"               LIST TITLED *;\n" + 
+				"               LIST UNTITLED('AT CALL END');\n" + 
+				"               LIST UNTITLED('');\n" + 
+				"               GO;\n" + 
+				"            END;\n" + 
+				"            AT EXIT * BEGIN;\n" + 
+				"               LIST UNTITLED('AT EXIT BEGIN');\n" + 
+				"               SET QUALIFY RETURN;\n" + 
+				"               LIST CALLS;\n" + 
+				"               LIST TITLED *;\n" + 
+				"               LIST UNTITLED('AT EXIT END');\n" + 
+				"               LIST UNTITLED('');\n" + 
+				"               GO;\n" + 
+				"            END;\n" + 
+				"            GO;\n" + 
+				"            QUIT;\n" + 
+				"/*\n" + 
+				"//INSPLOG   DD SYSOUT=*\n" + 
+				"//INSPCMD   DD DSN=SYS2.DEBUG.COMMANDS,DISP=SHR\n" + 
+				"//CEEOPTS   DD *,DLM='/*'\n" + 
+				"TEST(,INSPIN,,)\n" + 
+				"/*";
 		
-		return jcl;
+		return jcl.toUpperCase();
 	}
 	
-	private String generateSteplib() {
+	private static String generateSteplib(List<String> steplib) {
 		String s = "//STEPLIB   DD DSN=" + steplib.get(0).toUpperCase() + ",DISP=SHR\n";
 		if (steplib.size() > 1) {
 			for (int i = 1; i < steplib.size(); i++) {
-			s += "//          DD DSN=" + steplib.get(i).toUpperCase() + ",DISP=SHR\n";
+				s += "//          DD DSN=" + steplib.get(i).toUpperCase() + ",DISP=SHR\n";
 			}
 		}
 		return s;
-	}
+	}	
 }

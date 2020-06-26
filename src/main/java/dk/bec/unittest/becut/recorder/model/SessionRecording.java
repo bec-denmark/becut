@@ -6,13 +6,17 @@ import java.util.List;
 public class SessionRecording {
 	
 	private String programName;
+
 	private List<SessionCall> sessionCalls = new ArrayList<SessionCall>();
 	private List<SessionPostCondition> sessionPostConditions = new ArrayList<SessionPostCondition>();
 
-	public SessionRecording(String programName) {
-		this.programName = programName;
+	public SessionRecording() {
 	}
 
+	public void setProgramName(String programName) {
+		this.programName = programName;
+	}
+	
 	public String getProgramName() {
 		return programName;
 	}
@@ -23,5 +27,11 @@ public class SessionRecording {
 
 	public List<SessionPostCondition> getSessionPostConditions() {
 		return sessionPostConditions;
+	}
+
+	@Override
+	public String toString() {
+		return "SessionRecording [programName=" + programName + ", sessionCalls=" + sessionCalls
+				+ ", sessionPostConditions=" + sessionPostConditions + "]";
 	}
 }

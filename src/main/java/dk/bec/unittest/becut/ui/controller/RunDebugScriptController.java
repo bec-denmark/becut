@@ -11,6 +11,7 @@ import dk.bec.unittest.becut.debugscript.model.DebugScript;
 import dk.bec.unittest.becut.ftp.model.HostJob;
 import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.recorder.DebugToolLogParser;
+import dk.bec.unittest.becut.recorder.LogParsingException;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.PostConditionResolver;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -51,9 +52,15 @@ public class RunDebugScriptController extends AbstractBECutController implements
 		}
 		HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
 		HostJobDataset jobDataset = job.getDatasets().get("INSPLOG");
-		SessionRecording sessionRecording = DebugToolLogParser.Parse(jobDataset.getContents(), programName);
-		PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
-		StandardAlerts.informationDialog("Test Case result", "Result running test case " + becutTestCase.getTestCaseId(), postConditionResult.prettyPrint());
+		
+		try {
+			SessionRecording sessionRecording = DebugToolLogParser.parse(jobDataset.getContents(), programName);
+			PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
+			StandardAlerts.informationDialog("Test Case result", "Result running test case " + becutTestCase.getTestCaseId(), postConditionResult.prettyPrint());
+		} catch (LogParsingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//TODO Present to result to the user in a meaningful way
 		closeWindow();
 	}
