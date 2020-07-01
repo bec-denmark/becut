@@ -17,7 +17,7 @@ public class DebugToolLogParserTest {
 	public void testParseMAT561Recording() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/mat561.txt"));
 		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
-		SessionRecording recording = DebugToolLogParser.parse(fileContents, "filename");
+		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents, "filename");
 		assertEquals("Program name", "MAT561", recording.getProgramName());
 		assertEquals("Session calls count", 3, recording.getSessionCalls().size());
 	}
@@ -26,7 +26,7 @@ public class DebugToolLogParserTest {
 	public void testParseSameCallDifferentLines() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/same_call_different_lines.txt"));
 		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
-		SessionRecording recording = DebugToolLogParser.parse(fileContents, "filename");
+		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents, "filename");
 		assertEquals("Program name", "MAT561", recording.getProgramName());
 		assertEquals("Session calls count", 4, recording.getSessionCalls().size());
 	}

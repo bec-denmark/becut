@@ -54,7 +54,7 @@ public class RunDebugScriptController extends AbstractBECutController implements
 		HostJobDataset jobDataset = job.getDatasets().get("INSPLOG");
 		
 		try {
-			SessionRecording sessionRecording = DebugToolLogParser.parse(jobDataset.getContents(), programName);
+			SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobDataset.getContents(), programName);
 			PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
 			StandardAlerts.informationDialog("Test Case result", "Result running test case " + becutTestCase.getTestCaseId(), postConditionResult.prettyPrint());
 		} catch (LogParsingException e) {

@@ -2,7 +2,7 @@ package dk.bec.unittest.becut.debugscript.model.statement;
 
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
 
-public class Comment implements DebugEntity, Statement {
+public class Comment extends StatementBase implements DebugEntity {
 
 	private String commentText;
 

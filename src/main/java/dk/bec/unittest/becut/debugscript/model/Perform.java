@@ -42,9 +42,10 @@ public class Perform implements DebugEntity {
 					perform = perform + "\n" + statement.generate();
 				}
 				perform = perform + "\n           END-PERFORM;";
-			}
-			for (Statement statement : statements) {
-				perform = perform + "\n" + statement.generate();
+			} else {
+				for (Statement statement : statements) {
+					perform = perform + "\n" + statement.generate();
+				}
 			}
 		} else {
 			perform = "           PERFORM";

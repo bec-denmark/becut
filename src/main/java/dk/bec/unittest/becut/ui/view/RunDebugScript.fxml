@@ -21,7 +21,7 @@
 	
 	<Label text="Run the current testcase on the host" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3"/>
 	
-	<Label text="Load moodule name (if different than progrman name)" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+	<Label text="Load module name (if different than program name)" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 	<TextField id="LoadModuleName" fx:id="loadModuleName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 	<ComboBox id="RuntimeEnvironments" fx:id="runtimeEnviromentsBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 		

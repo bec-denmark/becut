@@ -59,7 +59,7 @@ public class RecorderManager {
 		Files.copy(new ByteArrayInputStream(recordingResult.getBytes()), Paths.get("/temp", datasetName));
 
 		// 5. Parse result file
-		SessionRecording sessionRecording = DebugToolLogParser.parse(recordingResult, compileListing.getProgramName());
+		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(recordingResult, compileListing.getProgramName());
 		
 		// 6. Create new testcase
 		testCase = BecutTestCaseManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);

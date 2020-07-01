@@ -38,17 +38,19 @@ public class Settings {
 		Properties properties = new Properties();
 		// TODO lookup properties file based on machine name
 		InputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(JAR_LOCATION + "/" + PROPERTIES_FILENAME);
-		} catch (FileNotFoundException e) {
-			
-		}
 		String hostname = getHostname();
 		if (inputStream == null) {
 			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + hostname + "_" + PROPERTIES_FILENAME);
 		}
 		if (inputStream == null) {
 			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + PROPERTIES_FILENAME);
+		}
+		if(inputStream == null) {
+			try {
+				inputStream = new FileInputStream(JAR_LOCATION + "/" + PROPERTIES_FILENAME);
+			} catch (FileNotFoundException e) {
+				System.err.println(e);
+			}
 		}
 		if (inputStream != null) {
 			try {

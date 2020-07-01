@@ -1,10 +1,10 @@
 package dk.bec.unittest.becut.debugscript.model.statement;
 
-public class Go extends StatementBase {
+public class GoBypass extends StatementBase {
 
 	@Override
 	public String generate() {
-		return "           GO;";
+		return "           GO BYPASS;";
 	}
 
 }

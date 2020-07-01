@@ -1,6 +1,6 @@
 package dk.bec.unittest.becut.debugscript.model.statement;
 
-public class Goto implements Statement {
+public class Goto extends StatementBase {
 
 	private Integer lineNumber;
 

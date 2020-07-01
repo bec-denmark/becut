@@ -2,7 +2,7 @@ package dk.bec.unittest.becut.debugscript.model.statement;
 
 import dk.bec.unittest.becut.testcase.model.Parameter;
 
-public class Move implements Statement {
+public class Move extends StatementBase {
 
 	private String from;
 	private String to;
@@ -74,5 +74,4 @@ public class Move implements Statement {
 		}
 		return "       MOVE " + from + " TO " + to + ";";
 	}
-
 }

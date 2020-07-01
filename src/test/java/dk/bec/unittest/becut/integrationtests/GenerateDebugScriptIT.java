@@ -66,7 +66,8 @@ public class GenerateDebugScriptIT extends TestCase {
 		BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
 		
 		DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
-//		String actualScript = debugScript.generate();
+		String actualScript = debugScript.generate();
+		System.out.println(actualScript);
 //		String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat512rs_debugscript.txt")), StandardCharsets.UTF_8);
 //
 //		assertEquals(expectedScript, actualScript);

@@ -29,6 +29,7 @@ public class ExternalCall {
 	private String name;
 	private String displayableName;
 	private Integer lineNumber;
+	private String statementId;
 	private CallType callType;
 
 	@JsonSerialize(using = IterationsSerializer.class)
@@ -75,6 +76,14 @@ public class ExternalCall {
 		this.lineNumber = lineNumber;
 	}
 
+	public String getStatementId() {
+		return statementId;
+	}
+	
+	public void setStatementId(String statementId) {
+		this.statementId = statementId;
+	}
+	
 	public CallType getCallType() {
 		return callType;
 	}
