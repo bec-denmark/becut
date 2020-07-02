@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
@@ -31,6 +32,12 @@ public class LoadCompileListingController implements Initializable {
 	
 	private Map<CompileListType, Pair<Node, LoadCompileListing>> compileListingSource = new HashMap<CompileListType, Pair<Node,LoadCompileListing>>();
 
+	@FXML
+	private Button ok;
+	@FXML
+	public void ok() {
+		loadCompileListingIntoContext();
+	}
 
 	public LoadCompileListing getCurrentCompileListing() {
 		return currentCompileListing;
@@ -39,6 +46,7 @@ public class LoadCompileListingController implements Initializable {
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
 		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing.getCompileListing());
+		ok.getScene().getWindow().hide();
 	}
 
 	@Override
