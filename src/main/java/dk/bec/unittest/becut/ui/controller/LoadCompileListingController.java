@@ -3,8 +3,12 @@ package dk.bec.unittest.becut.ui.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.StringJoiner;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.LoadCompileListing;
@@ -46,6 +50,16 @@ public class LoadCompileListingController implements Initializable {
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
 		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing.getCompileListing());
+		List<String> lines = BECutAppContext.getContext().getUnitTest().getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
+		
+		Pattern p = Pattern.compile(" {2}\\d{6}C\\s+\\d.*");
+		String source = lines.stream()
+			.filter(line -> !p.matcher(line).matches())
+			//.map(line -> line.substring(17))
+			//.map(line -> line.substring(0, Math.min(line.length(),  79)))
+			.collect(Collectors.joining("\n"));
+		BECutAppContext.getContext().getSourceCode().setValue(source);
+
 		ok.getScene().getWindow().hide();
 	}
 

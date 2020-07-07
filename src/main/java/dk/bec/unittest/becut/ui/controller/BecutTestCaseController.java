@@ -1,9 +1,19 @@
 package dk.bec.unittest.becut.ui.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -23,10 +33,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
@@ -57,6 +72,70 @@ public class BecutTestCaseController implements Initializable {
 			return param.getValue().getValue().valueProperty();
 		});
 
+		unitTestTreeTableView.setRowFactory(ttv -> {
+			ContextMenu cm = new ContextMenu();
+			MenuItem dup = new MenuItem("Duplicate");
+			MenuItem del = new MenuItem("Delete");
+			cm.getItems().addAll(dup, del);
+			
+			TreeTableRow<UnitTestTreeObject> row = new TreeTableRow<UnitTestTreeObject>() {
+			   @Override
+			   protected void updateItem(UnitTestTreeObject item, boolean empty) {
+				   super.updateItem(item, empty);
+				   if(item instanceof ExternalCallIterationDisplayable) {
+					    this.setContextMenu(cm);
+				   } else {
+					   //seems that children inherit context menu from parent; it is undesirable here
+					   this.setContextMenu(null);
+				   }
+			   }				
+			};
+
+			Supplier<TreeItem<UnitTestTreeObject>> getParent = () -> {
+		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+		    	int index = sm.getSelectedIndex();
+		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
+		    	return item;
+			};
+			
+		    dup.setOnAction(event -> {
+		    	ExternalCallIteration callIteration = ((ExternalCallIterationDisplayable) row.getItem()).getExternalCallIteration();
+		    	ExternalCallIteration copy = ExternalCallIteration.mkCopy(callIteration);
+
+		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+		    	int index = sm.getSelectedIndex();
+		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
+		    	TreeItem<UnitTestTreeObject> parent = item.getParent();
+		    	
+		    	Map<String, ExternalCallIteration> iterations = 
+		    			((ExternalCallDisplayable) parent.getValue()).getExternalCall().getIterations();
+		    	String name = String.format("iteration_%s", iterations.size());
+		    	copy.setName(name);
+		    	copy.setNumericalOrder(iterations.size());
+		    	iterations.put(name, copy);
+	
+				populateUnitTestParts(parent, copy);
+		    });
+			
+		    del.setOnAction(event -> {
+		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+		    	int index = sm.getSelectedIndex();
+		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
+		    	TreeItem<UnitTestTreeObject> parent = item.getParent();
+		    	List<TreeItem<UnitTestTreeObject>> items = parent.getChildren();
+		    	//TODO when only iteration is removed call should have a context menu for adding one, 
+		    	//for now let's just prevent deleting the only one 
+		    	if(items.size() > 1) {
+		    		parent.getChildren().remove(item);
+		    	}
+		    	
+//		    	ExternalCallDisplayable ecd = (ExternalCallDisplayable) row.getItem();
+//		    	currentUnitTest.getBecutTestCase().removeExternalCall(ecd.getExternalCall());
+//		    	externalCallHeader.getChildren().remove(row.getItem());
+		    });
+			return row;
+		});
+		
 		value.setCellFactory(
 				new Callback<TreeTableColumn<UnitTestTreeObject, String>, TreeTableCell<UnitTestTreeObject, String>>() {
 
@@ -64,7 +143,6 @@ public class BecutTestCaseController implements Initializable {
 					public TreeTableCell<UnitTestTreeObject, String> call(
 							TreeTableColumn<UnitTestTreeObject, String> param) {
 						return new TextFieldTreeTableCell<UnitTestTreeObject, String>(new DefaultStringConverter()) {
-
 							@Override
 							public void updateItem(String item, boolean empty) {
 								super.updateItem(item, empty);
@@ -117,9 +195,7 @@ public class BecutTestCaseController implements Initializable {
 
 	private void populateRoot(BecutTestCase becutTestCase) {
 		unitTestTreeTableView.getRoot().getValue().setName("Test Case: " + becutTestCase.getTestCaseName());
-		;
 		unitTestTreeTableView.getRoot().getValue().setValue(becutTestCase.getTestCaseId());
-		;
 		unitTestTreeTableView.getRoot().getChildren().clear();
 
 		TreeItem<UnitTestTreeObject> preConditionHeader = new TreeItem<UnitTestTreeObject>(
@@ -146,7 +222,7 @@ public class BecutTestCaseController implements Initializable {
 				becutTestCase.getPreCondition().getLinkageSection());
 
 		for (ExternalCall externalCall : becutTestCase.getExternalCalls()) {
-			populateUnitTestParts(externalCallHeader, new ExternalCallDisplayable(externalCall), externalCall);
+			populateUnitTestParts(externalCallHeader, externalCall);
 		}
 
 		populateUnitTestParts(postConditionHeader, new PostConditionDisplayable("File Section"),
@@ -168,24 +244,24 @@ public class BecutTestCaseController implements Initializable {
 		parent.getChildren().add(treeItem);
 	}
 
-	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, UnitTestTreeObject treeObject,
-			ExternalCall externalCall) {
-		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(treeObject);
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, ExternalCall externalCall) {
+		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(new ExternalCallDisplayable(externalCall));
 		for (ExternalCallIteration callIteration : externalCall.getIterations().values()) {
-			ExternalCallIterationDisplayable callIterationDisplayable = new ExternalCallIterationDisplayable(
-					callIteration);
-			TreeItem<UnitTestTreeObject> ti = new TreeItem<UnitTestTreeObject>(callIterationDisplayable);
-			treeItem.getChildren().add(ti);
-			for (Parameter parameter : callIteration.getParameters()) {
-				ti.getChildren().add(populateParameters(parameter));
-			}
+			populateUnitTestParts(treeItem, callIteration);
 		}
 		parent.getChildren().add(treeItem);
 	}
 
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, ExternalCallIteration callIteration) {
+		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(new ExternalCallIterationDisplayable(callIteration));
+		for (Parameter parameter : callIteration.getParameters()) {
+			treeItem.getChildren().add(populateParameters(parameter));
+		}
+		parent.getChildren().add(treeItem);
+	}
+	
 	private TreeItem<UnitTestTreeObject> populateParameters(Parameter parameter) {
-		ParameterDisplayable parameterDisplayable = new ParameterDisplayable(parameter);
-		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(parameterDisplayable);
+		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(new ParameterDisplayable(parameter));
 		for (Parameter p : parameter.getSubStructure()) {
 			treeItem.getChildren().add(populateParameters(p));
 		}

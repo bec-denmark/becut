@@ -1,14 +1,28 @@
 package dk.bec.unittest.becut.compilelist;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.junit.Ignore;
+import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import junit.framework.TestCase;
+import koopa.core.trees.Tree;
 
-public class ParseTest extends TestCase {
-	
+public class ParseTest {
+	@Ignore
+	@Test
 	public void testCreateCompileListMAT510RS() {
 		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
 		try {
@@ -19,6 +33,8 @@ public class ParseTest extends TestCase {
 		}	
 	}
 
+	@Ignore
+	@Test
 	public void testCreateCompileListMAT512RS() {
 		File file = new File("./src/test/resources/compilelistings/mat512rs_compile_listing.txt");
 		try {
@@ -29,11 +45,49 @@ public class ParseTest extends TestCase {
 		}	
 	}
 	
+	@Ignore
+	@Test
 	public void testCreateCompileListSyntaxCheck() {
 		File file = new File("./src/test/resources/compilelistings/mat514rs_syntaxcheck_listing.txt");
 		try {
 			CompileListing compileListing = Parse.parse(file);
 			assertNotNullCompileListing(compileListing);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public void testCreateCompileListMAT560() {
+		File file = new File("./src/test/resources/compilelistings/mat561_compile_listing.txt");
+		try {
+			CompileListing compileListing = Parse.parse(file);
+			assertNotNullCompileListing(compileListing);
+			Pattern p1 = Pattern.compile(" {2}\\d{6}C\\s+\\d.*");
+			Pattern p2 = Pattern.compile(	" {2}(\\d{6}).{9}(\\d{6})\\s+.*");
+			Map<Integer, Integer> map = new HashMap<>();
+			String source = compileListing.getSourceMapAndCrossReference().getOriginalSource().stream()
+				.filter(line -> !p1.matcher(line).matches())
+				.map(line -> {
+					Matcher m = p2.matcher(line);
+					if(m.find()) {
+						map.put(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2).substring(0, 5)));
+					} else {
+						System.out.println(line);
+					}
+					return line;
+				})
+				.map(line -> line.substring(17))
+				.map(line -> line.substring(0, Math.min(line.length(),  79)))
+				.collect(Collectors.joining("\n"));
+			
+			System.out.println(map);
+
+			Tree ast = compileListing.getSourceMapAndCrossReference().getAst();
+			List<Tree> calls = TreeUtil.getDescendents(ast, CobolNodeType.CALL_STATEMENT);
+			for(Tree call : calls) {
+				System.out.println(call.getStartPosition().getLinenumber());
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}	

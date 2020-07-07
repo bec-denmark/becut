@@ -24,6 +24,7 @@ public class BECutAppContext {
 	private Stage primaryStage;
 	
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
+	private SimpleStringProperty sourceCode = new SimpleStringProperty("None");
 	
 	private BECutAppContext(Stage primaryStage) {
 		this.unitTest = new UnitTest();
@@ -70,6 +71,10 @@ public class BECutAppContext {
 		return compileListStatus;
 	}
 
+	public SimpleStringProperty getSourceCode() {
+		return sourceCode;
+	}
+	
 	public static BECutAppContext getContext() {
 		if (context == null) {
 			Alert alert = new Alert(AlertType.ERROR, "No primary stage set");

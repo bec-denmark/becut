@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 public class LoadCompileListingFileController implements LoadCompileListing {
-	
+
 	@FXML
 	private TextField compileListingPath;
 
@@ -20,7 +20,7 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 
 	@FXML
 	private void browse() {
-		
+
 		FileChooser chooser = new FileChooser();
 		compileListingFile = chooser.showOpenDialog(compileListingPath.getScene().getWindow());
 		if (compileListingFile != null) {
@@ -31,7 +31,7 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 			}
 		}
 	}
-	
+
 	@Override
 	public InputStream getCompileListing() {
 		try {

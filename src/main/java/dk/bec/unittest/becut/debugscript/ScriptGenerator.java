@@ -88,8 +88,8 @@ public class ScriptGenerator {
 		Map<String, List<ExternalCall>> externalCallsGroupedByEntryName = testCase.getExternalCalls().stream()
 				.filter(ec -> ec.getCallType().equals(CallType.DYNAMIC))
 				.collect(Collectors.groupingBy(ExternalCall::getName));
-		externalCallsGroupedByEntryName.forEach((k, v) -> {
-			debugEntities.addAll(dynamicExternalCalls(k, v, debugScript));
+		externalCallsGroupedByEntryName.forEach((name, calls) -> {
+			debugEntities.addAll(dynamicExternalCalls(name, calls, compileListing, debugScript));
 		});
 		
 //		for (ExternalCall externalCall: testCase.getExternalCalls()) {
@@ -110,9 +110,9 @@ public class ScriptGenerator {
 		return debugScript;
 	}
 	
-	public static List<DebugEntity> dynamicExternalCalls(String name, List<ExternalCall> calls, DebugScript debugScript) {
+	public static List<DebugEntity> dynamicExternalCalls(String name, List<ExternalCall> calls, CompileListing compileListing, DebugScript debugScript) {
 		List<DebugEntity> debugEntities = new ArrayList<>();
-		AtCallBreakpoint breakpoint = createAtCallBreakpoint(name, calls, debugScript);
+		AtCallBreakpoint breakpoint = createAtCallBreakpoint(name, calls, compileListing, debugScript);
 		debugEntities.add(breakpoint);
 		return debugEntities;
 	}
@@ -189,7 +189,8 @@ public class ScriptGenerator {
 		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
 	}
 
-	private static AtCallBreakpoint createAtCallBreakpoint(String name, List<ExternalCall> calls, DebugScript debugScript) {
+	private static AtCallBreakpoint createAtCallBreakpoint(String name, List<ExternalCall> calls, 
+			CompileListing compileListing, DebugScript debugScript) {
 		List<Statement> statements = new ArrayList<>();
 		calls.stream().forEach(call -> {
 			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + call.getLineNumber() + "-" + call.getName(), 9, "0");
@@ -202,8 +203,11 @@ public class ScriptGenerator {
 			
 			debugScript.getVariableDeclarations().add(counter);
 			
+			Tree reconciledExternalCall = reconcileExternalCall(compileListing, call);
+			String statemendId = reconciledExternalCall.getStartPosition().getLinenumber() + ".1";
+			//String statemendId = call.getStatementId();
 			statements.add(
-					new If(new EqualsConditional(new Literal("%LINE"), new Quoted(call.getStatementId())), ifBody));
+					new If(new EqualsConditional(new Literal("%LINE"), new Quoted(statemendId)), ifBody));
 		});
 		statements.add(new GoBypass());
 		Perform perform = new Perform(statements);
@@ -277,8 +281,8 @@ public class ScriptGenerator {
 		//1) check parameter length
 		//2) If there are still multiple matches compare parameter names
 		//3) If there are still multiple matches compare parameter types
-		//4)If there are still multiple matches compare parameter values?
-		//5)Otherwise take the first one?
+		//4) If there are still multiple matches compare parameter values?
+		//5) Otherwise take the first one?
 		
 
 		//1) check parameter length

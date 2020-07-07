@@ -10,7 +10,6 @@ import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 
 public class Parameter {
-
 	protected Integer level = -1;
 	protected Integer lineNumber = 0;
 	protected String name = "";
@@ -139,5 +138,20 @@ public class Parameter {
 				subStructure.stream()
 					.map(Parameter::toString)
 					.collect(Collectors.toList()));
+	}
+	
+	@Override
+	public boolean equals(Object that) {
+		return (that instanceof Parameter) && equals0((Parameter)that);
+	}
+
+	private boolean equals0(Parameter that) {
+		return this.level == that.level 
+				&& this.lineNumber == that.lineNumber
+				&& this.name == that.name
+				&& this.dataType == that.dataType
+				&& this.size == that.size
+				&& this.value == that.value
+				&& subStructure.equals(that.subStructure);
 	}
 }

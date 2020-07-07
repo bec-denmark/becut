@@ -13,7 +13,7 @@ public class BECutApp extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BECutAppContext.createContext(primaryStage);
 		primaryStage.setTitle("BECut - BEC unit test helper");
-		BorderPane root = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/BECutApp.fxml"));
+		BorderPane root = FXMLLoader.load(getClass().getClassLoader().getResource("/dk/bec/unittest/becut/ui/view/BECutApp.fxml"));
 		Scene scene = new Scene(root, 800, 600);
 		primaryStage.setScene(scene);
 		primaryStage.show();
