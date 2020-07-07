@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.web.WebView?>
 
-<HBox fx:controller="dk.bec.unittest.becut.ui.controller.SourceCodeController" 
-	xmlns:fx="http://javafx.com/fxml/1">
-		<WebView fx:id="sourceView"  />
-</HBox>
+<StackPane fx:controller="dk.bec.unittest.becut.ui.controller.SourceCodeController" xmlns:fx="http://javafx.com/fxml/1">
+	<WebView fx:id="sourceView"  />
+</StackPane>

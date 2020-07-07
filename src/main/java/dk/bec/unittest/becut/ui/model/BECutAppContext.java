@@ -3,8 +3,10 @@ package dk.bec.unittest.becut.ui.model;
 import java.io.IOException;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
+import dk.bec.unittest.becut.ui.controller.SourceCodeController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

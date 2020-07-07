@@ -22,54 +22,48 @@ import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-public class SourceCodeController implements Initializable {
+public class SourceCodeController {
 	@FXML
 	private WebView sourceView;
 
-	private static SimpleStringProperty sourceProperty = new SimpleStringProperty("sourceProperty");
-
-	ChangeListener<? super String> listener;
-		
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	private SimpleStringProperty sourceProperty = new SimpleStringProperty(this, "sourceProperty");
+	
+	public void initialize() {
 		sourceProperty.bind(BECutAppContext.getContext().getSourceCode());
-		
-		listener = (observable, oldValue, newValue) -> {
+		sourceProperty.addListener((observable, oldValue, newValue) -> {
+			System.out.println(sourceProperty.get());
 			System.out.println(newValue);
 			String content = html(newValue);
 			WebEngine webEngine = sourceView.getEngine();
 			webEngine.loadContent(content);
 			webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-				if(newState == State.SUCCEEDED) {
+				if (newState == State.SUCCEEDED) {
 					Document doc = sourceView.getEngine().getDocument();
 					Element el = doc.getElementById("aaa");
 					((EventTarget) el).addEventListener("click", ev -> {
 						System.out.println("BOOM!" + el);
 						System.out.println(el.getAttribute("id"));
 					}, false);
-					
 				}
 			});
-		};
-		sourceProperty.addListener(listener);
+		});
 	}
 
 	String html(String source) {
 		List<String> lines = Arrays.asList(source.split("\\r?\\n"));
-		String html = lines.stream()
-				.map(line -> "<p><pre>" + line + "</pre>")
-				.map(line -> line.matches(".*CALL\\s+.*") 
+		String html = lines.stream().map(line -> "<p><pre>" + line + "</pre>")
+				.map(line -> line.matches(".*CALL\\s+.*")
 						? "<div id='aaa' style=\"background-color: #00FF00\"><a>" + line + "</a></div>"
 						: line)
-				.map(line -> line.matches("\\d{6}\\s+\\*.*") 
+				.map(line -> line.matches("\\d{6}\\s+\\*.*")
 						? "<div style=\"background-color: #98FB98\">" + line + "</div>"
 						: line)
 				.collect(Collectors.joining("\n"));
-		String content = "<html><body>"
-				+ html + "</body></html>";
+		String content = "<html><body>" + html + "</body></html>";
 		try {
 			Files.write(Paths.get("/temp/source.html"), content.getBytes());
 		} catch (IOException e) {
@@ -78,5 +72,4 @@ public class SourceCodeController implements Initializable {
 		}
 		return content;
 	}
-	
 }
