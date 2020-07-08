@@ -1,9 +1,15 @@
+
 package dk.bec.unittest.becut;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +22,7 @@ public class Settings {
 
 	private static final String PROPERTIES_FILENAME = "becut.properties";
 	private static final String RESOURCES_ROOT = "/";
+	private static final String JAR_FOLDER;
 	
 	public static String FTP_HOST = "localhost";
 	public static String USERNAME = "";
@@ -31,10 +38,27 @@ public class Settings {
 	public static final int OUTPUTSTREAM_BUFFER_INITIAL_CAPACITY = 1000000;
 
 	static {
+		URI jarLocation = URI.create("");
+		try {
+			jarLocation = Settings.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		JAR_FOLDER = Paths.get(jarLocation).getParent().toString();
 		Properties properties = new Properties();
 		// TODO lookup properties file based on machine name
+		InputStream inputStream = null;
+		System.out.println("Looking fr properties in: " + JAR_FOLDER + "/" + PROPERTIES_FILENAME);
+		try {
+			inputStream = new FileInputStream(JAR_FOLDER + "/" + PROPERTIES_FILENAME);
+		} catch (FileNotFoundException e) {
+			System.out.println("properties file not found");
+		}
 		String hostname = getHostname();
-		InputStream inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + hostname + "_" + PROPERTIES_FILENAME);
+		if (inputStream == null) {
+			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + hostname + "_" + PROPERTIES_FILENAME);
+		}
 		if (inputStream == null) {
 			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + PROPERTIES_FILENAME);
 		}

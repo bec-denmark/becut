@@ -1,348 +1,455 @@
 {
-	"testCaseName": "TestCaseName",
-	"testCaseId": "TestCaseId",
-	"programName": "MAT510",
-	"externalCalls": [
-		{
-			"name": "TMAT5110",
-			"displayableName": "TMAT5110",
-			"lineNumber": 36,
-			"callType": "DYNAMIC",
-			"parameters": [
-				{
-					"level": 1,
-					"name": "TMAT5110",
-					"dataType": "PIC",
-					"size": 8,
-					"subStructure": [],
-					"isSeventySeven": false,
-					"value": ""
-				},
-				{
-					"level": 1,
-					"name": "MAT511-AREA",
-					"dataType": "GROUP",
-					"size": 30,
-					"subStructure": [
-						{
-							"level": 2,
-							"name": "FILLER",
-							"dataType": "PIC",
-							"size": 8,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "MAT511-DATA-LENGTH",
-							"dataType": "BINARY",
-							"size": 4,
-							"subStructure": [],
-							"isSeventySeven": false,
-							"value": ""
-						},
-						{
-							"level": 2,
-							"name": "MAT511-DATA",
-							"dataType": "GROUP",
-							"size": 18,
-							"subStructure": [
-								{
-									"level": 3,
-									"name": "MAT511-RETURKODE",
-									"dataType": "PIC_NUMERIC",
-									"size": 4,
-									"subStructure": [
-										{
-											"level": 88,
-											"name": "MAT511-RETURKODE-OK",
-											"dataType": "EIGHTYEIGHT",
-											"size": 4,
-											"subStructure": [],
-											"isSeventySeven": false,
-											"value": "TRUE"
-										},
-										{
-											"level": 88,
-											"name": "MAT511-RETURKODE-UKENDT",
-											"dataType": "EIGHTYEIGHT",
-											"size": 4,
-											"subStructure": [],
-											"isSeventySeven": false,
-											"value": ""
-										}
-									],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "MAT511-I-NUMBER",
-									"dataType": "PIC_NUMERIC",
-									"size": 4,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": ""
-								},
-								{
-									"level": 3,
-									"name": "MAT511-SUM",
-									"dataType": "PIC_NUMERIC",
-									"size": 10,
-									"subStructure": [],
-									"isSeventySeven": false,
-									"value": "42"
-								}
-							],
-							"isSeventySeven": false,
-							"value": ""
-						}
-					],
-					"isSeventySeven": false,
-					"value": ""
-				}
-			]
-		}
-	],
-	"postCondition": {
-		"fileSection": [],
-		"linkageSection": [],
-		"localStorage": [],
-		"workingStorage": [
-			{
-				"dataType": "PIC",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 6,
-				"name": "TMAT5110",
-				"size": 8,
-				"subStructure": [],
-				"value": ""
-			},
-			{
-				"dataType": "PIC",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 16,
-				"name": "MAT511-PGM-NAVN",
-				"size": 8,
-				"subStructure": [],
-				"value": ""
-			},
-			{
-				"dataType": "GROUP",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 18,
-				"name": "MAT511-AREA",
-				"size": 30,
-				"subStructure": [
-					{
-						"dataType": "PIC",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 19,
-						"name": "FILLER",
-						"size": 8,
-						"subStructure": [],
-						"value": ""
-					},
-					{
-						"dataType": "BINARY",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 20,
-						"name": "MAT511-DATA-LENGTH",
-						"size": 4,
-						"subStructure": [],
-						"value": ""
-					},
-					{
-						"dataType": "GROUP",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 22,
-						"name": "MAT511-DATA",
-						"size": 18,
-						"subStructure": [
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 23,
-								"name": "MAT511-RETURKODE",
-								"size": 4,
-								"subStructure": [
-									{
-										"dataType": "EIGHTYEIGHT",
-										"isSeventySeven": false,
-										"level": 88,
-										"lineNumber": 24,
-										"name": "MAT511-RETURKODE-OK",
-										"size": 4,
-										"subStructure": [],
-										"value": ""
-									},
-									{
-										"dataType": "EIGHTYEIGHT",
-										"isSeventySeven": false,
-										"level": 88,
-										"lineNumber": 25,
-										"name": "MAT511-RETURKODE-UKENDT",
-										"size": 4,
-										"subStructure": [],
-										"value": ""
-									}
-								],
-								"value": ""
-							},
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 27,
-								"name": "MAT511-I-NUMBER",
-								"size": 4,
-								"subStructure": [],
-								"value": "10"
-							},
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 28,
-								"name": "MAT511-SUM",
-								"size": 10,
-								"subStructure": [],
-								"value": "42"
-							}
-						],
-						"value": ""
-					}
-				],
-				"value": ""
-			}
-		]
-	},
-	"preCondition": {
-		"fileSection": [],
-		"linkageSection": [],
-		"localStorage": [],
-		"workingStorage": [
-			{
-				"dataType": "PIC",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 6,
-				"name": "TMAT5110",
-				"size": 8,
-				"subStructure": [],
-				"value": ""
-			},
-			{
-				"dataType": "PIC",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 16,
-				"name": "MAT511-PGM-NAVN",
-				"size": 8,
-				"subStructure": [],
-				"value": ""
-			},
-			{
-				"dataType": "GROUP",
-				"isSeventySeven": false,
-				"level": 1,
-				"lineNumber": 18,
-				"name": "MAT511-AREA",
-				"size": 30,
-				"subStructure": [
-					{
-						"dataType": "PIC",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 19,
-						"name": "FILLER",
-						"size": 8,
-						"subStructure": [],
-						"value": ""
-					},
-					{
-						"dataType": "BINARY",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 20,
-						"name": "MAT511-DATA-LENGTH",
-						"size": 4,
-						"subStructure": [],
-						"value": ""
-					},
-					{
-						"dataType": "GROUP",
-						"isSeventySeven": false,
-						"level": 2,
-						"lineNumber": 22,
-						"name": "MAT511-DATA",
-						"size": 18,
-						"subStructure": [
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 23,
-								"name": "MAT511-RETURKODE",
-								"size": 4,
-								"subStructure": [
-									{
-										"dataType": "EIGHTYEIGHT",
-										"isSeventySeven": false,
-										"level": 88,
-										"lineNumber": 24,
-										"name": "MAT511-RETURKODE-OK",
-										"size": 4,
-										"subStructure": [],
-										"value": ""
-									},
-									{
-										"dataType": "EIGHTYEIGHT",
-										"isSeventySeven": false,
-										"level": 88,
-										"lineNumber": 25,
-										"name": "MAT511-RETURKODE-UKENDT",
-										"size": 4,
-										"subStructure": [],
-										"value": ""
-									}
-								],
-								"value": ""
-							},
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 27,
-								"name": "MAT511-I-NUMBER",
-								"size": 4,
-								"subStructure": [],
-								"value": "10"
-							},
-							{
-								"dataType": "PIC_NUMERIC",
-								"isSeventySeven": false,
-								"level": 3,
-								"lineNumber": 28,
-								"name": "MAT511-SUM",
-								"size": 10,
-								"subStructure": [],
-								"value": "42"
-							}
-						],
-						"value": ""
-					}
-				],
-				"value": ""
-			}
-		]
-	}
+    "externalCalls": [
+        {
+            "callType": "DYNAMIC",
+            "displayableName": "CALL TMAT5110 USING MAT511-AREA",
+            "iterations": [
+                {
+                    "default": true,
+                    "name": "iteration_0",
+                    "numericalOrder": 0,
+                    "parameters": [
+                        {
+                            "dataType": "GROUP",
+                            "isSeventySeven": false,
+                            "level": 1,
+                            "lineNumber": 18,
+                            "name": "MAT511-AREA",
+                            "size": 30,
+                            "subStructure": [
+                                {
+                                    "dataType": "PIC",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 19,
+                                    "name": "FILLER",
+                                    "size": 8,
+                                    "subStructure": [],
+                                    "value": ""
+                                },
+                                {
+                                    "dataType": "BINARY",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 20,
+                                    "name": "MAT511-DATA-LENGTH",
+                                    "size": 4,
+                                    "subStructure": [],
+                                    "value": ""
+                                },
+                                {
+                                    "dataType": "GROUP",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 22,
+                                    "name": "MAT511-DATA",
+                                    "size": 18,
+                                    "subStructure": [
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 23,
+                                            "name": "MAT511-RETURKODE",
+                                            "size": 4,
+                                            "subStructure": [
+                                                {
+                                                    "dataType": "EIGHTYEIGHT",
+                                                    "isSeventySeven": false,
+                                                    "level": 88,
+                                                    "lineNumber": 24,
+                                                    "name": "MAT511-RETURKODE-OK",
+                                                    "size": 4,
+                                                    "subStructure": [],
+                                                    "value": ""
+                                                },
+                                                {
+                                                    "dataType": "EIGHTYEIGHT",
+                                                    "isSeventySeven": false,
+                                                    "level": 88,
+                                                    "lineNumber": 25,
+                                                    "name": "MAT511-RETURKODE-UKENDT",
+                                                    "size": 4,
+                                                    "subStructure": [],
+                                                    "value": ""
+                                                }
+                                            ],
+                                            "value": "0000"
+                                        },
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 27,
+                                            "name": "MAT511-I-NUMBER",
+                                            "size": 4,
+                                            "subStructure": [],
+                                            "value": ""
+                                        },
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 28,
+                                            "name": "MAT511-SUM",
+                                            "size": 10,
+                                            "subStructure": [],
+                                            "value": "42"
+                                        }
+                                    ],
+                                    "value": ""
+                                }
+                            ],
+                            "value": ""
+                        }
+                    ]
+                },
+                {
+                    "default": false,
+                    "name": "iteration_1",
+                    "numericalOrder": 1,
+                    "parameters": [
+                        {
+                            "dataType": "GROUP",
+                            "isSeventySeven": false,
+                            "level": 1,
+                            "lineNumber": 18,
+                            "name": "MAT511-AREA",
+                            "size": 30,
+                            "subStructure": [
+                                {
+                                    "dataType": "PIC",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 19,
+                                    "name": "FILLER",
+                                    "size": 8,
+                                    "subStructure": [],
+                                    "value": ""
+                                },
+                                {
+                                    "dataType": "BINARY",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 20,
+                                    "name": "MAT511-DATA-LENGTH",
+                                    "size": 4,
+                                    "subStructure": [],
+                                    "value": ""
+                                },
+                                {
+                                    "dataType": "GROUP",
+                                    "isSeventySeven": false,
+                                    "level": 2,
+                                    "lineNumber": 22,
+                                    "name": "MAT511-DATA",
+                                    "size": 18,
+                                    "subStructure": [
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 23,
+                                            "name": "MAT511-RETURKODE",
+                                            "size": 4,
+                                            "subStructure": [
+                                                {
+                                                    "dataType": "EIGHTYEIGHT",
+                                                    "isSeventySeven": false,
+                                                    "level": 88,
+                                                    "lineNumber": 24,
+                                                    "name": "MAT511-RETURKODE-OK",
+                                                    "size": 4,
+                                                    "subStructure": [],
+                                                    "value": ""
+                                                },
+                                                {
+                                                    "dataType": "EIGHTYEIGHT",
+                                                    "isSeventySeven": false,
+                                                    "level": 88,
+                                                    "lineNumber": 25,
+                                                    "name": "MAT511-RETURKODE-UKENDT",
+                                                    "size": 4,
+                                                    "subStructure": [],
+                                                    "value": ""
+                                                }
+                                            ],
+                                            "value": ""
+                                        },
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 27,
+                                            "name": "MAT511-I-NUMBER",
+                                            "size": 4,
+                                            "subStructure": [],
+                                            "value": ""
+                                        },
+                                        {
+                                            "dataType": "PIC_NUMERIC",
+                                            "isSeventySeven": false,
+                                            "level": 3,
+                                            "lineNumber": 28,
+                                            "name": "MAT511-SUM",
+                                            "size": 10,
+                                            "subStructure": [],
+                                            "value": ""
+                                        }
+                                    ],
+                                    "value": ""
+                                }
+                            ],
+                            "value": ""
+                        }
+                    ]
+                }
+            ],
+            "lineNumber": 36,
+            "name": "TMAT5110"
+        }
+    ],
+    "postCondition": {
+        "fileSection": [],
+        "linkageSection": [],
+        "localStorage": [],
+        "workingStorage": [
+            {
+                "dataType": "PIC",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 6,
+                "name": "TMAT5110",
+                "size": 8,
+                "subStructure": [],
+                "value": ""
+            },
+            {
+                "dataType": "PIC",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 16,
+                "name": "MAT511-PGM-NAVN",
+                "size": 8,
+                "subStructure": [],
+                "value": ""
+            },
+            {
+                "dataType": "GROUP",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 18,
+                "name": "MAT511-AREA",
+                "size": 30,
+                "subStructure": [
+                    {
+                        "dataType": "PIC",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 19,
+                        "name": "FILLER",
+                        "size": 8,
+                        "subStructure": [],
+                        "value": ""
+                    },
+                    {
+                        "dataType": "BINARY",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 20,
+                        "name": "MAT511-DATA-LENGTH",
+                        "size": 4,
+                        "subStructure": [],
+                        "value": ""
+                    },
+                    {
+                        "dataType": "GROUP",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 22,
+                        "name": "MAT511-DATA",
+                        "size": 18,
+                        "subStructure": [
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 23,
+                                "name": "MAT511-RETURKODE",
+                                "size": 4,
+                                "subStructure": [
+                                    {
+                                        "dataType": "EIGHTYEIGHT",
+                                        "isSeventySeven": false,
+                                        "level": 88,
+                                        "lineNumber": 24,
+                                        "name": "MAT511-RETURKODE-OK",
+                                        "size": 4,
+                                        "subStructure": [],
+                                        "value": ""
+                                    },
+                                    {
+                                        "dataType": "EIGHTYEIGHT",
+                                        "isSeventySeven": false,
+                                        "level": 88,
+                                        "lineNumber": 25,
+                                        "name": "MAT511-RETURKODE-UKENDT",
+                                        "size": 4,
+                                        "subStructure": [],
+                                        "value": ""
+                                    }
+                                ],
+                                "value": ""
+                            },
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 27,
+                                "name": "MAT511-I-NUMBER",
+                                "size": 4,
+                                "subStructure": [],
+                                "value": ""
+                            },
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 28,
+                                "name": "MAT511-SUM",
+                                "size": 10,
+                                "subStructure": [],
+                                "value": ""
+                            }
+                        ],
+                        "value": ""
+                    }
+                ],
+                "value": ""
+            }
+        ]
+    },
+    "preCondition": {
+        "fileSection": [],
+        "linkageSection": [],
+        "localStorage": [],
+        "workingStorage": [
+            {
+                "dataType": "PIC",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 6,
+                "name": "TMAT5110",
+                "size": 8,
+                "subStructure": [],
+                "value": ""
+            },
+            {
+                "dataType": "PIC",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 16,
+                "name": "MAT511-PGM-NAVN",
+                "size": 8,
+                "subStructure": [],
+                "value": ""
+            },
+            {
+                "dataType": "GROUP",
+                "isSeventySeven": false,
+                "level": 1,
+                "lineNumber": 18,
+                "name": "MAT511-AREA",
+                "size": 30,
+                "subStructure": [
+                    {
+                        "dataType": "PIC",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 19,
+                        "name": "FILLER",
+                        "size": 8,
+                        "subStructure": [],
+                        "value": ""
+                    },
+                    {
+                        "dataType": "BINARY",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 20,
+                        "name": "MAT511-DATA-LENGTH",
+                        "size": 4,
+                        "subStructure": [],
+                        "value": ""
+                    },
+                    {
+                        "dataType": "GROUP",
+                        "isSeventySeven": false,
+                        "level": 2,
+                        "lineNumber": 22,
+                        "name": "MAT511-DATA",
+                        "size": 18,
+                        "subStructure": [
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 23,
+                                "name": "MAT511-RETURKODE",
+                                "size": 4,
+                                "subStructure": [
+                                    {
+                                        "dataType": "EIGHTYEIGHT",
+                                        "isSeventySeven": false,
+                                        "level": 88,
+                                        "lineNumber": 24,
+                                        "name": "MAT511-RETURKODE-OK",
+                                        "size": 4,
+                                        "subStructure": [],
+                                        "value": ""
+                                    },
+                                    {
+                                        "dataType": "EIGHTYEIGHT",
+                                        "isSeventySeven": false,
+                                        "level": 88,
+                                        "lineNumber": 25,
+                                        "name": "MAT511-RETURKODE-UKENDT",
+                                        "size": 4,
+                                        "subStructure": [],
+                                        "value": ""
+                                    }
+                                ],
+                                "value": ""
+                            },
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 27,
+                                "name": "MAT511-I-NUMBER",
+                                "size": 4,
+                                "subStructure": [],
+                                "value": ""
+                            },
+                            {
+                                "dataType": "PIC_NUMERIC",
+                                "isSeventySeven": false,
+                                "level": 3,
+                                "lineNumber": 28,
+                                "name": "MAT511-SUM",
+                                "size": 10,
+                                "subStructure": [],
+                                "value": ""
+                            }
+                        ],
+                        "value": ""
+                    }
+                ],
+                "value": ""
+            }
+        ]
+    },
+    "programName": "MAT510",
+    "testCaseId": "becut-MAT510-67e2edff-9231-4267-b3e1-7d5adac553f2",
+    "testCaseName": "becut-MAT510"
 }
