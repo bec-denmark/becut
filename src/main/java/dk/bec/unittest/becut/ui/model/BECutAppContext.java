@@ -1,10 +1,13 @@
 package dk.bec.unittest.becut.ui.model;
 
 import java.io.IOException;
+import java.util.List;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ui.controller.SourceCodeController;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +29,7 @@ public class BECutAppContext {
 	private Stage primaryStage;
 	
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
-	private SimpleStringProperty sourceCode = new SimpleStringProperty("None");
+	private SimpleObjectProperty<List<String>> sourceCode = new SimpleObjectProperty<>();
 	
 	private BECutAppContext(Stage primaryStage) {
 		this.unitTest = new UnitTest();
@@ -73,7 +76,7 @@ public class BECutAppContext {
 		return compileListStatus;
 	}
 
-	public SimpleStringProperty getSourceCode() {
+	public ObjectProperty<List<String>> getSourceCode() {
 		return sourceCode;
 	}
 	
