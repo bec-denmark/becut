@@ -6,7 +6,7 @@ import java.util.Random;
 public class RecorderJCLGenerator {
 	
 	public static String getJCL(String programName, String datasetName, String jobName, String userName, List<String> steplib) {
-		String depthOfCall = String.format("BECUT-%03d-DEPTH-OF-CALL", new Random().nextInt(1000));
+		String depthOfCall = String.format("BECUT-%03d-DEPTH", new Random().nextInt(1000));
 		String jcl = "" +
 				"//" +  jobName + " JOB ,'" + userName + "',\n" +
 				"//             SCHENV=TSTSYS,\n" +
@@ -19,7 +19,7 @@ public class RecorderJCLGenerator {
 				"            SET LOG ON FILE " + datasetName + ";\n" + 
 				"            SET DYNDEBUG OFF;                            \n" + 
 				"            01 " + depthOfCall + " PIC 9(9) COMP;              \n" + 
-				"            MOVE 0 TO DEPTH-OF-CALL;                     \n" + 
+				"            MOVE 0 TO " + depthOfCall + ";\n" + 
 				"            AT CALL * BEGIN;                             \n" +
 				"               IF " + depthOfCall + " < 1 THEN                 \n" + 
 				"                 LIST UNTITLED('AT CALL BEGIN');         \n" + 
@@ -28,12 +28,11 @@ public class RecorderJCLGenerator {
 				"                 LIST UNTITLED('AT CALL END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               COMPUTE " + depthOfCall + "\n" +
-				"               		= " + depthOfCall + " + 1;\n" + 
+				"               COMPUTE " + depthOfCall + " = " + depthOfCall + " + 1;\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            AT EXIT * BEGIN;                             \n" + 
-				"               IF DEPTH-OF-CALL < 2 THEN                 \n" + 
+				"               IF " + depthOfCall + " < 2 THEN                 \n" + 
 				"                 LIST UNTITLED('AT EXIT BEGIN');         \n" + 
 				"                 LIST %PROGRAM;                          \n" + 
 				"                 SET QUALIFY BLOCK MAT563;               \n" + 
@@ -42,8 +41,7 @@ public class RecorderJCLGenerator {
 				"                 LIST UNTITLED('AT EXIT END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               COMPUTE " + depthOfCall + "\n" +
-				"               		= " + depthOfCall + " - 1;\n" + 
+				"               COMPUTE " + depthOfCall + " = " + depthOfCall + " - 1;\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            GO;                                          \n" + 
