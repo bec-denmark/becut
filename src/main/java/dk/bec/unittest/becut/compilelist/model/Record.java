@@ -24,32 +24,38 @@ public class Record {
 		line = line.trim().replaceAll("\\.", "");
 		String[] parts = line.split("\\s+");
 		this.lineNumber = Integer.parseInt(parts[0]);
-		this.level = Integer.parseInt(parts[1]);
-		Record p = null;
-		this.parent = p;
-		this.name = parts[2];
-		switch (this.level) {
-		case 88:
-			this.dataType = DataType.EIGHTYEIGHT;
-			this.size = -1;
-			break;
-		case 77:
-			this.size = parseSize(parts[6]);
-			this.dataType = DataType.parseDataType(parts[7]);
-			this.isSeventySeven = Boolean.TRUE;
-			break;
-		default:
-			if (parts.length < 10) {
-				this.size = parseSize(parts[6]);
-				this.dataType = DataType.parseDataType(parts[7]);
+		if(parts[1].trim().equals("FD")) {
+			this.level = 1;
+			Record p = null;
+			this.parent = p;
+			this.name = parts[2];
+		} else {
+			this.level = Integer.parseInt(parts[1]);
+			Record p = null;
+			this.parent = p;
+			this.name = parts[2];
+			switch (this.level) {
+				case 88:
+					this.dataType = DataType.EIGHTYEIGHT;
+					this.size = -1;
+					break;
+				case 77:
+					this.size = parseSize(parts[6]);
+					this.dataType = DataType.parseDataType(parts[7]);
+					this.isSeventySeven = Boolean.TRUE;
+					break;
+				default:
+					if (parts.length < 10) {
+						this.size = parseSize(parts[6]);
+						this.dataType = DataType.parseDataType(parts[7]);
+					}
+					else {
+						this.size = parseSize(parts[9]);
+						this.dataType = DataType.parseDataType(parts[10]);
+					}
+					break;
 			}
-			else {
-				this.size = parseSize(parts[9]);
-				this.dataType = DataType.parseDataType(parts[10]);
-			}
-			break;
 		}
-		
 	}
 
 	private Integer parseSize(String dataInfo) {
