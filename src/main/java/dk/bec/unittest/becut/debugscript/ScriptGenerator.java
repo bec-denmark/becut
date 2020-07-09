@@ -3,8 +3,10 @@ package dk.bec.unittest.becut.debugscript;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
@@ -192,6 +194,9 @@ public class ScriptGenerator {
 	private static AtCallBreakpoint createAtCallBreakpoint(String name, List<ExternalCall> calls, 
 			CompileListing compileListing, DebugScript debugScript) {
 		List<Statement> statements = new ArrayList<>();
+		Set<Tree> alreadyMatched = new HashSet<>();		
+		List<Tree> callStatements = TreeUtil.getDescendents(
+				compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		calls.stream().forEach(call -> {
 			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + call.getLineNumber() + "-" + call.getName(), 9, "0");
 			List<Statement> ifBody = new ArrayList<>();
@@ -203,7 +208,7 @@ public class ScriptGenerator {
 			
 			debugScript.getVariableDeclarations().add(counter);
 			
-			Tree reconciledExternalCall = reconcileExternalCall(compileListing, call);
+			Tree reconciledExternalCall = reconcileExternalCall(compileListing, call, alreadyMatched, callStatements);
 			String statemendId = reconciledExternalCall.getStartPosition().getLinenumber() + ".1";
 			//String statemendId = call.getStatementId();
 			statements.add(
@@ -257,9 +262,10 @@ public class ScriptGenerator {
 		
 	}
 	
-	private static Tree reconcileExternalCall(CompileListing compileListing, ExternalCall externalCall) {
+	private static Tree reconcileExternalCall(CompileListing compileListing, 
+			ExternalCall externalCall, Set<Tree> alreadyMatched, List<Tree> callStatements) {
 		List<Tree> matches = new ArrayList<>();
-		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
+		
 		for (Tree callStatement: callStatements) {
 			String programName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			if (programName.equals(externalCall.getName())) {
@@ -282,8 +288,7 @@ public class ScriptGenerator {
 		//2) If there are still multiple matches compare parameter names
 		//3) If there are still multiple matches compare parameter types
 		//4) If there are still multiple matches compare parameter values?
-		//5) Otherwise take the first one?
-		
+		//5) Otherwise take the first one? - yes, and remember it as already taken
 
 		//1) check parameter length
 		List<Tree> parameterLengthMatches = new ArrayList<>();
@@ -326,7 +331,6 @@ public class ScriptGenerator {
 			return argNameMatches.get(0);
 		}
 		
-		
 		//3) If there are still multiple matches compare parameter types
 		List<Tree> argTypeMatches = new ArrayList<>();
 		for (Tree callStatement: argNameMatches) {
@@ -351,6 +355,17 @@ public class ScriptGenerator {
 		//This is the dream
 		if (argTypeMatches.size() == 1) {
 			return argTypeMatches.get(0);
+		}
+		
+		//We have more than one left, names and types of args are the same, so lets return the first one
+		//and remove it from the pull of possibilities.
+		if(argTypeMatches.size() > 1) {
+			for(Tree call : argTypeMatches) {
+				if(!alreadyMatched.contains(call)) {
+					alreadyMatched.add(call);
+					return call;
+				}
+			}
 		}
 		
 		return null;
