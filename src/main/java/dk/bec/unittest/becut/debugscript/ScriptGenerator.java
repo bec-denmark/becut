@@ -45,6 +45,7 @@ import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import koopa.core.trees.Tree;
 
 public class ScriptGenerator {
@@ -317,7 +318,7 @@ public class ScriptGenerator {
 			for (Tree arg: args) {
 				String argName = BecutTestCaseManager.getArgName(arg);
 				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
-					if (argName.equals(parm.getName())) {
+					if (parm.matches(argName)) {
 						count++;
 						if (count == externalCall.getFirstIteration().getParameters().size()) {
 							argNameMatches.add(callStatement);
@@ -338,12 +339,16 @@ public class ScriptGenerator {
 			int count = 0;
 			for (Tree arg: args) {
 				String argName = BecutTestCaseManager.getArgName(arg);
-				//TODO handle variable in/of. Right now we take the first match
-				Record compileListingRecord = compileListing.getDataDivisionMap().getRecord(argName).get(0);
 				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
 					DataType scriptDataType = parm.getDataType();
 					Integer scriptDataTypeSize = parm.getSize();
-					if (scriptDataType == compileListingRecord.getDataType() || scriptDataTypeSize.equals(compileListingRecord.getSize())) {
+					//TODO handle variable in/of. Right now we take the first match
+					List<Record> compileListingRecords = compileListing.getDataDivisionMap().getRecord(argName);
+					if (parm instanceof ParameterLiteral
+							|| (!compileListingRecords.isEmpty() 
+									&& scriptDataType == compileListingRecords.get(0).getDataType()) 
+							|| (!compileListingRecords.isEmpty() 
+									&& scriptDataTypeSize.equals(compileListingRecords.get(0).getSize()))) {
 						count++;
 						if (count == externalCall.getFirstIteration().getParameters().size()) {
 							argTypeMatches.add(callStatement);

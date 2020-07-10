@@ -154,4 +154,8 @@ public class Parameter {
 				&& this.value == that.value
 				&& subStructure.equals(that.subStructure);
 	}
+	
+	public boolean matches(String s) {
+		return name.equals(s);
+	}
 }
