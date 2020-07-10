@@ -49,8 +49,10 @@ public class LoadCompileListingController implements Initializable {
 	
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
-		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing.getCompileListing());
-		List<String> lines = BECutAppContext.getContext().getUnitTest().getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
+		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing
+				.getCompileListing());
+		List<String> lines = BECutAppContext.getContext().getUnitTest()
+				.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
 		BECutAppContext.getContext().getSourceCode().setValue(lines);
 		ok.getScene().getWindow().hide();
 	}

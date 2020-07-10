@@ -135,14 +135,23 @@ public class Parse {
 			count++;
 		}
 		
-		InvocationParameters invocationParameters = new InvocationParameters(cleanCompileList.subList(invocationStart, invocationEnd));
-		CompileOptions compileOptions = new CompileOptions(cleanCompileList.subList(compileOptionStart, compileOptionEnd));
-		SourceMapAndCrossReference sourceMapAndCrossReference = new SourceMapAndCrossReference(cleanCompileList.subList(sourceStart, sourceEnd));
-		DataNamesCrossReference dataNamesCrossReference = new DataNamesCrossReference(cleanCompileList.subList(dataNamesStart, dataNamesEnd));
-		ProceduresCrossReference proceduresCrossReference = new ProceduresCrossReference(cleanCompileList.subList(procedureStart, procedureEnd));
-		ProgramsCrossReference programsCrossReference = new ProgramsCrossReference(cleanCompileList.subList(programStart, programEnd));
-		DataDivisionMap dataDivisionMap = new DataDivisionMap(cleanCompileList.subList(dataDivisionStart, dataDivisionEnd));
-		return new CompileListing(invocationParameters, compileOptions, sourceMapAndCrossReference, dataNamesCrossReference, proceduresCrossReference, programsCrossReference, dataDivisionMap, compileListing);
+		InvocationParameters invocationParameters 
+			= new InvocationParameters(cleanCompileList.subList(invocationStart, invocationEnd));
+		CompileOptions compileOptions 
+			= new CompileOptions(cleanCompileList.subList(compileOptionStart, compileOptionEnd));
+		SourceMapAndCrossReference sourceMapAndCrossReference 
+			= new SourceMapAndCrossReference(cleanCompileList.subList(sourceStart, sourceEnd));
+		DataNamesCrossReference dataNamesCrossReference 
+			= new DataNamesCrossReference(cleanCompileList.subList(dataNamesStart, dataNamesEnd));
+		ProceduresCrossReference proceduresCrossReference 
+			= new ProceduresCrossReference(cleanCompileList.subList(procedureStart, procedureEnd));
+		ProgramsCrossReference programsCrossReference 
+			= new ProgramsCrossReference(cleanCompileList.subList(programStart, programEnd));
+		DataDivisionMap dataDivisionMap 
+			= new DataDivisionMap(cleanCompileList.subList(dataDivisionStart, dataDivisionEnd));
+		return new CompileListing(invocationParameters, compileOptions, sourceMapAndCrossReference, 
+				dataNamesCrossReference, proceduresCrossReference, programsCrossReference, 
+				dataDivisionMap, compileListing);
 		
 	}
 

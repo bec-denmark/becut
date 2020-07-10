@@ -254,7 +254,7 @@ public class BecutTestCaseManager {
 			} else {
 				// normal call - figure out if static or dynamic
 				externalCall.setCallType(CallType.DYNAMIC);
-				externalCall.setDisplayableName(externalCall.toString());
+				externalCall.setDisplayableName(String.format("%06d ", lineNumber) + externalCall.toString());
 			}
 		}
 		return externalCall;
