@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -47,12 +48,16 @@ public class SourceCodeController {
 			webEngine.loadContent(content);
 			webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
 				if (newState == State.SUCCEEDED) {
-					Document doc = sourceView.getEngine().getDocument();
-					Element el = doc.getElementById("aaa");
-					((EventTarget) el).addEventListener("click", ev -> {
-						System.out.println("BOOM!" + el);
-						System.out.println(el.getAttribute("id"));
-					}, false);
+					Document doc = webEngine.getDocument();
+					Element el = doc.getElementById("6664");
+					if(el != null) {
+						((EventTarget) el).addEventListener("click", ev -> {
+							System.out.println("BOOM!" + el);
+							System.out.println(el.getAttribute("id"));
+						}, false);
+					}
+					
+					webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
 				}
 			});
 		});
@@ -74,10 +79,14 @@ public class SourceCodeController {
 				.stream()
 				.filter(line -> !exclude.matcher(line).matches())
 				.filter(line -> include.matcher(line).matches())
-				.map(line -> line.matches(" {2}\\d{6}\\s+.*") 
-						&& callSites.contains(Integer.parseInt(line.substring(2, 8)))
-						? "<div id='aaa' style=\"background-color: #00FF00\"><a>" + line + "</a></div>"
-						: line)
+				.map(line -> {
+					int lineNumber = Integer.parseInt(line.substring(2, 8));
+					if(callSites.contains(Integer.parseInt(line.substring(2, 8)))) {
+						return "<div id='" +  
+								lineNumber + 
+								"' style=\"background-color: #00FF00\"><a>" + line + "</a></div>";
+					}
+					return line;})
 				.map(line -> line.matches("\\d{6}\\s+\\*.*")
 						? "<div style=\"background-color: #98FB98\">" + line + "</div>"
 						: line)

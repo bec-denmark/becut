@@ -222,7 +222,7 @@ public class ScriptGenerator {
 	
 	private static List<Statement> createAssignmentStatements(Parameter parameter) {
 		List<Statement> returnValues = new ArrayList<>();
-		if (!parameter.getValue().equals("")) {
+		if (!(parameter instanceof ParameterLiteral || parameter.getValue().equals(""))) {
 			returnValues.add(new Move(parameter));
 		}
 		for (Parameter p: parameter.getSubStructure()) {
@@ -234,7 +234,7 @@ public class ScriptGenerator {
 	private static List<Statement> createAssignmentStatements(ExternalCallIteration callIteration) {
 		List<Statement> returnValues = new ArrayList<>();
 		for (Parameter parameter: callIteration.getParameters()) {
-			if (!parameter.getValue().equals("")) {
+			if (!(parameter instanceof ParameterLiteral || parameter.getValue().equals(""))) {
 				returnValues.add(new Move(parameter));
 			}
 			for (Parameter p: parameter.getSubStructure()) {
