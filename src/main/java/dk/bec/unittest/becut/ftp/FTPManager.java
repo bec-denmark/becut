@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,7 +157,8 @@ public class FTPManager {
 			throw new Exception(ftp.getReplyString());
 		}
 		outputStream.close();
-		return outputStream.toString();
+		//FIXME should be set by -Dfile.encoding=Cp1252 but somewhere it is set to UTF-8
+		return outputStream.toString("Cp1252");
 	}
 	
 	public static String submitJob(FTPClient ftp, InputStream jcl) {

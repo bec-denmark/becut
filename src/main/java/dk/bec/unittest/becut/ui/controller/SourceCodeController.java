@@ -84,12 +84,12 @@ public class SourceCodeController {
 				.map(line -> "<p><pre>" + line + "</pre>")
 				.collect(Collectors.joining("\n"));
 		String content = "<html><body>" + html + "</body></html>";
-		try {
-			Files.write(Paths.get("/temp/source.html"), content.getBytes());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Files.write(Paths.get("/temp/source.html"), content.getBytes());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return content;
 	}
 }

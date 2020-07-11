@@ -43,7 +43,7 @@ public class Parse {
 	
 	public static CompileListing parse(InputStream inputStream) {
 		List<String> compileListing = new ArrayList<String>();
-		try (Scanner s = new Scanner(inputStream, "UTF-8")) {
+		try (Scanner s = new Scanner(inputStream)) {
 			while (s.hasNextLine()) {
 				compileListing.add(s.nextLine());
 			}
