@@ -47,6 +47,7 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 			//FIXME should be set by -Dfile.encoding=Cp1252 but somewhere it is set to UTF-8
 			Files.readAllLines(Paths.get(compileListingPath.getText()), Charset.forName("Cp1252"))
 				.stream()
+				.map(line -> line.replaceAll("\\s+$", ""))
 				.forEach(line -> {
 					byte[] bytes = line.getBytes();
 					if(bytes.length > 1) {
