@@ -1,7 +1,9 @@
 package dk.bec.unittest.becut.testcase.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BecutTestCase {
 
@@ -10,13 +12,13 @@ public class BecutTestCase {
 	private String programName;
 	private PreCondition preCondition;
 	private List<ExternalCall> externalCalls = new ArrayList<>();
-	private List<String> fileControlAssignments = new ArrayList<>();
+	private Map<String, String> fileControlAssignments = new HashMap<>();
 	
-	public List<String> getFileControlAssignments() {
+	public Map<String, String> getFileControlAssignments() {
 		return fileControlAssignments;
 	}
 
-	public void setFileControlAssignments(List<String> fileControlAssignments) {
+	public void setFileControlAssignments(Map<String, String> fileControlAssignments) {
 		this.fileControlAssignments = fileControlAssignments;
 	}
 

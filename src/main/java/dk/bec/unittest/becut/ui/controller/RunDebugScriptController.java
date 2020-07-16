@@ -60,29 +60,7 @@ public class RunDebugScriptController extends AbstractBECutController implements
 		if (!loadModuleName.getText().isEmpty()) {
 			programName = loadModuleName.getText();
 		}
-		compileListing.getSourceMapAndCrossReference().getFileControlAssignments()
-			.stream()
-			.forEach(name -> {
-				FTPClient ftpClient = new FTPClient();
-				Credential credential = BECutAppContext.getContext().getCredential();
-				if (!ftpClient.isConnected()) {
-					try {
-						FTPManager.connectAndLogin(ftpClient, credential);
-					} catch (Exception e) {
-						//FIXME
-						e.printStackTrace();
-					}
-				}
-				String datasetName = credential.getUsername() + ".BECUT.T" + RecorderManager.get6DigitNumber();
-				DatasetProperties datasetProperties = 
-						new SequentialDatasetProperties(RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
-				try {
-					FTPManager.sendDataset(ftpClient, datasetName, new File("/temp/" + name + ".txt"), datasetProperties);
-				} catch (Exception e) {
-					//FIXME
-					e.printStackTrace();
-				}
-			});
+
 		HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
 		HostJobDataset jobDataset = job.getDatasets().get("INSPLOG");
 		

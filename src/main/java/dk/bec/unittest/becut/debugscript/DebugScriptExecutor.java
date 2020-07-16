@@ -3,7 +3,13 @@ package dk.bec.unittest.becut.debugscript;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -19,7 +25,10 @@ import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.RecorderManager;
+import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import koopa.core.trees.Tree;
+import koopa.core.trees.jaxen.Jaxen;
 
 public class DebugScriptExecutor {
 	
@@ -72,9 +81,9 @@ public class DebugScriptExecutor {
 	
 	private static String generateDDs() {
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
-		return compileListing.getSourceMapAndCrossReference().getFileControlAssignments()
+		return compileListing.getSourceMapAndCrossReference().getFileControlAssignments().entrySet()
 			.stream()
-			.map(name -> {
+			.map(entry -> {
 					FTPClient ftpClient = new FTPClient();
 					Credential credential = BECutAppContext.getContext().getCredential();
 					if (!ftpClient.isConnected()) {
@@ -82,19 +91,50 @@ public class DebugScriptExecutor {
 							FTPManager.connectAndLogin(ftpClient, credential);
 						} catch (Exception e) {
 							//FIXME
-							e.printStackTrace();
+							throw new RuntimeException(e);
 						}
 					}
-					String datasetName = credential.getUsername() + ".BECUT.T" + RecorderManager.get6DigitNumber();
+					String fileName = entry.getKey();
+					
+					String recordName = Jaxen.evaluate(
+							compileListing.getSourceMapAndCrossReference().getAst(),
+							"//fileDescriptionEntry[//fileName//node()/text()=\"" +
+							fileName + 
+							"\"]//following-sibling::recordDescriptionEntry[1]//dataName//text()")
+							.stream()
+							.map(Tree.class::cast)
+							.map(Tree::getText)
+							.collect(Collectors.joining());
+					
+					//TODO fix this telescope
+					List<Parameter> params = BECutAppContext.getContext().getUnitTest()
+							.getBecutTestCase().getPreCondition().getFileSection();
+					Optional<Parameter> op = params
+							.stream()
+							.filter(p -> p.getName().equals(recordName))
+							.findFirst();
+					int size = op.isPresent() ? op.get().getSize() : 80;
+					//TODO put all files in one PDS username.becut.random(assign to name)
+					String datasetName = credential.getUsername() + 
+							".BECUT.T" + 
+							RecorderManager.get6DigitNumber() +
+							"." + entry.getValue();
 					DatasetProperties datasetProperties = 
-							new SequentialDatasetProperties(RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+							new SequentialDatasetProperties(
+									RecordFormat.FIXED_BLOCK, size, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
 					try {
-						FTPManager.sendDataset(ftpClient, datasetName, new File("/temp/" + name + ".txt"), datasetProperties);
+						Path localPath = Paths.get("/temp/", entry.getValue() + ".txt");
+						if(Files.exists(localPath)) {
+							FTPManager.sendDataset(ftpClient, datasetName, 
+									new File("/temp/" + entry.getValue() + ".txt"), datasetProperties);
+						} else {
+							FTPManager.allocateDataset(ftpClient, datasetName, datasetProperties);
+						}
 					} catch (Exception e) {
 						//FIXME
-						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
-					return "//" + name + "    DD DSN=" + datasetName + ",DISP=SHR";})
+					return "//" + entry.getValue() + "    DD DSN=" + datasetName + ",DISP=SHR";})
 			.collect(Collectors.joining("\n", "", "\n"));
 	}
 }

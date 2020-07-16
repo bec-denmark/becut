@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -216,7 +217,7 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.getRoot().getChildren().add(postConditionHeader);
 
 		populateUnitTestParts(fileControlHeader, 
-				becutTestCase.getFileControlAssignments());
+				becutTestCase.getFileControlAssignments().values());
 		
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("File Section"),
 				becutTestCase.getPreCondition().getFileSection());
@@ -242,7 +243,7 @@ public class BecutTestCaseController implements Initializable {
 	}
 
 	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent,
-			List<String> fileControlAssignments) {
+			Collection<String> fileControlAssignments) {
 		for (String fca : fileControlAssignments) {
 			parent.getChildren().add(
 					new TreeItem<UnitTestTreeObject>(new UnitTestTreeObject(fca, "", "/temp/" + fca + ".txt") {}));
