@@ -54,6 +54,8 @@ public class BecutTestCaseManager {
 		becutTestCase.setProgramName(compileListing.getProgramName());
 		becutTestCase.setTestCaseName(testCaseName);
 		becutTestCase.setTestCaseId(testCaseId);
+		becutTestCase.setFileControlAssignments(
+				compileListing.getSourceMapAndCrossReference().getFileControlAssignments());
 
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
 				CobolNodeType.CALL_STATEMENT);
@@ -181,10 +183,11 @@ public class BecutTestCaseManager {
 		}
 		Tree sourceSection = sourceSectionList.get(0);
 
-		compileListing.getDataDivisionMap().getRecords().values().stream()
-				.filter(i -> sourceSection.getStartPosition().getLinenumber() < i.getLineNumber()
-						&& i.getLineNumber() < sourceSection.getEndPosition().getLinenumber())
-				.forEach(i -> parameterList.add(new Parameter(i)));
+		compileListing.getDataDivisionMap().getRecords().values()
+			.stream()
+			.filter(i -> sourceSection.getStartPosition().getLinenumber() <= i.getLineNumber()
+						&& i.getLineNumber() <= sourceSection.getEndPosition().getLinenumber())
+			.forEach(i -> parameterList.add(new Parameter(i)));
 
 		return parameterList;
 	}

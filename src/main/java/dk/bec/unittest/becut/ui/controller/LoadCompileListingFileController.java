@@ -50,11 +50,7 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 				.map(line -> line.replaceAll("\\s+$", ""))
 				.forEach(line -> {
 					byte[] bytes = line.getBytes();
-					if(bytes.length > 1) {
-						baos.write(bytes, 1, bytes.length - 1);
-					} else {
-						baos.write(bytes, 0, bytes.length);
-					}
+					baos.write(bytes, 0, bytes.length);
 					baos.write('\n');
 				});
 			return new ByteArrayInputStream(baos.toByteArray());

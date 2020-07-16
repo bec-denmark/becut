@@ -1,6 +1,7 @@
 package dk.bec.unittest.becut.compilelist;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +22,6 @@ import junit.framework.TestCase;
 import koopa.core.trees.Tree;
 
 public class ParseTest {
-	@Ignore
 	@Test
 	public void testCreateCompileListMAT510RS() {
 		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
@@ -33,7 +33,6 @@ public class ParseTest {
 		}	
 	}
 
-	@Ignore
 	@Test
 	public void testCreateCompileListMAT512RS() {
 		File file = new File("./src/test/resources/compilelistings/mat512rs_compile_listing.txt");
@@ -45,7 +44,6 @@ public class ParseTest {
 		}	
 	}
 	
-	@Ignore
 	@Test
 	public void testCreateCompileListSyntaxCheck() {
 		File file = new File("./src/test/resources/compilelistings/mat514rs_syntaxcheck_listing.txt");
@@ -57,6 +55,7 @@ public class ParseTest {
 		}	
 	}
 	
+	@Ignore
 	@Test
 	public void testCreateCompileListMAT560() {
 		File file = new File("./src/test/resources/compilelistings/mat561_compile_listing.txt");
@@ -81,8 +80,6 @@ public class ParseTest {
 				.map(line -> line.substring(0, Math.min(line.length(),  79)))
 				.collect(Collectors.joining("\n"));
 			
-			System.out.println(map);
-
 			Tree ast = compileListing.getSourceMapAndCrossReference().getAst();
 			List<Tree> calls = TreeUtil.getDescendents(ast, CobolNodeType.CALL_STATEMENT);
 			for(Tree call : calls) {
@@ -91,6 +88,15 @@ public class ParseTest {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}	
+	}
+	
+	@Test
+	public void testShouldRegisterFileControlNames() throws Exception {
+		File file = new File("src/test/resources/compilelistings/JOB06352.5");
+		CompileListing compileListing = Parse.parse(file);
+		List<String> assignements = compileListing.getSourceMapAndCrossReference().getFileControlAssignments();
+		assertTrue(assignements != null);
+		assertTrue(assignements.contains("INPUT1"));
 	}
 	
 	private void assertNotNullCompileListing(CompileListing compileListing) {
@@ -104,5 +110,4 @@ public class ParseTest {
 		assertNotNull(compileListing.getProgramsCrossReference());
 		assertNotNull(compileListing.getSourceMapAndCrossReference());
 	}
-
 }

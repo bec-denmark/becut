@@ -18,7 +18,7 @@ public class RecorderJCLGenerator {
 				"//INSPIN    DD *\n" + 
 				"            SET LOG ON FILE " + datasetName + ";\n" + 
 				"            SET DYNDEBUG OFF;                            \n" + 
-				"            01 " + depthOfCall + " PIC 9(9) COMP;              \n" + 
+				"            77 " + depthOfCall + " PIC 9(9) COMP;\n" +
 				"            MOVE 0 TO " + depthOfCall + ";\n" + 
 				"            AT CALL * BEGIN;                             \n" +
 				"               IF " + depthOfCall + " < 1 THEN                 \n" + 
@@ -28,7 +28,7 @@ public class RecorderJCLGenerator {
 				"                 LIST UNTITLED('AT CALL END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               COMPUTE " + depthOfCall + " = " + depthOfCall + " + 1;\n" + 
+				"               ADD 1 TO " + depthOfCall + ";\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            AT EXIT * BEGIN;                             \n" + 
@@ -41,7 +41,7 @@ public class RecorderJCLGenerator {
 				"                 LIST UNTITLED('AT EXIT END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               COMPUTE " + depthOfCall + " = " + depthOfCall + " - 1;\n" + 
+				"               SUBSTRACT 1 FROM " + depthOfCall + ";\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            GO;                                          \n" + 

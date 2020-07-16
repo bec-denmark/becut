@@ -1,17 +1,27 @@
 package dk.bec.unittest.becut.ui.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import org.apache.commons.net.ftp.FTPClient;
 
 import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
 import dk.bec.unittest.becut.debugscript.ScriptGenerator;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
+import dk.bec.unittest.becut.ftp.FTPManager;
+import dk.bec.unittest.becut.ftp.model.Credential;
+import dk.bec.unittest.becut.ftp.model.DatasetProperties;
 import dk.bec.unittest.becut.ftp.model.HostJob;
 import dk.bec.unittest.becut.ftp.model.HostJobDataset;
+import dk.bec.unittest.becut.ftp.model.RecordFormat;
+import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
+import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.DebugToolLogParser;
 import dk.bec.unittest.becut.recorder.LogParsingException;
+import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.PostConditionResolver;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -50,6 +60,29 @@ public class RunDebugScriptController extends AbstractBECutController implements
 		if (!loadModuleName.getText().isEmpty()) {
 			programName = loadModuleName.getText();
 		}
+		compileListing.getSourceMapAndCrossReference().getFileControlAssignments()
+			.stream()
+			.forEach(name -> {
+				FTPClient ftpClient = new FTPClient();
+				Credential credential = BECutAppContext.getContext().getCredential();
+				if (!ftpClient.isConnected()) {
+					try {
+						FTPManager.connectAndLogin(ftpClient, credential);
+					} catch (Exception e) {
+						//FIXME
+						e.printStackTrace();
+					}
+				}
+				String datasetName = credential.getUsername() + ".BECUT.T" + RecorderManager.get6DigitNumber();
+				DatasetProperties datasetProperties = 
+						new SequentialDatasetProperties(RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+				try {
+					FTPManager.sendDataset(ftpClient, datasetName, new File("/temp/" + name + ".txt"), datasetProperties);
+				} catch (Exception e) {
+					//FIXME
+					e.printStackTrace();
+				}
+			});
 		HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
 		HostJobDataset jobDataset = job.getDatasets().get("INSPLOG");
 		

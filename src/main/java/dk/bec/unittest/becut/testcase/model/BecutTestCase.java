@@ -10,6 +10,16 @@ public class BecutTestCase {
 	private String programName;
 	private PreCondition preCondition;
 	private List<ExternalCall> externalCalls = new ArrayList<>();
+	private List<String> fileControlAssignments = new ArrayList<>();
+	
+	public List<String> getFileControlAssignments() {
+		return fileControlAssignments;
+	}
+
+	public void setFileControlAssignments(List<String> fileControlAssignments) {
+		this.fileControlAssignments = fileControlAssignments;
+	}
+
 	private PostCondition postCondition;
 
 	public String getTestCaseName() {

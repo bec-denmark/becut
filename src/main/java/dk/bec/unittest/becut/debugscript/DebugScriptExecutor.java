@@ -1,15 +1,24 @@
 package dk.bec.unittest.becut.debugscript;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.net.ftp.FTPClient;
 
 import dk.bec.unittest.becut.Settings;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
 import dk.bec.unittest.becut.ftp.FTPManager;
+import dk.bec.unittest.becut.ftp.model.Credential;
+import dk.bec.unittest.becut.ftp.model.DatasetProperties;
 import dk.bec.unittest.becut.ftp.model.HostJob;
+import dk.bec.unittest.becut.ftp.model.RecordFormat;
+import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
+import dk.bec.unittest.becut.ftp.model.SpaceUnits;
+import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class DebugScriptExecutor {
@@ -36,6 +45,7 @@ public class DebugScriptExecutor {
 		jcl += "//             UJOBCORR=" + userName +"\n";
 		jcl += "//PGMEXEC  EXEC PGM=" + programName + "\n";
 		jcl += generateSteplib();
+		jcl += generateDDs();
 		jcl += "//INSPIN      DD *\n";
 		jcl += debugScript;
 		jcl += "\n";
@@ -48,6 +58,7 @@ public class DebugScriptExecutor {
 		
 		return jcl;
 	}
+	
 	private static String generateSteplib() {
 		List<String> steplib = Settings.STEPLIB;
 		String s = "//STEPLIB   DD DSN=" + steplib.get(0).toUpperCase() + ",DISP=SHR\n";
@@ -57,5 +68,33 @@ public class DebugScriptExecutor {
 			}
 		}
 		return s;
+	}
+	
+	private static String generateDDs() {
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
+		return compileListing.getSourceMapAndCrossReference().getFileControlAssignments()
+			.stream()
+			.map(name -> {
+					FTPClient ftpClient = new FTPClient();
+					Credential credential = BECutAppContext.getContext().getCredential();
+					if (!ftpClient.isConnected()) {
+						try {
+							FTPManager.connectAndLogin(ftpClient, credential);
+						} catch (Exception e) {
+							//FIXME
+							e.printStackTrace();
+						}
+					}
+					String datasetName = credential.getUsername() + ".BECUT.T" + RecorderManager.get6DigitNumber();
+					DatasetProperties datasetProperties = 
+							new SequentialDatasetProperties(RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+					try {
+						FTPManager.sendDataset(ftpClient, datasetName, new File("/temp/" + name + ".txt"), datasetProperties);
+					} catch (Exception e) {
+						//FIXME
+						e.printStackTrace();
+					}
+					return "//" + name + "    DD DSN=" + datasetName + ",DISP=SHR";})
+			.collect(Collectors.joining("\n", "", "\n"));
 	}
 }

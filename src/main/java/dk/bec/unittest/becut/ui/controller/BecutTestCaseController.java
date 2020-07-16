@@ -138,7 +138,6 @@ public class BecutTestCaseController implements Initializable {
 		
 		value.setCellFactory(
 				new Callback<TreeTableColumn<UnitTestTreeObject, String>, TreeTableCell<UnitTestTreeObject, String>>() {
-
 					@Override
 					public TreeTableCell<UnitTestTreeObject, String> call(
 							TreeTableColumn<UnitTestTreeObject, String> param) {
@@ -198,6 +197,9 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.getRoot().getValue().setValue(becutTestCase.getTestCaseId());
 		unitTestTreeTableView.getRoot().getChildren().clear();
 
+		TreeItem<UnitTestTreeObject> fileControlHeader = new TreeItem<UnitTestTreeObject>(
+				new UnitTestTreeObject("File Control", "", "") {
+				});
 		TreeItem<UnitTestTreeObject> preConditionHeader = new TreeItem<UnitTestTreeObject>(
 				new UnitTestTreeObject("Preconditions", "", "") {
 				});
@@ -208,10 +210,14 @@ public class BecutTestCaseController implements Initializable {
 				new UnitTestTreeObject("Postconditions", "", "") {
 				});
 
+		unitTestTreeTableView.getRoot().getChildren().add(fileControlHeader);
 		unitTestTreeTableView.getRoot().getChildren().add(preConditionHeader);
 		unitTestTreeTableView.getRoot().getChildren().add(externalCallHeader);
 		unitTestTreeTableView.getRoot().getChildren().add(postConditionHeader);
 
+		populateUnitTestParts(fileControlHeader, 
+				becutTestCase.getFileControlAssignments());
+		
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("File Section"),
 				becutTestCase.getPreCondition().getFileSection());
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("Working Storage"),
@@ -235,6 +241,14 @@ public class BecutTestCaseController implements Initializable {
 				becutTestCase.getPostCondition().getLinkageSection());
 	}
 
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent,
+			List<String> fileControlAssignments) {
+		for (String fca : fileControlAssignments) {
+			parent.getChildren().add(
+					new TreeItem<UnitTestTreeObject>(new UnitTestTreeObject(fca, "", "/temp/" + fca + ".txt") {}));
+		}
+	}	
+	
 	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, UnitTestTreeObject treeObject,
 			List<Parameter> parameters) {
 		TreeItem<UnitTestTreeObject> treeItem = new TreeItem<UnitTestTreeObject>(treeObject);

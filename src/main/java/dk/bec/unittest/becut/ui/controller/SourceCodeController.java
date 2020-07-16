@@ -56,8 +56,8 @@ public class SourceCodeController {
 							System.out.println(el.getAttribute("id"));
 						}, false);
 					}
-					
-					webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
+					//TODO FIND FIRST CALL
+					//webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
 				}
 			});
 		});
@@ -73,8 +73,9 @@ public class SourceCodeController {
 			callSites.add(callStatement.getStartPosition().getLinenumber());
 		}
 		
-		Pattern exclude = Pattern.compile(" {2}\\d{6}C\\s+\\d.*");
-		Pattern include = Pattern.compile(" {2}\\d{6}\\s+\\d.*");
+		//C after line number is text inserted from copybook, let's skip it for clarity
+		Pattern exclude = Pattern.compile(" {2}\\d{6}C\\s+.*");
+		Pattern include = Pattern.compile(" {2}\\d{6}\\s+.*");
 		String html = source
 				.stream()
 				.filter(line -> !exclude.matcher(line).matches())
