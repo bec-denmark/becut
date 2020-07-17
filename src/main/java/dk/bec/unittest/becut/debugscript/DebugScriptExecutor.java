@@ -7,9 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -39,10 +37,8 @@ public class DebugScriptExecutor {
 			InputStream is = new ByteArrayInputStream(createJCL(jobName, programName, debugScript.generate()).getBytes());
 			return FTPManager.submitJobAndWaitToComplete(ftpClient, is, 60, true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 	
 	private static String createJCL(String jobName, String programName, String debugScript) {

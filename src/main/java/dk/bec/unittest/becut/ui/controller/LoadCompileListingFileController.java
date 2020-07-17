@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
@@ -25,16 +26,21 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 
 	private File compileListingFile;
 
+	static Path initialDirectory;
+	
 	@FXML
 	private void browse() {
-
 		FileChooser chooser = new FileChooser();
+		if(initialDirectory != null && Files.exists(initialDirectory)) {
+			chooser.setInitialDirectory(initialDirectory.toFile());
+		}
 		compileListingFile = chooser.showOpenDialog(compileListingPath.getScene().getWindow());
 		if (compileListingFile != null) {
 			try {
+				initialDirectory = compileListingFile.toPath().getParent();
 				compileListingPath.setText(compileListingFile.getAbsolutePath());
 			} catch (Exception e) {
-				// handle exception...
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -43,7 +49,6 @@ public class LoadCompileListingFileController implements LoadCompileListing {
 	public InputStream getCompileListing() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			//TODO JESController and this both removes the first column: refactor to a common code
 			//FIXME should be set by -Dfile.encoding=Cp1252 but somewhere it is set to UTF-8
 			Files.readAllLines(Paths.get(compileListingPath.getText()), Charset.forName("Cp1252"))
 				.stream()

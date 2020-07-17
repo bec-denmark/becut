@@ -8,10 +8,15 @@
 		<fx:include source="/dk/bec/unittest/becut/ui/view/Menu.fxml"/>
 	</top>
 	<center>
-		<SplitPane id="SplitPane" dividerPositions="0.3" orientation="HORIZONTAL">
+		<SplitPane id="SplitPane" dividerPositions="0.8" orientation="VERTICAL">
 			<items>
-				<fx:include fx:id="sourceCode" source="/dk/bec/unittest/becut/ui/view/SourceCode.fxml"/>
-				<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCase.fxml"/>
+				<SplitPane id="SplitPane" dividerPositions="0.3" orientation="HORIZONTAL">
+					<items>
+						<fx:include fx:id="sourceCode" source="/dk/bec/unittest/becut/ui/view/SourceCode.fxml"/>
+						<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCase.fxml"/>
+					</items>
+				</SplitPane>
+				<fx:include fx:id="Log" source="/dk/bec/unittest/becut/ui/view/Log.fxml" />
 			</items>
 		</SplitPane>
 	</center>

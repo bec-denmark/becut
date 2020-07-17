@@ -98,7 +98,6 @@ public class FTPManager {
 	public static HostJob getJob(FTPClient ftpClient, String jobId, boolean downloadContent) throws Exception {
 		HostJob job = new HostJob();
 		job.setId(jobId);
-
 		JESFTPDataset[] datasets = listJES(ftpClient, jobId);
 		if (datasets.length > 0) {
 			job = datasets[0].getJob();
@@ -180,10 +179,8 @@ public class FTPManager {
 		try {
 			return submitJob(ftp, new FileInputStream(jcl));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return "";
 	}
 	
 	public static HostJob submitJobAndWaitToComplete(FTPClient ftp, InputStream jcl, Integer waitInSeconds, Boolean downloadContent) throws Exception {

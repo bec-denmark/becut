@@ -1,20 +1,10 @@
 package dk.bec.unittest.becut.ui.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -34,7 +24,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -92,13 +81,6 @@ public class BecutTestCaseController implements Initializable {
 			   }				
 			};
 
-			Supplier<TreeItem<UnitTestTreeObject>> getParent = () -> {
-		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
-		    	int index = sm.getSelectedIndex();
-		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
-		    	return item;
-			};
-			
 		    dup.setOnAction(event -> {
 		    	ExternalCallIteration callIteration = ((ExternalCallIterationDisplayable) row.getItem()).getExternalCallIteration();
 		    	ExternalCallIteration copy = ExternalCallIteration.mkCopy(callIteration);

@@ -1,8 +1,6 @@
 package dk.bec.unittest.becut.recorder;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Random;
@@ -27,7 +25,8 @@ public class RecorderManager {
 	
 	private RecorderManager() { }
 
-	public static BecutTestCase recordBatch(CompileListing compileListing, String programName, String jobName, Credential credential) throws Exception {
+	public static BecutTestCase recordBatch(CompileListing compileListing, String programName, String jobName, 
+			Credential credential) throws Exception {
 		/*
 		 * 1. Allocate dataset to save result
 		 * 2. Generate JCL

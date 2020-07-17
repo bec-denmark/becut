@@ -21,6 +21,10 @@ public class SourceMapAndCrossReference extends AbstractCompileListingSection {
 		this.originalSource = source;
 		ast = new ParseExpandedSource(source).createTree();
 
+		if(ast == null) {
+			throw new AssertionError("ast is null, there is a problem with the compile listing");
+		}
+		
 		// In following assignment: SELECT NUM-LIST ASSIGN TO INPUT1.
 		// file name is returned from parser as tokens "INPUT" and "1"
 		// it needs to be concatenated again.

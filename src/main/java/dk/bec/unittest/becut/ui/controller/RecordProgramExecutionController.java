@@ -50,10 +50,10 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 					jobName.getText(), BECutAppContext.getContext().getCredential());
 			BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
 		} catch (Exception e) {
-			// TODO log exception
-			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			closeWindow();
 		}
-		closeWindow();
 	}
 
 	@Override

@@ -64,6 +64,9 @@ public class SourceCodeController {
 	}
 
 	String html(List<String> source) {
+		//TODO use koopa ast to give (div) id separate classes to cobol reserved words, literals
+		//TODO give id to line numbers
+		//TODO use external stylesheet for coloring
 		//TODO get rid of this telescope
 		Tree ast = BECutAppContext.getContext().getUnitTest().getCompileListing().getSourceMapAndCrossReference().getAst();
 		//FIXME assertion: there is only one call per line
@@ -80,26 +83,39 @@ public class SourceCodeController {
 				.stream()
 				.filter(line -> !exclude.matcher(line).matches())
 				.filter(line -> include.matcher(line).matches())
+				.map(line -> cutOutNoise(line))
 				.map(line -> {
-					int lineNumber = Integer.parseInt(line.substring(2, 8));
-					if(callSites.contains(Integer.parseInt(line.substring(2, 8)))) {
+					int lineNumber = Integer.parseInt(line.substring(0, 6));
+					if(callSites.contains(lineNumber)) {
 						return "<div id='" +  
 								lineNumber + 
 								"' style=\"background-color: #00FF00\"><a>" + line + "</a></div>";
 					}
 					return line;})
-				.map(line -> line.matches("\\d{6}\\s+\\*.*")
+				.map(line -> line.matches("\\d{6}\\*.*")
 						? "<div style=\"background-color: #98FB98\">" + line + "</div>"
 						: line)
 				.map(line -> "<p><pre>" + line + "</pre>")
 				.collect(Collectors.joining("\n"));
 		String content = "<html><body>" + html + "</body></html>";
-//		try {
-//			Files.write(Paths.get("/temp/source.html"), content.getBytes());
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			Files.write(Paths.get("/temp/source.html"), content.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return content;
+	}
+	
+	static String cutOutNoise(String s) {
+		if(s == null || s.isEmpty()) return s;
+		StringBuilder sb = new StringBuilder(80);
+		for(int i = 0; i < s.length(); i++) {
+			if(i < 2) continue; //first two spaces
+			if(i > 7 && i < 23) continue; //space between line number and source text
+			if(sb.length() == 80) break; //there can be no more than 80 chars
+			sb.append(s.charAt(i));
+		}
+		return sb.toString();
 	}
 }

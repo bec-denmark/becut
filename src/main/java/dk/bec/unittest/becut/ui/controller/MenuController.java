@@ -155,7 +155,7 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 600, 400);
 			runDebugScriptStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		runDebugScriptStage.showAndWait();
 	}
