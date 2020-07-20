@@ -36,8 +36,7 @@ public class UnitTest extends UnitTestTreeObject {
 		try {
 			setCompileListing(new FileInputStream(compileListingFile));
 		} catch (FileNotFoundException e) {
-			//TODO inform the user that there was an error reading the compile listing
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -77,6 +76,5 @@ public class UnitTest extends UnitTestTreeObject {
 	public void updateValue(String newValue) {
 		setValue(newValue);
 	}
-
 	
 }

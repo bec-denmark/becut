@@ -96,5 +96,4 @@ public class JESFTPDataset extends FTPFile {
 	public String toString() {
 		return this.getName();
 	}
-
 }

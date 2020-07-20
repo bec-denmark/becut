@@ -25,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class RunDebugScriptController extends AbstractBECutController implements Initializable {
+	private static String loadModuleNameRemembered;
 	
 	@FXML
 	private TextField loadModuleName;
@@ -49,6 +50,7 @@ public class RunDebugScriptController extends AbstractBECutController implements
 			String programName = becutTestCase.getProgramName();
 			if (!loadModuleName.getText().isEmpty()) {
 				programName = loadModuleName.getText();
+				loadModuleNameRemembered = loadModuleName.getText();
 			}
 	
 			HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
@@ -72,6 +74,9 @@ public class RunDebugScriptController extends AbstractBECutController implements
 		runtimeEnviromentsBox.setItems(RuntimeEnvironment.getRuntimeOptions());
 		runtimeEnviromentsBox.getSelectionModel().selectFirst();
 		jobName.setText(Settings.BATCH_JOBNAME_EXECUTE_TEST);
+		if(loadModuleNameRemembered != null) {
+			loadModuleName.setText(loadModuleNameRemembered);
+		}
 	}
 
 	@Override

@@ -188,7 +188,7 @@ public class DebugToolLogParser {
 	
 	//debug log starts with '      * '
 	private static String removeProlog(String line) {
-		String prolog = "      * ";
+		String prolog = "     * ";
 		if(line != null && line.startsWith(prolog)) {
 			return line.substring(prolog.length());
 		}

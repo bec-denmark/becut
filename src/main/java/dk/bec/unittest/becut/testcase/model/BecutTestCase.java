@@ -12,7 +12,11 @@ public class BecutTestCase {
 	private String programName;
 	private PreCondition preCondition;
 	private List<ExternalCall> externalCalls = new ArrayList<>();
+	private PostCondition postCondition;
+	//SELECT NUM-LIST ASSIGN TO INPUT1.
+	//needed for record size info
 	private Map<String, String> fileControlAssignments = new HashMap<>();
+	private Map<String, String> assignmentLocalFile = new HashMap<>();
 	
 	public Map<String, String> getFileControlAssignments() {
 		return fileControlAssignments;
@@ -22,8 +26,14 @@ public class BecutTestCase {
 		this.fileControlAssignments = fileControlAssignments;
 	}
 
-	private PostCondition postCondition;
+	public Map<String, String> getAssignmentLocalFile() {
+		return assignmentLocalFile;
+	}
 
+	public void setAssignmentLocalFile(Map<String, String> assignmentLocalFile) {
+		this.assignmentLocalFile = assignmentLocalFile;
+	}
+	
 	public String getTestCaseName() {
 		return testCaseName;
 	}
@@ -94,5 +104,4 @@ public class BecutTestCase {
 	public void setPostCondition(PostCondition postCondition) {
 		this.postCondition = postCondition;
 	}
-
 }

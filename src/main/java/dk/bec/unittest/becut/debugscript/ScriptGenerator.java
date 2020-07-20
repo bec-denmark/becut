@@ -91,6 +91,7 @@ public class ScriptGenerator {
 		Map<String, List<ExternalCall>> externalCallsGroupedByEntryName = testCase.getExternalCalls().stream()
 				.filter(ec -> ec.getCallType().equals(CallType.DYNAMIC))
 				.collect(Collectors.groupingBy(ExternalCall::getName));
+		
 		externalCallsGroupedByEntryName.forEach((name, calls) -> {
 			debugEntities.addAll(dynamicExternalCalls(name, calls, compileListing, debugScript));
 		});

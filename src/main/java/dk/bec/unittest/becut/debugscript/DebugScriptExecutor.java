@@ -33,24 +33,24 @@ public class DebugScriptExecutor {
 	public static HostJob testBatch(String jobName, String programName, DebugScript debugScript) {
 		FTPClient ftpClient = new FTPClient();
 		try {
-			FTPManager.connectAndLogin(ftpClient, BECutAppContext.getContext().getCredential());
-			InputStream is = new ByteArrayInputStream(createJCL(jobName, programName, debugScript.generate()).getBytes());
+			Credential credential = BECutAppContext.getContext().getCredential();
+			FTPManager.connectAndLogin(ftpClient, credential);
+			InputStream is = new ByteArrayInputStream(createJCL(ftpClient, jobName, programName, credential.getUsername(), debugScript.generate()).getBytes());
 			return FTPManager.submitJobAndWaitToComplete(ftpClient, is, 60, true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	private static String createJCL(String jobName, String programName, String debugScript) {
-		String userName = Settings.USERNAME;
+	private static String createJCL(FTPClient ftpClient, String jobName, String programName, String userName, String debugScript) {
 		String jcl = "//" +  jobName + " JOB ,'" + userName + "',\n";
 		jcl += "//             SCHENV=TSTSYS,\n";
 		jcl += "//             MSGCLASS=Q,\n";
 		jcl += "//             NOTIFY=" + userName +",\n";
 		jcl += "//             UJOBCORR=" + userName +"\n";
 		jcl += "//PGMEXEC  EXEC PGM=" + programName + "\n";
-		jcl += generateSteplib();
-		jcl += generateDDs();
+		jcl += generateSteplib(Settings.STEPLIB);
+		jcl += generateDDs(ftpClient, userName);
 		jcl += "//INSPIN      DD *\n";
 		jcl += debugScript;
 		jcl += "\n";
@@ -64,34 +64,20 @@ public class DebugScriptExecutor {
 		return jcl;
 	}
 	
-	private static String generateSteplib() {
-		List<String> steplib = Settings.STEPLIB;
-		String s = "//STEPLIB   DD DSN=" + steplib.get(0).toUpperCase() + ",DISP=SHR\n";
-		if (steplib.size() > 1) {
-			for (int i = 1; i < steplib.size(); i++) {
-			s += "//          DD DSN=" + steplib.get(i).toUpperCase() + ",DISP=SHR\n";
-			}
-		}
-		return s;
+	private static String generateSteplib(List<String> steplibs) {
+		return 
+			steplibs
+				.stream()
+				.map(s -> "//STEPLIB   DD DSN=" + s.toUpperCase() + ",DISP=SHR\n")
+				.collect(Collectors.joining("\n", "", "\n"));
 	}
 	
-	private static String generateDDs() {
+	private static String generateDDs(FTPClient ftpClient, String userName) {
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
 		return compileListing.getSourceMapAndCrossReference().getFileControlAssignments().entrySet()
 			.stream()
 			.map(entry -> {
-					FTPClient ftpClient = new FTPClient();
-					Credential credential = BECutAppContext.getContext().getCredential();
-					if (!ftpClient.isConnected()) {
-						try {
-							FTPManager.connectAndLogin(ftpClient, credential);
-						} catch (Exception e) {
-							//FIXME
-							throw new RuntimeException(e);
-						}
-					}
 					String fileName = entry.getKey();
-					
 					String recordName = Jaxen.evaluate(
 							compileListing.getSourceMapAndCrossReference().getAst(),
 							"//fileDescriptionEntry[//fileName//node()/text()=\"" +
@@ -110,8 +96,10 @@ public class DebugScriptExecutor {
 							.filter(p -> p.getName().equals(recordName))
 							.findFirst();
 					int size = op.isPresent() ? op.get().getSize() : 80;
+
 					//TODO put all files in one PDS username.becut.random(assign to name)
-					String datasetName = credential.getUsername() + 
+					String datasetName =  
+							userName.toUpperCase() + 
 							".BECUT.T" + 
 							RecorderManager.get6DigitNumber() +
 							"." + entry.getValue();
@@ -127,7 +115,6 @@ public class DebugScriptExecutor {
 							FTPManager.allocateDataset(ftpClient, datasetName, datasetProperties);
 						}
 					} catch (Exception e) {
-						//FIXME
 						throw new RuntimeException(e);
 					}
 					return "//" + entry.getValue() + "    DD DSN=" + datasetName + ",DISP=SHR";})

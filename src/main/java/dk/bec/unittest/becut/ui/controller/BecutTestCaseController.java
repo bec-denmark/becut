@@ -15,6 +15,7 @@ import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
 import dk.bec.unittest.becut.ui.model.ExternalCallIterationDisplayable;
+import dk.bec.unittest.becut.ui.model.FileControlDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
 import dk.bec.unittest.becut.ui.model.PostConditionDisplayable;
 import dk.bec.unittest.becut.ui.model.PreConditionDisplayable;
@@ -228,7 +229,7 @@ public class BecutTestCaseController implements Initializable {
 			Collection<String> fileControlAssignments) {
 		for (String fca : fileControlAssignments) {
 			parent.getChildren().add(
-					new TreeItem<UnitTestTreeObject>(new UnitTestTreeObject(fca, "", "/temp/" + fca + ".txt") {}));
+					new TreeItem<UnitTestTreeObject>(new FileControlDisplayable(fca, "/temp/" + fca + ".txt")));
 		}
 	}	
 	

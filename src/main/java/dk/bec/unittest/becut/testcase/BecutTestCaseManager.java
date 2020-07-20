@@ -3,6 +3,9 @@ package dk.bec.unittest.becut.testcase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,18 +201,28 @@ public class BecutTestCaseManager {
 			FileInputStream fileInputStream = new FileInputStream(file);
 			becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return becutTestCase;
 	}
 
-	public static void saveTestCase(BecutTestCase becutTestCase, File file) {
+	public static void saveTestCase(BecutTestCase becutTestCase, File folder) {
+		assert Files.isDirectory(folder.toPath());
 		try {
-			mapper.writer().writeValue(file, becutTestCase);
+			//TODO save compile listing, datasets
+			mapper.writer().writeValue(
+					new File(folder.getAbsolutePath() +  "/" + becutTestCase.getTestCaseName()), becutTestCase);
+			becutTestCase.getFileControlAssignments().entrySet()
+				.stream()
+				.forEach(e -> {
+					try {
+						Files.copy(Paths.get(e.getValue()), folder.toPath());
+					} catch (IOException ioe) {
+						throw new RuntimeException(ioe);
+					}
+				});
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

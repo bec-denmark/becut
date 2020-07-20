@@ -8,7 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,6 +101,7 @@ public class FTPManager {
 	public static HostJob getJob(FTPClient ftpClient, String jobId, boolean downloadContent) throws Exception {
 		HostJob job = new HostJob();
 		job.setId(jobId);
+		
 		JESFTPDataset[] datasets = listJES(ftpClient, jobId);
 		if (datasets.length > 0) {
 			job = datasets[0].getJob();
@@ -107,10 +111,37 @@ public class FTPManager {
 			}
 		}
 		
+		//https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.halu001/intfjesrecspoolgroup.htm
+		List<String> files = new ArrayList<>();
+		if(downloadContent) {
+//			//FIXME hack to avoid fetching spools one by one 
+//			//list return spools in a different order than get job.X
+//			//they seem to be sorted by ddname and than by stepname
+			Arrays.sort(datasets, (sd1, sd2) -> {
+				int result = sd1.getStepname().compareTo(sd2.getStepname());
+				if(result != 0) return result;
+				return sd1.getDdname().compareTo(sd2.getDdname());
+			});
+			
+			String allSpooFiles = retrieveJESDataset(ftpClient, jobId, "X");
+			StringBuilder sb = new StringBuilder(); 
+			Arrays.asList(allSpooFiles.split("\\r?\\n"))
+			.forEach(line -> {
+				if(line.contains("END OF JES SPOOL FILE")) {
+					files.add(sb.toString());
+					sb.delete(0, sb.length());
+				} else { 
+					sb.append(line.substring(1));
+					sb.append("\n");
+				}
+			});			
+		}
+		
 		for (int i = 0; i < datasets.length; i++) {
 			HostJobDataset jobDataset = datasets[i].toJobDataset();
 			if (downloadContent) {
-				jobDataset.setContents(retrieveJESDataset(ftpClient, jobDataset));
+				jobDataset.setContents(files.get(i));
+				//jobDataset.setContents(retrieveJESDataset(ftpClient, jobDataset));
 			}
 			job.getDatasets().put(datasets[i].getDdname(), jobDataset);
 		}
@@ -126,7 +157,20 @@ public class FTPManager {
 		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
 			throw new Exception(ftp.getReplyString());
 		}
+		
 		return Arrays.copyOf(files, files.length, JESFTPDataset[].class);
+		
+//		JESFTPDataset[] jesftpDatasets = Arrays.copyOf(files, files.length, JESFTPDataset[].class);
+//		//FIXME hack to avoid fetching spools one by one 
+//		//list return spools in a different order than get job.X
+//		//they seem to be sorted by ddname and than by stepname
+//		Arrays.sort(jesftpDatasets, (sd1, sd2) -> {
+//			int result = sd1.getDdname().compareTo(sd2.getDdname());
+//			if(result != 0) return result;
+//			return sd1.getStepname().compareTo(sd2.getStepname());
+//		});
+//		
+//		return jesftpDatasets;
 	}
 	
 	public static String retrieveJESAllDatasets(FTPClient ftp, String jobId) throws Exception {

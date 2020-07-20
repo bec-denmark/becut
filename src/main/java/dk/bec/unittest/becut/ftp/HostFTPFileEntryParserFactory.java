@@ -31,6 +31,7 @@ public class HostFTPFileEntryParserFactory implements FTPFileEntryParserFactory 
 		public String readNextEntry(BufferedReader reader) throws IOException {
 			String line;
 			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
 				if (line.contains("spool file")) {
 					dsRead = false;
 				}
