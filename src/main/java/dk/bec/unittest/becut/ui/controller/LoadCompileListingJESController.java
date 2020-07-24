@@ -20,19 +20,24 @@ public class LoadCompileListingJESController implements LoadCompileListing, Init
 	
 	@FXML
 	private TextField jobNumber;
+	private static String jobNumberRemembered;
 
 	@FXML
 	private TextField stepName;
+	private static String stepNameRemembered;
 
 	@FXML
 	private TextField DDName;
+	private static String DDNameRemembered;
 
 	@Override
 	public InputStream getCompileListing() {
 		String compileListing = "";
 		FTPClient ftpClient = new FTPClient();
 		try {
-			
+			jobNumberRemembered = jobNumber.getText();
+			stepNameRemembered = stepName.getText();
+			DDNameRemembered = DDName.getText();
 			String job = cleanJobName();
 			FTPManager.connectAndLogin(ftpClient, BECutAppContext.getContext().getCredential());
 			JESFTPDataset[] datasets = FTPManager.listJES(ftpClient, job);
@@ -53,8 +58,7 @@ public class LoadCompileListingJESController implements LoadCompileListing, Init
 				compileListing += lines[i].substring(1).replaceAll("\\s+$", "") + "\n";
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return new ByteArrayInputStream(compileListing.getBytes());
 	}
@@ -74,8 +78,18 @@ public class LoadCompileListingJESController implements LoadCompileListing, Init
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		stepName.setText(Settings.COMPILE_STEP_NAME);
-		DDName.setText(Settings.COMPILELIST_DD_NAME);
-		
+		if(jobNumberRemembered != null) {
+			jobNumber.setText(jobNumberRemembered);
+		}
+		if(stepNameRemembered != null) {
+			stepName.setText(stepNameRemembered);
+		} else {
+			stepName.setText(Settings.COMPILE_STEP_NAME);	
+		}
+		if(DDNameRemembered != null) {
+			DDName.setText(DDNameRemembered);
+		} else {
+			DDName.setText(Settings.COMPILELIST_DD_NAME);
+		}
 	}
 }

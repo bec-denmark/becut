@@ -1,11 +1,30 @@
 package dk.bec.unittest.becut.recorder;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+
+import org.apache.commons.net.ftp.FTPClient;
+
+import dk.bec.unittest.becut.Settings;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.ftp.FTPManager;
+import dk.bec.unittest.becut.ftp.model.DatasetProperties;
+import dk.bec.unittest.becut.ftp.model.RecordFormat;
+import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
+import dk.bec.unittest.becut.ftp.model.SpaceUnits;
+import dk.bec.unittest.becut.testcase.model.Parameter;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import koopa.core.trees.Tree;
+import koopa.core.trees.jaxen.Jaxen;
 
 public class RecorderJCLGenerator {
-	
-	public static String getJCL(String programName, String datasetName, String jobName, String userName, List<String> steplib) {
+	public static String getJCL(FTPClient ftpClient, String programName, String datasetName, String jobName, String userName) {
 		String depthOfCall = String.format("BECUT-%03d-DEPTH", new Random().nextInt(1000));
 		String jcl = "" +
 				"//" +  jobName + " JOB ,'" + userName + "',\n" +
@@ -14,7 +33,8 @@ public class RecorderJCLGenerator {
 				"//             NOTIFY=" + userName +",\n" + 
 				"//             UJOBCORR=" + userName +"\n" +
 				"//PGMEXEC  EXEC PGM=" + programName + "\n" +
-				generateSteplib(steplib) +
+				generateSteplib(Settings.STEPLIB) + 
+				generateDDs(ftpClient, userName) + 
 				"//INSPIN    DD *\n" + 
 				"            SET LOG ON FILE " + datasetName + ";\n" + 
 				"            SET DYNDEBUG OFF;                            \n" + 
@@ -48,7 +68,7 @@ public class RecorderJCLGenerator {
 				"            QUIT;                                        " + 
 				"/*\n" + 
 				"//INSPLOG   DD SYSOUT=*\n" + 
-				"//INSPCMD   DD DSN=SYS2.DEBUG.COMMANDS,DISP=SHR\n" + 
+//				"//INSPCMD   DD DSN=SYS2.DEBUG.COMMANDS,DISP=SHR\n" + 
 				"//CEEOPTS   DD *,DLM='/*'\n" + 
 				"TEST(,INSPIN,,)\n" + 
 				"/*";
@@ -56,13 +76,56 @@ public class RecorderJCLGenerator {
 		return jcl.toUpperCase();
 	}
 	
-	private static String generateSteplib(List<String> steplib) {
-		String s = "//STEPLIB   DD DSN=" + steplib.get(0).toUpperCase() + ",DISP=SHR\n";
-		if (steplib.size() > 1) {
-			for (int i = 1; i < steplib.size(); i++) {
-				s += "//          DD DSN=" + steplib.get(i).toUpperCase() + ",DISP=SHR\n";
-			}
-		}
-		return s;
-	}	
+	private static String generateSteplib(List<String> steplibs) {
+		return 
+			steplibs
+				.stream()
+				.map(s -> "//STEPLIB   DD DSN=" + s.toUpperCase() + ",DISP=SHR\n")
+				.collect(Collectors.joining("\n", "", "\n"));
+	}
+
+	//TODO code deduplication in DebugsSriptExecutor and here
+	private static String generateDDs(FTPClient ftpClient, String userName) {
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
+		return compileListing.getSourceMapAndCrossReference().getFileControlAssignment().entrySet()
+			.stream()
+			.map(entry -> {
+					String fileName = entry.getKey();
+					String recordName = Jaxen.evaluate(
+							compileListing.getSourceMapAndCrossReference().getAst(),
+							"//fileDescriptionEntry[//fileName//node()/text()=\"" +
+							fileName + 
+							"\"]//following-sibling::recordDescriptionEntry[1]//dataName//text()")
+							.stream()
+							.map(Tree.class::cast)
+							.map(Tree::getText)
+							.collect(Collectors.joining());
+					
+					//TODO fix this telescope
+					List<Parameter> params = BECutAppContext.getContext().getUnitTest()
+							.getBecutTestCase().getPreCondition().getFileSection();
+					Optional<Parameter> op = params
+							.stream()
+							.filter(p -> p.getName().equals(recordName))
+							.findFirst();
+					int size = op.isPresent() ? op.get().getSize() : 80;
+
+					//TODO put all files in one PDS username.becut.random(assign to name)
+					String datasetName =  
+							userName.toUpperCase() + 
+							".BECUT.T" + 
+							RecorderManager.get6DigitNumber() +
+							"." + entry.getValue();
+					DatasetProperties datasetProperties = 
+							new SequentialDatasetProperties(
+									RecordFormat.FIXED_BLOCK, size, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+					Path localPath = Paths.get("/temp/", entry.getValue() + ".txt");
+					if(Files.exists(localPath)) {
+						FTPManager.sendDataset(ftpClient, datasetName, new File("/temp/" + entry.getValue() + ".txt"), datasetProperties);
+					} else {
+						FTPManager.allocateDataset(ftpClient, datasetName, datasetProperties);
+					}
+					return "//" + entry.getValue() + "    DD DSN=" + datasetName + ",DISP=SHR";})
+			.collect(Collectors.joining("\n", "", "\n"));
+	}
 }

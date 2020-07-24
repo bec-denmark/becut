@@ -3,15 +3,13 @@ package dk.bec.unittest.becut.testcase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,11 +52,21 @@ public class BecutTestCaseManager {
 	public static BecutTestCase createTestCaseFromCompileListing(CompileListing compileListing, String testCaseName,
 			String testCaseId) {
 		BecutTestCase becutTestCase = new BecutTestCase();
+		becutTestCase.setCompileListing(compileListing);
 		becutTestCase.setProgramName(compileListing.getProgramName());
 		becutTestCase.setTestCaseName(testCaseName);
 		becutTestCase.setTestCaseId(testCaseId);
-		becutTestCase.setFileControlAssignments(
-				compileListing.getSourceMapAndCrossReference().getFileControlAssignments());
+		
+		Map<String, String> fileControlAssignment = compileListing.getSourceMapAndCrossReference().getFileControlAssignment();
+		
+		becutTestCase.setFileControlAssignment(fileControlAssignment);
+		
+		Map<String, File> assignmentLocalFiles = new HashMap<>(); 
+		fileControlAssignment.values().forEach(v -> {
+			assignmentLocalFiles.put(v, new File(System.getProperty("java.io.tmpdir") 
+					+ FileSystems.getDefault().getSeparator() + v + ".txt"));
+		});
+		becutTestCase.setAssignmentLocalFile(assignmentLocalFiles);
 
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
 				CobolNodeType.CALL_STATEMENT);

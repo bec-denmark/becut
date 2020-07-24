@@ -20,6 +20,7 @@
 			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Create debug script" onAction="#createDebugScript"/>
+			<MenuItem text="Edit debug script" onAction="#editDebugScript"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Record program execution" onAction="#recordProgramExecution"/>
 		</Menu>

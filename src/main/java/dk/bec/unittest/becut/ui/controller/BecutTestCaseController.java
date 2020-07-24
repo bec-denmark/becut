@@ -1,6 +1,12 @@
 package dk.bec.unittest.becut.ui.controller;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,17 +70,23 @@ public class BecutTestCaseController implements Initializable {
 		});
 
 		unitTestTreeTableView.setRowFactory(ttv -> {
-			ContextMenu cm = new ContextMenu();
+			ContextMenu cmExternalCall = new ContextMenu();
 			MenuItem dup = new MenuItem("Duplicate");
 			MenuItem del = new MenuItem("Delete");
-			cm.getItems().addAll(dup, del);
+			cmExternalCall.getItems().addAll(dup, del);
+
+			ContextMenu cmFileControl = new ContextMenu();
+			MenuItem edit = new MenuItem("Edit");
+			cmFileControl.getItems().addAll(edit);
 			
 			TreeTableRow<UnitTestTreeObject> row = new TreeTableRow<UnitTestTreeObject>() {
 			   @Override
 			   protected void updateItem(UnitTestTreeObject item, boolean empty) {
 				   super.updateItem(item, empty);
 				   if(item instanceof ExternalCallIterationDisplayable) {
-					    this.setContextMenu(cm);
+					   this.setContextMenu(cmExternalCall);
+				   } else if (item instanceof FileControlDisplayable) {
+					   this.setContextMenu(cmFileControl);
 				   } else {
 					   //seems that children inherit context menu from parent; it is undesirable here
 					   this.setContextMenu(null);
@@ -117,7 +129,24 @@ public class BecutTestCaseController implements Initializable {
 //		    	currentUnitTest.getBecutTestCase().removeExternalCall(ecd.getExternalCall());
 //		    	externalCallHeader.getChildren().remove(row.getItem());
 		    });
-			return row;
+
+		    edit.setOnAction(event -> {
+		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+		    	int index = sm.getSelectedIndex();
+		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
+		    	assert item.getValue() instanceof FileControlDisplayable;
+		    	try {
+		    		Path path = Paths.get(item.getValue().getValue());
+		    		if (!Files.exists(path)) {
+		    		    Files.createFile(path);
+		    		}
+					Desktop.getDesktop().open(path.toFile());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+		    });
+		    
+		    return row;
 		});
 		
 		value.setCellFactory(
@@ -199,8 +228,7 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.getRoot().getChildren().add(externalCallHeader);
 		unitTestTreeTableView.getRoot().getChildren().add(postConditionHeader);
 
-		populateUnitTestParts(fileControlHeader, 
-				becutTestCase.getFileControlAssignments().values());
+		populateUnitTestParts(fileControlHeader, becutTestCase.getAssignmentLocalFile());
 		
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("File Section"),
 				becutTestCase.getPreCondition().getFileSection());
@@ -225,12 +253,10 @@ public class BecutTestCaseController implements Initializable {
 				becutTestCase.getPostCondition().getLinkageSection());
 	}
 
-	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent,
-			Collection<String> fileControlAssignments) {
-		for (String fca : fileControlAssignments) {
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, Map<String, File> assignmentLocalFile) {
+		assignmentLocalFile.forEach((k, v) ->
 			parent.getChildren().add(
-					new TreeItem<UnitTestTreeObject>(new FileControlDisplayable(fca, "/temp/" + fca + ".txt")));
-		}
+					new TreeItem<UnitTestTreeObject>(new FileControlDisplayable(k, v.getAbsolutePath()))));
 	}	
 	
 	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, UnitTestTreeObject treeObject,

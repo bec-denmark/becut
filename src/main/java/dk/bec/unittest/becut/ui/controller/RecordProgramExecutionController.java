@@ -22,12 +22,14 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 
 	@FXML
 	private TextField programName;
-
+	static String programNameRemembered; 
+	
 	@FXML
 	private ComboBox<String> runtimeEnviromentsBox;
 
 	@FXML
 	private TextField jobName;
+	static String jobNameRemembered;
 
 	@FXML
 	private Pane compileListingPane;
@@ -46,6 +48,9 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 		compileListingController.loadCompileListingIntoContext();
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
 		try {
+			jobNameRemembered = jobName.getText();
+			programNameRemembered = programName.getText();
+			
 			BecutTestCase becutTestCase = RecorderManager.recordBatch(compileListing, programName.getText(),
 					jobName.getText(), BECutAppContext.getContext().getCredential());
 			BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
@@ -66,9 +71,14 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 					getClass().getResource("/dk/bec/unittest/becut/ui/view/LoadCompileListing.fxml").openStream());
 			compileListingController = loader.getController();
 			compileListingPane.getChildren().add(compileListingNode);
+			if(jobNameRemembered != null) {
+				jobName.setText(jobNameRemembered);
+			}
+			if(programNameRemembered != null) {
+				programName.setText(programNameRemembered);
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

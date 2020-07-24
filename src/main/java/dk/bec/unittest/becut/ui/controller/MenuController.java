@@ -1,7 +1,11 @@
 package dk.bec.unittest.becut.ui.controller;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
@@ -101,17 +105,29 @@ public class MenuController extends AbstractBECutController {
 		Stage saveDebugScriptStage = new Stage();
 		saveDebugScriptStage.initModality(Modality.WINDOW_MODAL);
 		saveDebugScriptStage.initOwner(menuBar.getScene().getWindow());
-		
 		try {
 			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/SaveDebugScript.fxml"));
 			Scene scene = new Scene(parent, 500, 200);
 			saveDebugScriptStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		saveDebugScriptStage.showAndWait();
 	}
 
+	@FXML
+	public void editDebugScript() {
+    	try {
+    		Path path = BECutAppContext.getContext().getUnitTest().becutTestCaseProperty().get().getDebugScriptPath();
+    		if (!Files.exists(path)) {
+    		    Files.createFile(path);
+    		}
+			Desktop.getDesktop().open(path.toFile());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@FXML
 	public void setupCredentials() {
 		Stage credentialsStage = new Stage();

@@ -64,8 +64,9 @@ public class GenerateDebugScriptIT extends TestCase {
 		File testScriptFile = new File("./src/test/resources/testcases/mat561_testcase.json");
 		CompileListing compileListing = Parse.parse(file);
 		BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
+		testCase.setCompileListing(compileListing);
 		
-		DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, testCase);
+		DebugScript debugScript = ScriptGenerator.generateDebugScript(testCase);
 		String actualScript = debugScript.generate();
 		System.out.println(actualScript);
 //		String expectedScript = new String(Files.readAllBytes(Paths.get("./src/test/resources/debugscripts/mat512rs_debugscript.txt")), StandardCharsets.UTF_8);

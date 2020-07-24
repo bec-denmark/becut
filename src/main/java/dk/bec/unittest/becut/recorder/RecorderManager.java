@@ -12,12 +12,16 @@ import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.FTPManager;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
+import dk.bec.unittest.becut.ftp.model.HostJob;
+import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.ui.controller.MissingINSPLOGException;
+import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
 
 public class RecorderManager {
 
@@ -46,7 +50,7 @@ public class RecorderManager {
 		allocateDataset(ftpClient, credential, datasetName, datasetProperties);
 		
 		// 2. Generate JCL
-		String jcl = RecorderJCLGenerator.getJCL(programName, datasetName, jobName, credential.getUsername(), Settings.STEPLIB);
+		String jcl = RecorderJCLGenerator.getJCL(ftpClient, programName, datasetName, jobName, credential.getUsername());
 		
 		// 3. Submit JCL and wait for it to complete
 		FTPManager.submitJobAndWaitToComplete(ftpClient, new ByteArrayInputStream(jcl.getBytes()), 60, false);

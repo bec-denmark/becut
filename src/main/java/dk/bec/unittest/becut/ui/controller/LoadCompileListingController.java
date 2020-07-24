@@ -10,6 +10,8 @@ import java.util.StringJoiner;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import dk.bec.unittest.becut.compilelist.Parse;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.LoadCompileListing;
 import javafx.fxml.FXML;
@@ -49,8 +51,8 @@ public class LoadCompileListingController implements Initializable {
 	
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
-		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing
-				.getCompileListing());
+		CompileListing compileListing = Parse.parse(currentCompileListing.getCompileListing());
+		BECutAppContext.getContext().getUnitTest().setCompileListing(compileListing);
 		List<String> lines = BECutAppContext.getContext().getUnitTest()
 				.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
 		BECutAppContext.getContext().getSourceCode().setValue(lines);
@@ -68,7 +70,7 @@ public class LoadCompileListingController implements Initializable {
 			currentCompileListing = currentType.getValue();
 		});
 		
-		//Setup all subnode
+		//Setup all subnodes
 		try {
 			//compilingListFile = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/LoadCompileListingFile.fxml"));
 			FXMLLoader datasetLoader =  new FXMLLoader();
@@ -84,8 +86,7 @@ public class LoadCompileListingController implements Initializable {
 			compileListingSource.put(CompileListType.JES, new Pair<Node, LoadCompileListing>(compilingListJES, JESLoader.getController()));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		compileListingMethod.getSelectionModel().selectFirst();
 	}

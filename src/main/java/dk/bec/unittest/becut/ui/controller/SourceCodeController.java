@@ -93,7 +93,7 @@ public class SourceCodeController {
 					}
 					return line;})
 				.map(line -> line.matches("\\d{6}\\*.*")
-						? "<div style=\"background-color: #98FB98\">" + line + "</div>"
+						? "<div style=\"color: #408080\">" + line + "</div>"
 						: line)
 				.map(line -> "<p><pre>" + line + "</pre>")
 				.collect(Collectors.joining("\n"));
@@ -101,8 +101,7 @@ public class SourceCodeController {
 		try {
 			Files.write(Paths.get("/temp/source.html"), content.getBytes());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		return content;
 	}

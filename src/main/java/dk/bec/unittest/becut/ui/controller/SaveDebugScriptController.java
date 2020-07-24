@@ -1,13 +1,14 @@
 package dk.bec.unittest.becut.ui.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.util.List;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
 import dk.bec.unittest.becut.debugscript.ScriptGenerator;
-import dk.bec.unittest.becut.debugscript.model.DebugScript;
+import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
@@ -20,7 +21,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class SaveDebugScriptController {
-
 	@FXML
 	private TextField debugScriptPath;
 	
@@ -28,14 +28,13 @@ public class SaveDebugScriptController {
 
 	@FXML
 	private void browse() {
-		
 		FileChooser chooser = new FileChooser();
 		debugScriptFile = chooser.showSaveDialog(debugScriptPath.getScene().getWindow());
 		if (debugScriptFile != null) {
 			try {
 				debugScriptPath.setText(debugScriptFile.getAbsolutePath());
 			} catch (Exception e) {
-				// handle exception...
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -50,7 +49,8 @@ public class SaveDebugScriptController {
 		debugScriptFile = new File(debugScriptPath.getText());
 		BecutTestCase becutTestCase = BECutAppContext.getContext().getUnitTest().getBecutTestCase();
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
-		if (compileListing == null || !compileListing.getProgramName().toLowerCase().equals(becutTestCase.getProgramName().toLowerCase())) {
+		if (compileListing == null || 
+				!compileListing.getProgramName().toLowerCase().equals(becutTestCase.getProgramName().toLowerCase())) {
 			Stage loadCompileListingStage = new Stage();
 			loadCompileListingStage.initModality(Modality.WINDOW_MODAL);
 			loadCompileListingStage.initOwner(debugScriptPath.getScene().getWindow());
@@ -65,21 +65,15 @@ public class SaveDebugScriptController {
 			return;
 		}
 		
-		DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase);
+		List<String> jcl = DebugScriptExecutor.createJCL(becutTestCase);
+		
 		try {
-			debugScriptFile.createNewFile();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try (PrintWriter out = new PrintWriter(debugScriptFile)) {
-			out.println(debugScript.generate());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Files.write(debugScriptFile.toPath(), jcl);
+			becutTestCase.setDebugScriptPath(debugScriptFile.toPath());
+		} catch (IOException e2) {
+			throw new RuntimeException(e2);
 		}
 
 		debugScriptPath.getScene().getWindow().hide();
 	}
-
 }

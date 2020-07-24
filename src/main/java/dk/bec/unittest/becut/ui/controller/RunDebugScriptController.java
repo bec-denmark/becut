@@ -3,6 +3,7 @@ package dk.bec.unittest.becut.ui.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import dk.bec.unittest.becut.DDNAME;
 import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
@@ -45,8 +46,7 @@ public class RunDebugScriptController extends AbstractBECutController implements
 	protected void ok() {
 		try {
 			BecutTestCase becutTestCase = BECutAppContext.getContext().getUnitTest().getBecutTestCase();
-			CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
-			DebugScript debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase);
+			DebugScript debugScript = ScriptGenerator.generateDebugScript(becutTestCase);
 			String programName = becutTestCase.getProgramName();
 			if (!loadModuleName.getText().isEmpty()) {
 				programName = loadModuleName.getText();
@@ -54,15 +54,17 @@ public class RunDebugScriptController extends AbstractBECutController implements
 			}
 	
 			HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
-			HostJobDataset jobDataset = job.getDatasets().get("INSPLOG");
+			HostJobDataset jobDataset = job.getDataset(DDNAME.INSPLOG);
+			//TODO show jesysmsg if job status != cc0000
 			if(jobDataset == null) {
-				throw new MissingINSPLOGException(job.getDatasets().get("JESYSMSG").getContents());
+				throw new MissingINSPLOGException(job.getDataset(DDNAME.SYSOUT).getContents());
 			}
 			SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobDataset.getContents(), programName);
 			PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
 			StandardAlerts.informationDialog("Test Case result", "Result running test case " 
 					+ becutTestCase.getTestCaseId(), postConditionResult.prettyPrint());
-	
+			//TODO quick and dirty messaging
+			throw new LogMessage(job.getDataset(DDNAME.SYSOUT).getContents());
 			//TODO Present to result to the user in a meaningful way
 		} finally {
 			closeWindow();

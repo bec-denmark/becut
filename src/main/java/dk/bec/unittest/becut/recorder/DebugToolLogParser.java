@@ -186,11 +186,11 @@ public class DebugToolLogParser {
 		}
 	}
 	
-	//debug log starts with '      * '
+	private static Pattern prolog = Pattern.compile("\\s+\\* ");
 	private static String removeProlog(String line) {
-		String prolog = "     * ";
-		if(line != null && line.startsWith(prolog)) {
-			return line.substring(prolog.length());
+		Matcher m = prolog.matcher(line);
+		if(line != null && m.find()) {
+			return line.substring(m.end());
 		}
 		return line;
 	}

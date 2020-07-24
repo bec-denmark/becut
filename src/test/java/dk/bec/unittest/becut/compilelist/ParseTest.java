@@ -1,5 +1,6 @@
 package dk.bec.unittest.becut.compilelist;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
@@ -8,6 +9,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +17,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.compilelist.model.Functions;
 import koopa.core.trees.Tree;
 
 public class ParseTest {
@@ -79,12 +83,42 @@ public class ParseTest {
 	public void testShouldRegisterFileControlNames() throws Exception {
 		File file = new File("src/test/resources/compilelistings/JOB06352.5");
 		CompileListing compileListing = Parse.parse(file);
-		Map<String, String> assignements = compileListing.getSourceMapAndCrossReference().getFileControlAssignments();
+		Map<String, String> assignements = compileListing.getSourceMapAndCrossReference().getFileControlAssignment();
 		assertThat(assignements, notNullValue());
 		assertThat(assignements, hasKey("NUM-LIST"));
 		assertThat(assignements, hasEntry("NUM-LIST", "INPUT1"));
 	}
 
+	@Test
+	public void testShouldRegisterFileControlNamesWithNumbers() throws Exception {
+		File file = new File("src/test/resources/compilelistings/JOB26282.5");
+		CompileListing compileListing = Parse.parse(file);
+		Map<String, String> assignements = compileListing.getSourceMapAndCrossReference().getFileControlAssignment();
+		assertThat(assignements, notNullValue());
+		assertThat(assignements, hasEntry("NUM-LIST", "INPUT1"));
+		assertThat(assignements, hasEntry("NUM-LIST-2", "INPUT2"));
+		
+		Map<String, String> fileSection = compileListing.getSourceMapAndCrossReference().getFileSection();
+		assertThat(fileSection, notNullValue());
+		assertThat(fileSection, hasEntry("NUM-LIST", "NUM-LIST-FIELDS"));
+		assertThat(fileSection, hasEntry("NUM-LIST-2", "NUM-LIST-FIELDS-2"));
+	}
+	
+	public static void testAssignmentNameParse( ) {
+		String[][] ans = {
+			{"PL-S-INPUT1", "INPUT1"}, 
+			{"PL-AS-INPUT1", "INPUT1"},
+			{"INPUT1", "INPUT1"},
+			{"", ""},
+			{null, null},
+			{"-", "-"},
+			{"PL-AS-INPUT1-LEGAL?", "AS-INPUT1-LEGAL?"}
+		};
+		Arrays.asList(ans).forEach(an -> {
+			assertThat(Functions.parseAssignmentName(an[0]), equalTo(an[1]));
+		});		
+	}
+	
 	private void assertNotNullCompileListing(CompileListing compileListing) {
 		assertNotNull(compileListing);
 		assertNotNull(compileListing.getCompileOptions());

@@ -1,12 +1,16 @@
 package dk.bec.unittest.becut.testcase.model;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BecutTestCase {
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 
+public class BecutTestCase {
 	private String testCaseName;
 	private String testCaseId;
 	private String programName;
@@ -14,23 +18,50 @@ public class BecutTestCase {
 	private List<ExternalCall> externalCalls = new ArrayList<>();
 	private PostCondition postCondition;
 	//SELECT NUM-LIST ASSIGN TO INPUT1.
-	//needed for record size info
-	private Map<String, String> fileControlAssignments = new HashMap<>();
-	private Map<String, String> assignmentLocalFile = new HashMap<>();
+	//needed for getting record size info from the AST of the source
+	private Map<String, String> fileControlAssignment = new HashMap<>();
+	private Map<String, File> assignmentLocalFile = new HashMap<>();
+	private CompileListing compileListing;
+	private Path debugScriptPath;
+	private Path becutTestCaseDir = Paths.get(System.getProperty("java.io.tmpdir"));
 	
+	public Path getBecutTestCaseDir() {
+		return becutTestCaseDir;
+	}
+
+	public void setBecutTestCaseDir(Path becutTestCaseDir) {
+		this.becutTestCaseDir = becutTestCaseDir;
+	}
+
+	public Path getDebugScriptPath() {
+		return debugScriptPath;
+	}
+
+	public void setDebugScriptPath(Path debugScriptPath) {
+		this.debugScriptPath = debugScriptPath;
+	}
+
+	public CompileListing getCompileListing() {
+		return compileListing;
+	}
+
+	public void setCompileListing(CompileListing compileListing) {
+		this.compileListing = compileListing;
+	}
+
 	public Map<String, String> getFileControlAssignments() {
-		return fileControlAssignments;
+		return fileControlAssignment;
 	}
 
-	public void setFileControlAssignments(Map<String, String> fileControlAssignments) {
-		this.fileControlAssignments = fileControlAssignments;
+	public void setFileControlAssignment(Map<String, String> fileControlAssignment) {
+		this.fileControlAssignment = fileControlAssignment;
 	}
 
-	public Map<String, String> getAssignmentLocalFile() {
+	public Map<String, File> getAssignmentLocalFile() {
 		return assignmentLocalFile;
 	}
 
-	public void setAssignmentLocalFile(Map<String, String> assignmentLocalFile) {
+	public void setAssignmentLocalFile(Map<String, File> assignmentLocalFile) {
 		this.assignmentLocalFile = assignmentLocalFile;
 	}
 	

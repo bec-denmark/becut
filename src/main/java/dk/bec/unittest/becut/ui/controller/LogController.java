@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import dk.bec.unittest.becut.ftp.FTPRetrieveFileException;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,9 +22,27 @@ public class LogController implements Initializable {
 		Thread.setDefaultUncaughtExceptionHandler(
 			(t, e) -> {
 				//TODO make this code readable
-				if(e.getCause() instanceof InvocationTargetException
+				if (e.getCause() instanceof InvocationTargetException
 						&& ((InvocationTargetException)e.getCause()).getTargetException() 
 							instanceof MissingINSPLOGException) {
+					logArea.appendText(
+							((InvocationTargetException)e.getCause())
+							.getTargetException().toString() + "\n");
+				} else if (e.getCause() instanceof InvocationTargetException
+						&& ((InvocationTargetException)e.getCause()).getTargetException() 
+							instanceof FTPRetrieveFileException) {
+					logArea.appendText(
+							((InvocationTargetException)e.getCause())
+							.getTargetException().toString() + "\n");
+				} else if (e.getCause() instanceof InvocationTargetException
+						&& ((InvocationTargetException)e.getCause()).getTargetException() 
+							instanceof LogMessage) {
+					logArea.appendText(
+							((InvocationTargetException)e.getCause())
+							.getTargetException().toString() + "\n");
+				} else if (e.getCause() instanceof InvocationTargetException
+						&& ((InvocationTargetException)e.getCause()).getTargetException() 
+							instanceof ReturnCodeDifferentFromCC000) {
 					logArea.appendText(
 							((InvocationTargetException)e.getCause())
 							.getTargetException().toString() + "\n");
@@ -32,6 +51,7 @@ public class LogController implements Initializable {
 					PrintWriter pw = new PrintWriter(sw);
 					e.printStackTrace(pw);
 					logArea.appendText(sw.toString() + "\n");
+					e.printStackTrace();
 				}
 			}
 		);

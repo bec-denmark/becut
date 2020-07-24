@@ -9,6 +9,6 @@ public class MissingINSPLOGException extends RuntimeException {
 
 	@Override
 	public String toString() {
-		return "JESYSMSG \n" + content;
+		return "JESYSMSG\n" + content;
 	}
 }
