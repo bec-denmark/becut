@@ -1,31 +1,33 @@
 package dk.bec.unittest.becut.ui.controller;
 
 import java.io.File;
+import java.util.List;
 
+import dk.bec.unittest.becut.compilelist.Parse;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 public class LoadTestCaseController {
-
 	@FXML
 	private TextField testCasePath;
 	
-	private File testCaseFile;
+	private File testCaseFolder;
 
 	@FXML
 	private void browse() {
-		
-		FileChooser chooser = new FileChooser();
-		testCaseFile = chooser.showOpenDialog(testCasePath.getScene().getWindow());
-		if (testCaseFile != null) {
+		DirectoryChooser chooser = new DirectoryChooser();
+		testCaseFolder = chooser.showDialog(testCasePath.getScene().getWindow());
+		if (testCaseFolder != null) {
 			try {
-				testCasePath.setText(testCaseFile.getAbsolutePath());
+				testCasePath.setText(testCaseFolder.getAbsolutePath());
 			} catch (Exception e) {
-				// handle exception...
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -37,12 +39,9 @@ public class LoadTestCaseController {
 	
 	@FXML 
 	private void ok() {
-		testCaseFile = new File(testCasePath.getText());
-
-		BecutTestCase becutTestCase = BecutTestCaseManager.loadTestCase(testCaseFile);
+		BecutTestCase becutTestCase = BecutTestCaseManager.loadTestCase(testCaseFolder.toPath());
+		BECutAppContext.getContext().setUnitTestFolder(testCaseFolder.toPath());
 		BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
-
 		testCasePath.getScene().getWindow().hide();
 	}
-
 }

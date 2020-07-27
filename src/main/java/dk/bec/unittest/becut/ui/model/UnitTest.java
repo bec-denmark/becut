@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleObjectProperty;
 public class UnitTest extends UnitTestTreeObject {
 	private DebugScript debugScript;
 	private ObjectProperty<BecutTestCase> becutTestCase = new SimpleObjectProperty<BecutTestCase>();
-	private String savePath = "";
 	
 	public UnitTest() {
 		super("Create or load a test case", "", "");
@@ -42,14 +41,6 @@ public class UnitTest extends UnitTestTreeObject {
 
 	public void setDebugScript(DebugScript debugScript) {
 		this.debugScript = debugScript;
-	}
-
-	public String getSavePath() {
-		return savePath;
-	}
-
-	public void setSavePath(String savePath) {
-		this.savePath = savePath;
 	}
 
 	@Override

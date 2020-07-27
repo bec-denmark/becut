@@ -3,9 +3,12 @@ package dk.bec.unittest.becut.testcase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.Constants;
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
+import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataNameReference;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
+import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.recorder.model.SessionCall;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
@@ -34,6 +39,7 @@ import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import koopa.core.trees.Tree;
 
 public class BecutTestCaseManager {
@@ -58,16 +64,8 @@ public class BecutTestCaseManager {
 		becutTestCase.setTestCaseId(testCaseId);
 		
 		Map<String, String> fileControlAssignment = compileListing.getSourceMapAndCrossReference().getFileControlAssignment();
+		becutTestCase.setFileControlAssignments(fileControlAssignment);
 		
-		becutTestCase.setFileControlAssignment(fileControlAssignment);
-		
-		Map<String, File> assignmentLocalFiles = new HashMap<>(); 
-		fileControlAssignment.values().forEach(v -> {
-			assignmentLocalFiles.put(v, new File(System.getProperty("java.io.tmpdir") 
-					+ FileSystems.getDefault().getSeparator() + v + ".txt"));
-		});
-		becutTestCase.setAssignmentLocalFile(assignmentLocalFiles);
-
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
 				CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement : callStatements) {
@@ -203,32 +201,53 @@ public class BecutTestCaseManager {
 		return parameterList;
 	}
 
-	public static BecutTestCase loadTestCase(File file) {
+	public static BecutTestCase loadTestCase(Path folder) {
 		BecutTestCase becutTestCase = new BecutTestCase();
-		try {
-			FileInputStream fileInputStream = new FileInputStream(file);
+		try(FileInputStream fileInputStream = new FileInputStream(Paths.get(folder.toString(), "test_case.json").toFile())) {
 			becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
+			
+			CompileListing compileListing = Parse.parse(Paths.get(folder.toString(), "compile_listing.txt").toFile());
+			becutTestCase.setCompileListing(compileListing);
+			BECutAppContext.getContext().getUnitTest().setCompileListing(compileListing);
+			List<String> lines = BECutAppContext.getContext().getUnitTest()
+					.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
+			BECutAppContext.getContext().getSourceCode().setValue(lines);
+			
+			return becutTestCase;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return becutTestCase;
 	}
 
-	public static void saveTestCase(BecutTestCase becutTestCase, File folder) {
-		assert Files.isDirectory(folder.toPath());
+	public static void saveTestCase(BecutTestCase becutTestCase, Path folder) {
+		assert Files.isDirectory(folder);
 		try {
-			//TODO save compile listing, datasets
-			mapper.writer().writeValue(
-					new File(folder.getAbsolutePath() +  "/" + becutTestCase.getTestCaseName()), becutTestCase);
+			Path unitTestFolder = BECutAppContext.getContext().getUnitTestFolder();
 			becutTestCase.getFileControlAssignments().entrySet()
 				.stream()
-				.forEach(e -> {
+				.map(e -> Paths.get(unitTestFolder.toString(), e.getValue() + ".txt"))
+				.filter(p -> Files.exists(p))
+				.forEach(p -> {
 					try {
-						Files.copy(Paths.get(e.getValue()), folder.toPath());
+						Files.copy(p, 
+								Paths.get(folder.toString(), p.getFileName().toString()), 
+								StandardCopyOption.REPLACE_EXISTING);
 					} catch (IOException ioe) {
 						throw new RuntimeException(ioe);
 					}
 				});
+			mapper.writerWithDefaultPrettyPrinter().writeValue(
+					Paths.get(folder.toString(), "test_case.json").toFile(), becutTestCase);
+			Files.write(Paths.get(folder.toString(), "compile_listing.txt"), 
+					becutTestCase.getCompileListing().getOriginalSource(),
+					Charset.defaultCharset());
+			Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+    		if (Files.exists(debugScriptPath)) {
+				Files.copy(debugScriptPath, 
+						Paths.get(folder.toString(), debugScriptPath.getFileName().toString()), 
+						StandardCopyOption.REPLACE_EXISTING);
+    		}
+			BECutAppContext.getContext().setUnitTestFolder(folder);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

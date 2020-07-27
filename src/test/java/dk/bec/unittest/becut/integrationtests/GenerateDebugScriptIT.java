@@ -63,7 +63,7 @@ public class GenerateDebugScriptIT extends TestCase {
 		File file = new File("./src/test/resources/compilelistings/mat561_compile_listing.txt");
 		File testScriptFile = new File("./src/test/resources/testcases/mat561_testcase.json");
 		CompileListing compileListing = Parse.parse(file);
-		BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile);
+		BecutTestCase testCase = BecutTestCaseManager.loadTestCase(testScriptFile.toPath());
 		testCase.setCompileListing(compileListing);
 		
 		DebugScript debugScript = ScriptGenerator.generateDebugScript(testCase);

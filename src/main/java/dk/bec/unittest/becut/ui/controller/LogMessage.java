@@ -9,10 +9,10 @@ public class LogMessage extends RuntimeException {
 
 	@Override
 	public String toString() {
-		return "SYSOUT\n" + content;
+		return content;
 	}
 	
-	//performance reasons
+	//for performance reasons
 	@Override
 	public Throwable fillInStackTrace() {
 		return null;

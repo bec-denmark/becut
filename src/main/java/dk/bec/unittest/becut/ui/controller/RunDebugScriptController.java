@@ -46,17 +46,17 @@ public class RunDebugScriptController extends AbstractBECutController implements
 	protected void ok() {
 		try {
 			BecutTestCase becutTestCase = BECutAppContext.getContext().getUnitTest().getBecutTestCase();
-			DebugScript debugScript = ScriptGenerator.generateDebugScript(becutTestCase);
 			String programName = becutTestCase.getProgramName();
 			if (!loadModuleName.getText().isEmpty()) {
 				programName = loadModuleName.getText();
 				loadModuleNameRemembered = loadModuleName.getText();
 			}
 	
-			HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName, debugScript);
+			HostJob job = DebugScriptExecutor.testBatch(jobName.getText(), programName);
 			HostJobDataset jobDataset = job.getDataset(DDNAME.INSPLOG);
 			//TODO show jesysmsg if job status != cc0000
 			if(jobDataset == null) {
+				//TODO DDNAME.SYSOUT may not exist, show empty? get all dds for the job?
 				throw new MissingINSPLOGException(job.getDataset(DDNAME.SYSOUT).getContents());
 			}
 			SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobDataset.getContents(), programName);

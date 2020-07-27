@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
+import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.UnitTest;
 import javafx.fxml.FXML;
@@ -19,8 +22,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MenuController extends AbstractBECutController {
-
-
 	@FXML
 	private MenuBar menuBar;
 
@@ -51,25 +52,19 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 500, 200);
 			saveStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		saveStage.showAndWait();
 	}
 
 	@FXML
 	public void save() {
-		UnitTest unitTest = BECutAppContext.getContext().getUnitTest();
-		if (unitTest.getSavePath().isEmpty()) {
-			saveAs();
-		}
-		else {
-			File file = new File(unitTest.getSavePath());
-			BecutTestCaseManager.saveTestCase(unitTest.getBecutTestCase(), file);
-		}
+		Path unitTestPath  = BECutAppContext.getContext().getUnitTestFolder();
+		BecutTestCaseManager.saveTestCase(BECutAppContext.getContext().getUnitTest().getBecutTestCase(), unitTestPath);
 	}
 
 	@FXML
-	public void editTestCase() {
+	public void loadTestCase() {
 		Stage loadTestCaseStage = new Stage();
 		loadTestCaseStage.initModality(Modality.WINDOW_MODAL);
 		loadTestCaseStage.initOwner(menuBar.getScene().getWindow());
@@ -79,7 +74,7 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 500, 200);
 			loadTestCaseStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		loadTestCaseStage.showAndWait();
 	}
@@ -95,34 +90,20 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 500, 200);
 			loadCompileListingStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		loadCompileListingStage.showAndWait();
 	}
 
 	@FXML
-	public void createDebugScript() {
-		Stage saveDebugScriptStage = new Stage();
-		saveDebugScriptStage.initModality(Modality.WINDOW_MODAL);
-		saveDebugScriptStage.initOwner(menuBar.getScene().getWindow());
-		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/SaveDebugScript.fxml"));
-			Scene scene = new Scene(parent, 500, 200);
-			saveDebugScriptStage.setScene(scene);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} 
-		saveDebugScriptStage.showAndWait();
-	}
-
-	@FXML
 	public void editDebugScript() {
     	try {
-    		Path path = BECutAppContext.getContext().getUnitTest().becutTestCaseProperty().get().getDebugScriptPath();
-    		if (!Files.exists(path)) {
-    		    Files.createFile(path);
+    		Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+    		if (!Files.exists(debugScriptPath)) {
+        		List<String> jcl = DebugScriptExecutor.createJCLTemplate();
+        		Files.write(debugScriptPath, jcl);
     		}
-			Desktop.getDesktop().open(path.toFile());
+			Desktop.getDesktop().open(debugScriptPath.toFile());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -139,7 +120,7 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 500, 200);
 			credentialsStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		credentialsStage.showAndWait();
 	}
@@ -155,7 +136,7 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 500, 200);
 			retrieveFileStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		retrieveFileStage.showAndWait();
 	}
@@ -187,7 +168,7 @@ public class MenuController extends AbstractBECutController {
 			Scene scene = new Scene(parent, 600, 400);
 			recordProgramExecutionStage.setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} 
 		recordProgramExecutionStage.showAndWait();
 	}

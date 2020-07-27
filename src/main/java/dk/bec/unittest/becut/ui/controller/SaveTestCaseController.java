@@ -11,7 +11,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 public class SaveTestCaseController {
-
 	@FXML
 	private TextField testCasePath;
 	
@@ -39,7 +38,7 @@ public class SaveTestCaseController {
 	void save() {
 		testCaseFolder = new File(testCasePath.getText());
 		BecutTestCase becutTestCase = BECutAppContext.getContext().getUnitTest().getBecutTestCase();
-		BecutTestCaseManager.saveTestCase(becutTestCase, testCaseFolder);
+		BecutTestCaseManager.saveTestCase(becutTestCase, testCaseFolder.toPath());
 		testCasePath.getScene().getWindow().hide();
 	}
 }

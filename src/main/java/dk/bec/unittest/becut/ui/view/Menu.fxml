@@ -16,10 +16,9 @@
 		</Menu>
 		<Menu text="BECut">
 			<MenuItem text="Create unit test" onAction="#createTestCase"/>
-			<MenuItem text="Edit test case" onAction="#editTestCase"/>
+			<MenuItem text="Load test case" onAction="#loadTestCase"/>
 			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
 			<SeparatorMenuItem />
-			<MenuItem text="Create debug script" onAction="#createDebugScript"/>
 			<MenuItem text="Edit debug script" onAction="#editDebugScript"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Record program execution" onAction="#recordProgramExecution"/>

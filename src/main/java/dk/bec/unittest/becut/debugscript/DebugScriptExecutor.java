@@ -43,8 +43,9 @@ public class DebugScriptExecutor {
 	static final String $PROGRAM = "${program}";
 	static final String $JOBNAME = "${jobname}";
 	static final String $DD = "${dd}";
+	static final String $DEBUG = "${debug}";
 	
-	public static HostJob testBatch(String jobName, String programName, DebugScript debugScript) {
+	public static HostJob testBatch(String jobName, String programName) {
 		FTPClient ftpClient = new FTPClient();
 		try {
 			Credential credential = BECutAppContext.getContext().getCredential();
@@ -52,18 +53,19 @@ public class DebugScriptExecutor {
 			
 			BecutTestCase becutTestCase = BECutAppContext.getContext().getUnitTest().getBecutTestCase();
 			
-			if(becutTestCase.getDebugScriptPath() == null || !Files.exists(becutTestCase.getDebugScriptPath())) {
-				Path debugScriptPath = Paths.get(becutTestCase.getBecutTestCaseDir().toString(), "/debug_script.txt");
-				Files.write(debugScriptPath, createJCL(becutTestCase));
-				becutTestCase.setDebugScriptPath(debugScriptPath);
-			}
+    		Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+    		if (!Files.exists(debugScriptPath)) {
+        		List<String> jcl = DebugScriptExecutor.createJCLTemplate();
+        		Files.write(debugScriptPath, jcl);
+    		}
 			
 			String user = credential.getUsername();
 			Map<String, String> datasetNames = generateDDnames(becutTestCase.getCompileListing(), user);
 			putDatasets(ftpClient, becutTestCase, datasetNames, user);
-			List<String> jclTemplate = Files.readAllLines(becutTestCase.getDebugScriptPath());
+			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
 			String DDs = jclDDs(datasetNames);
-			String jcl = fillTemplate(jclTemplate, user, programName, "BECUT", DDs);
+			String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
+			String jcl = fillTemplate(jclTemplate, user, programName, "BECUT", DDs, debugScript);
 			
 			InputStream is = new ByteArrayInputStream(jcl.getBytes());
 			//TODO delete test datasets
@@ -73,7 +75,7 @@ public class DebugScriptExecutor {
 		}
 	}
 	
-	private static String fillTemplate(List<String> lines, String user, String program, String jobName, String dd) {
+	private static String fillTemplate(List<String> lines, String user, String program, String jobName, String dd, String debug) {
 		return lines
 				.stream()
 				.map(line -> {
@@ -91,17 +93,15 @@ public class DebugScriptExecutor {
 					if(line.contains($DD)) {
 						line = line.replace($DD, dd);
 					}
+					if(line.contains($DEBUG)) {
+						line = line.replace($DEBUG, debug);
+					}
 					return line;
 				})
 				.collect(Collectors.joining("\n"));
 	}
 	
-	public static List<String> createJCL(BecutTestCase becutTestCase) {
-		String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
-		return createJCL(debugScript);
-	}
-	
-	public static List<String> createJCL(String debugScript) {
+	public static List<String> createJCLTemplate() {
 		return new ArrayList<String>(Arrays.asList(
 				"//${jobname} JOB ,'" + $USER + "',",
 				"//             SCHENV=TSTSYS,",
@@ -115,7 +115,7 @@ public class DebugScriptExecutor {
 				$DD,
 				//generateDDs(ftpClient, userName);
 				"//INSPIN      DD *",
-				debugScript,
+				$DEBUG,
 				"",
 				"/*",
 				"//INSPLOG   DD SYSOUT=*",
@@ -178,8 +178,7 @@ public class DebugScriptExecutor {
 				DatasetProperties datasetProperties = 
 						new SequentialDatasetProperties(
 								RecordFormat.FIXED_BLOCK, size, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
-				Map<String, File> map = becutTestCase.getAssignmentLocalFile();
-				Path localPath = map.get(entry.getValue()).toPath();
+				Path localPath = Paths.get(BECutAppContext.getContext().getUnitTestFolder().toString(), entry.getValue() + ".txt");
 				if(Files.exists(localPath)) {
 					checkRecordsLength(localPath, size);
 					FTPManager.sendDataset(ftpClient, datasetName, localPath.toFile(), datasetProperties);

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 
 public class BecutTestCase {
@@ -19,28 +21,11 @@ public class BecutTestCase {
 	private PostCondition postCondition;
 	//SELECT NUM-LIST ASSIGN TO INPUT1.
 	//needed for getting record size info from the AST of the source
-	private Map<String, String> fileControlAssignment = new HashMap<>();
-	private Map<String, File> assignmentLocalFile = new HashMap<>();
+	private Map<String, String> fileControlAssignments = new HashMap<>();
+	//throws STE during serialization with Jackson 
+	@JsonIgnore
 	private CompileListing compileListing;
-	private Path debugScriptPath;
-	private Path becutTestCaseDir = Paths.get(System.getProperty("java.io.tmpdir"));
 	
-	public Path getBecutTestCaseDir() {
-		return becutTestCaseDir;
-	}
-
-	public void setBecutTestCaseDir(Path becutTestCaseDir) {
-		this.becutTestCaseDir = becutTestCaseDir;
-	}
-
-	public Path getDebugScriptPath() {
-		return debugScriptPath;
-	}
-
-	public void setDebugScriptPath(Path debugScriptPath) {
-		this.debugScriptPath = debugScriptPath;
-	}
-
 	public CompileListing getCompileListing() {
 		return compileListing;
 	}
@@ -50,21 +35,13 @@ public class BecutTestCase {
 	}
 
 	public Map<String, String> getFileControlAssignments() {
-		return fileControlAssignment;
+		return fileControlAssignments;
 	}
 
-	public void setFileControlAssignment(Map<String, String> fileControlAssignment) {
-		this.fileControlAssignment = fileControlAssignment;
+	public void setFileControlAssignments(Map<String, String> fileControlAssignments) {
+		this.fileControlAssignments = fileControlAssignments;
 	}
 
-	public Map<String, File> getAssignmentLocalFile() {
-		return assignmentLocalFile;
-	}
-
-	public void setAssignmentLocalFile(Map<String, File> assignmentLocalFile) {
-		this.assignmentLocalFile = assignmentLocalFile;
-	}
-	
 	public String getTestCaseName() {
 		return testCaseName;
 	}

@@ -136,7 +136,7 @@ public class BecutTestCaseController implements Initializable {
 		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(index);
 		    	assert item.getValue() instanceof FileControlDisplayable;
 		    	try {
-		    		Path path = Paths.get(item.getValue().getValue());
+		    		Path path = Paths.get(BECutAppContext.getContext().getUnitTestFolder().toString(), item.getValue().getValue() + ".txt");
 		    		if (!Files.exists(path)) {
 		    		    Files.createFile(path);
 		    		}
@@ -228,7 +228,7 @@ public class BecutTestCaseController implements Initializable {
 		unitTestTreeTableView.getRoot().getChildren().add(externalCallHeader);
 		unitTestTreeTableView.getRoot().getChildren().add(postConditionHeader);
 
-		populateUnitTestParts(fileControlHeader, becutTestCase.getAssignmentLocalFile());
+		populateUnitTestParts(fileControlHeader, becutTestCase.getFileControlAssignments());
 		
 		populateUnitTestParts(preConditionHeader, new PreConditionDisplayable("File Section"),
 				becutTestCase.getPreCondition().getFileSection());
@@ -253,10 +253,10 @@ public class BecutTestCaseController implements Initializable {
 				becutTestCase.getPostCondition().getLinkageSection());
 	}
 
-	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, Map<String, File> assignmentLocalFile) {
-		assignmentLocalFile.forEach((k, v) ->
+	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, Map<String, String> getFileControlAssignments) {
+		getFileControlAssignments.forEach((k, v) ->
 			parent.getChildren().add(
-					new TreeItem<UnitTestTreeObject>(new FileControlDisplayable(k, v.getAbsolutePath()))));
+					new TreeItem<UnitTestTreeObject>(new FileControlDisplayable(k, v))));
 	}	
 	
 	private void populateUnitTestParts(TreeItem<UnitTestTreeObject> parent, UnitTestTreeObject treeObject,

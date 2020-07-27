@@ -1,6 +1,9 @@
 package dk.bec.unittest.becut.ui.model;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
@@ -24,6 +27,8 @@ public class BECutAppContext {
 	
 	private UnitTest unitTest;
 	
+	private Path unitTestFolder;
+	
 	private Credential credential;
 	
 	private Stage primaryStage;
@@ -39,7 +44,27 @@ public class BECutAppContext {
 	public UnitTest getUnitTest() {
 		return unitTest;
 	}
+
+	public Path getUnitTestFolder() {
+		if(unitTestFolder == null || !Files.exists(unitTestFolder)) {
+			try {
+				unitTestFolder = Files.createTempDirectory("becut");
+				return unitTestFolder;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return unitTestFolder;
+	}
+
+	public Path getDebugScriptPath() {
+		return Paths.get(getUnitTestFolder().toString(), "debug_script.txt");
+	}
 	
+	public void setUnitTestFolder(Path unitTestFolder) {
+		this.unitTestFolder = unitTestFolder;
+	}
+
 	public Credential getCredential() {
 		Credential c;
 		if (credential == null) {
