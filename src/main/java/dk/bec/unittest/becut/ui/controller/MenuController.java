@@ -1,18 +1,14 @@
 package dk.bec.unittest.becut.ui.controller;
 
 import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
-import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
+import dk.bec.unittest.becut.debugscript.DebugScriptTemplate;
 import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
-import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
-import dk.bec.unittest.becut.ui.model.UnitTest;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -100,7 +96,7 @@ public class MenuController extends AbstractBECutController {
     	try {
     		Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
     		if (!Files.exists(debugScriptPath)) {
-        		List<String> jcl = DebugScriptExecutor.createJCLTemplate();
+        		List<String> jcl = DebugScriptTemplate.createJCLTemplate();
         		Files.write(debugScriptPath, jcl);
     		}
 			Desktop.getDesktop().open(debugScriptPath.toFile());

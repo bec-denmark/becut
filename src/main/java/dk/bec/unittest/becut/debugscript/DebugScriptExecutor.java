@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -39,12 +41,6 @@ import koopa.core.trees.Tree;
 import koopa.core.trees.jaxen.Jaxen;
 
 public class DebugScriptExecutor {
-	static final String $USER = "${user}";
-	static final String $PROGRAM = "${program}";
-	static final String $JOBNAME = "${jobname}";
-	static final String $DD = "${dd}";
-	static final String $DEBUG = "${debug}";
-	
 	public static HostJob testBatch(String jobName, String programName) {
 		FTPClient ftpClient = new FTPClient();
 		try {
@@ -55,7 +51,7 @@ public class DebugScriptExecutor {
 			
     		Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
     		if (!Files.exists(debugScriptPath)) {
-        		List<String> jcl = DebugScriptExecutor.createJCLTemplate();
+        		List<String> jcl = DebugScriptTemplate.createJCLTemplate();
         		Files.write(debugScriptPath, jcl);
     		}
 			
@@ -65,7 +61,7 @@ public class DebugScriptExecutor {
 			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
 			String DDs = jclDDs(datasetNames);
 			String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
-			String jcl = fillTemplate(jclTemplate, user, programName, "BECUT", DDs, debugScript);
+			String jcl = DebugScriptTemplate.fillTemplate(jclTemplate, user, programName, "BECUT", DDs, debugScript);
 			
 			InputStream is = new ByteArrayInputStream(jcl.getBytes());
 			//TODO delete test datasets
@@ -73,65 +69,6 @@ public class DebugScriptExecutor {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private static String fillTemplate(List<String> lines, String user, String program, String jobName, String dd, String debug) {
-		return lines
-				.stream()
-				.map(line -> {
-					//TODO remove repetition
-					//TODO watch out for cAsEs
-					if(line.contains($USER)) {
-						line = line.replace($USER, user);
-					}
-					if(line.contains($PROGRAM)) {
-						line = line.replace($PROGRAM, program);
-					}
-					if(line.contains($JOBNAME)) {
-						line = line.replace($JOBNAME, jobName);
-					}
-					if(line.contains($DD)) {
-						line = line.replace($DD, dd);
-					}
-					if(line.contains($DEBUG)) {
-						line = line.replace($DEBUG, debug);
-					}
-					return line;
-				})
-				.collect(Collectors.joining("\n"));
-	}
-	
-	public static List<String> createJCLTemplate() {
-		return new ArrayList<String>(Arrays.asList(
-				"//${jobname} JOB ,'" + $USER + "',",
-				"//             SCHENV=TSTSYS,",
-				"//             MSGCLASS=Q,",
-				"//             NOTIFY=" + $USER + ",",
-				"//             UJOBCORR=" + $USER + "",
-				"//PGMEXEC  EXEC PGM=" + $PROGRAM,
-				generateSteplib(Settings.STEPLIB),
-				//placeholder for program DDs
-				//will be filled before submit
-				$DD,
-				//generateDDs(ftpClient, userName);
-				"//INSPIN      DD *",
-				$DEBUG,
-				"",
-				"/*",
-				"//INSPLOG   DD SYSOUT=*",
-				//"//INSPCMD   DD DSN=SYS2.DEBUG.COMMANDS,DISP=SHR\n";
-				"//CEEOPTS   DD *,DLM='/*'",
-				"TEST(,INSPIN,,)",
-				"/*"
-		));
-	}
-	
-	private static String generateSteplib(List<String> steplibs) {
-		return 
-			steplibs
-				.stream()
-				.map(s -> "//STEPLIB   DD DSN=" + s.toUpperCase() + ",DISP=SHR")
-				.collect(Collectors.joining("\n", "", ""));
 	}
 	
 	private static Map<String, String> generateDDnames(CompileListing compileListing, String userName) {
@@ -203,8 +140,9 @@ public class DebugScriptExecutor {
 			throw new RuntimeException(e);
 		}
 		if(lines.size() > 0) {
-			throw new RuntimeException(
-					String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
+			System.out.println(String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
+//			throw new RuntimeException(
+//					String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
 		}
 	}
 }

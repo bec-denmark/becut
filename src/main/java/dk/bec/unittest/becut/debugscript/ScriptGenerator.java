@@ -212,10 +212,13 @@ public class ScriptGenerator {
 			debugScript.getVariableDeclarations().add(counter);
 			
 			Tree reconciledExternalCall = reconcileExternalCall(compileListing, call, alreadyMatched, callStatements);
-			String statemendId = reconciledExternalCall.getStartPosition().getLinenumber() + ".1";
-			//String statemendId = call.getStatementId();
-			statements.add(
-					new If(new EqualsConditional(new Literal("%LINE"), new Quoted(statemendId)), ifBody));
+			//TODO show warning
+			if(reconciledExternalCall != null) {
+				String statemendId = reconciledExternalCall.getStartPosition().getLinenumber() + ".1";
+				//String statemendId = call.getStatementId();
+				statements.add(
+						new If(new EqualsConditional(new Literal("%LINE"), new Quoted(statemendId)), ifBody));
+			}
 		});
 		statements.add(new GoBypass());
 		Perform perform = new Perform(statements);

@@ -40,6 +40,7 @@ public class CreateTestCaseController extends AbstractBECutController implements
 	void ok() {
 		compileListingController.loadCompileListingIntoContext();
 
+		BECutAppContext.getContext().setUnitTestFolder(null);
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
 		BecutTestCase becutTestCase = BecutTestCaseManager.createTestCaseFromCompileListing(compileListing);
 		if (!testCaseName.getText().trim().isEmpty()) {
