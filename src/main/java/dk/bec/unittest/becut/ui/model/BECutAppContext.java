@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
-import dk.bec.unittest.becut.ui.controller.SourceCodeController;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,6 +37,12 @@ public class BECutAppContext {
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
 	private SimpleObjectProperty<List<String>> sourceCode = new SimpleObjectProperty<>();
 	
+	private ObservableList<Integer> queue = FXCollections.observableList(new ArrayList<>());
+	
+	public ObservableList<Integer> getQueue() {
+		return queue;
+	}
+
 	private BECutAppContext(Stage primaryStage) {
 		this.unitTest = new UnitTest();
 		this.primaryStage = primaryStage;

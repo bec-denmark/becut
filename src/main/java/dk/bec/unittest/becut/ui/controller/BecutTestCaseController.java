@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -29,6 +30,7 @@ import dk.bec.unittest.becut.ui.model.UnitTest;
 import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ContextMenu;
@@ -69,6 +71,33 @@ public class BecutTestCaseController implements Initializable {
 			return param.getValue().getValue().valueProperty();
 		});
 
+		BECutAppContext.getContext().getQueue().addListener((Change<? extends Integer> c) -> {
+			if(c.next() && c.wasAdded()) {
+				Integer line1 = c.getList().get(c.getList().size() - 1);
+				//TODO clear
+				//c.getList().clear();
+				LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
+				queue.add(unitTestTreeTableView.getRoot());
+				while(!queue.isEmpty()) {
+					TreeItem<UnitTestTreeObject> node = queue.pop();
+					if(node.getValue() instanceof ExternalCallDisplayable) {
+						Integer line2 = ((ExternalCallDisplayable)node.getValue()).getExternalCall().getLineNumber();
+						if(line1.equals(line2)) {
+							node.setExpanded(true);
+							TreeItem<UnitTestTreeObject> parent = node.getParent();
+							while(parent != null) {
+								parent.setExpanded(true);
+								parent = parent.getParent();
+							}
+							unitTestTreeTableView.getSelectionModel().select(node);
+							return;
+						}
+					}
+					queue.addAll(node.getChildren());
+				}
+			}
+		});
+		
 		unitTestTreeTableView.setRowFactory(ttv -> {
 			ContextMenu cmExternalCall = new ContextMenu();
 			MenuItem dup = new MenuItem("Duplicate");

@@ -23,7 +23,7 @@ public class LoadTestCaseController {
 	private void browse() {
 		DirectoryChooser chooser = new DirectoryChooser();
 		if(initialDirectory != null && Files.exists(initialDirectory)) {
-			chooser.setInitialDirectory(initialDirectory.toFile());
+			chooser.setInitialDirectory(initialDirectory.getParent().toFile());
 		}
 		testCaseFolder = chooser.showDialog(testCasePath.getScene().getWindow());
 		if (testCaseFolder != null) {

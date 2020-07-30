@@ -1,35 +1,25 @@
 package dk.bec.unittest.becut.ui.controller;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventTarget;
 
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.HBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import koopa.core.trees.Tree;
@@ -42,24 +32,28 @@ public class SourceCodeController {
 	
 	public void initialize() {
 		sourceProperty.bind(BECutAppContext.getContext().getSourceCode());
+		WebEngine webEngine = sourceView.getEngine();
 		sourceProperty.addListener((observable, oldValue, newValue) -> {
-			String content = html(newValue);
-			WebEngine webEngine = sourceView.getEngine();
-			webEngine.loadContent(content);
-			webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-				if (newState == State.SUCCEEDED) {
-					Document doc = webEngine.getDocument();
-					Element el = doc.getElementById("6664");
-					if(el != null) {
-						((EventTarget) el).addEventListener("click", ev -> {
-							System.out.println("BOOM!" + el);
-							System.out.println(el.getAttribute("id"));
-						}, false);
+			webEngine.loadContent(html(newValue));
+		});
+		webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+			if (newState == State.SUCCEEDED) {
+				Document doc = webEngine.getDocument();
+				NodeList nl = doc.getElementsByTagName("div");
+				if(nl != null) {
+					for(int i = 0; i < nl.getLength(); i++) {
+						Element n = (Element)nl.item(i);
+						if("call".equals(n.getAttribute("class"))) {
+							((EventTarget) n).addEventListener("click", ev -> {
+								System.out.println(n.getAttribute("id"));
+								BECutAppContext.getContext().getQueue().add(Integer.parseInt(n.getAttribute("id")));
+							}, false);
+						}
+						
 					}
-					//TODO FIND FIRST CALL
-					//webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
 				}
-			});
+				//webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
+			}
 		});
 	}
 
@@ -87,7 +81,7 @@ public class SourceCodeController {
 				.map(line -> {
 					int lineNumber = Integer.parseInt(line.substring(0, 6));
 					if(callSites.contains(lineNumber)) {
-						return "<div id='" +  
+						return "<div class=call id='" +  
 								lineNumber + 
 								"' style=\"background-color: #00FF00\"><a>" + line + "</a></div>";
 					}
