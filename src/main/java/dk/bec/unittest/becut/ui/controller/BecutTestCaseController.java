@@ -71,10 +71,10 @@ public class BecutTestCaseController implements Initializable {
 			return param.getValue().getValue().valueProperty();
 		});
 
-		BECutAppContext.getContext().getQueue().addListener((Change<? extends Integer> c) -> {
+		BECutAppContext.getContext().getToTestCase().addListener((Change<? extends Integer> c) -> {
 			if(c.next() && c.wasAdded()) {
 				Integer line1 = c.getList().get(c.getList().size() - 1);
-				//TODO clear
+				//TODO clear; c.getList().clear(); throws exception
 				//c.getList().clear();
 				LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
 				queue.add(unitTestTreeTableView.getRoot());
@@ -90,12 +90,21 @@ public class BecutTestCaseController implements Initializable {
 								parent = parent.getParent();
 							}
 							unitTestTreeTableView.getSelectionModel().select(node);
+							unitTestTreeTableView.scrollTo(unitTestTreeTableView.getSelectionModel().getSelectedIndex());
 							return;
 						}
 					}
 					queue.addAll(node.getChildren());
 				}
 			}
+		});
+		
+		unitTestTreeTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            TreeItem<UnitTestTreeObject> selectedItem = newValue;
+            if(selectedItem != null && selectedItem.getValue() instanceof ExternalCallDisplayable) {
+            	Integer line2 = ((ExternalCallDisplayable)selectedItem.getValue()).getExternalCall().getLineNumber();
+                BECutAppContext.getContext().getToSourceCode().add(line2);
+            }
 		});
 		
 		unitTestTreeTableView.setRowFactory(ttv -> {

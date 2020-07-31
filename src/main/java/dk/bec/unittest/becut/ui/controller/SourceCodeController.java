@@ -18,6 +18,7 @@ import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener.Change;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebEngine;
@@ -45,14 +46,20 @@ public class SourceCodeController {
 						Element n = (Element)nl.item(i);
 						if("call".equals(n.getAttribute("class"))) {
 							((EventTarget) n).addEventListener("click", ev -> {
-								System.out.println(n.getAttribute("id"));
-								BECutAppContext.getContext().getQueue().add(Integer.parseInt(n.getAttribute("id")));
+								BECutAppContext.getContext().getToTestCase().add(Integer.parseInt(n.getAttribute("id")));
 							}, false);
 						}
 						
 					}
 				}
-				//webEngine.executeScript("document.getElementById('6664').scrollIntoView();");
+			}
+		});
+		BECutAppContext.getContext().getToSourceCode().addListener((Change<? extends Integer> c) -> {
+			if(c.next() && c.wasAdded()) {
+				Integer line = c.getList().get(c.getList().size() - 1);
+				webEngine.executeScript(String.format("document.getElementById('%s').scrollIntoView({behavior: 'smooth', block: 'center'});", line));
+				//{behavior: 'smooth', block: 'center'} should center the selected element within window; it does not seem to work so: 
+				webEngine.executeScript("window.scrollBy(0, -200);");
 			}
 		});
 	}

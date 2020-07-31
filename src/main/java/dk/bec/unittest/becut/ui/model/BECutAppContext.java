@@ -37,12 +37,18 @@ public class BECutAppContext {
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
 	private SimpleObjectProperty<List<String>> sourceCode = new SimpleObjectProperty<>();
 	
-	private ObservableList<Integer> queue = FXCollections.observableList(new ArrayList<>());
+	//TODO refactor this to a one message queue with different message classes
+	private ObservableList<Integer> msgToTestCase = FXCollections.observableList(new ArrayList<>());
+	private ObservableList<Integer> msgToSourceCode = FXCollections.observableList(new ArrayList<>());
 	
-	public ObservableList<Integer> getQueue() {
-		return queue;
+	public ObservableList<Integer> getToTestCase() {
+		return msgToTestCase;
 	}
 
+	public ObservableList<Integer> getToSourceCode() {
+		return msgToSourceCode;
+	}
+	
 	private BECutAppContext(Stage primaryStage) {
 		this.unitTest = new UnitTest();
 		this.primaryStage = primaryStage;
