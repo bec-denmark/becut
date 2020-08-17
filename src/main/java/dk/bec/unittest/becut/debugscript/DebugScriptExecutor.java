@@ -61,7 +61,7 @@ public class DebugScriptExecutor {
 			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
 			String DDs = jclDDs(datasetNames);
 			String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
-			String jcl = DebugScriptTemplate.fillTemplate(jclTemplate, user, programName, "BECUT", DDs, debugScript);
+			String jcl = DebugScriptTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript);
 			
 			InputStream is = new ByteArrayInputStream(jcl.getBytes());
 			//TODO delete test datasets

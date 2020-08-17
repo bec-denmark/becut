@@ -48,20 +48,19 @@ public class RecorderJCLGenerator {
 				"                 LIST UNTITLED('AT CALL END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               ADD 1 TO " + depthOfCall + ";\n" + 
+				"        COMPUTE " + depthOfCall + " =  " + depthOfCall + " + 1;\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            AT EXIT * BEGIN;                             \n" + 
 				"               IF " + depthOfCall + " < 2 THEN                 \n" + 
 				"                 LIST UNTITLED('AT EXIT BEGIN');         \n" + 
 				"                 LIST %PROGRAM;                          \n" + 
-				"                 SET QUALIFY BLOCK MAT563;               \n" + 
 				"                 LIST CALLS;                             \n" + 
 				"                 LIST TITLED *;                          \n" + 
 				"                 LIST UNTITLED('AT EXIT END');           \n" + 
 				"                 LIST UNTITLED('');                      \n" + 
 				"               END-IF;                                   \n" + 
-				"               SUBSTRACT 1 FROM " + depthOfCall + ";\n" + 
+				"        COMPUTE " + depthOfCall + " =  " + depthOfCall + " - 1;\n" + 
 				"               GO;                                       \n" + 
 				"            END;                                         \n" + 
 				"            GO;                                          \n" + 
@@ -77,11 +76,12 @@ public class RecorderJCLGenerator {
 	}
 	
 	private static String generateSteplib(List<String> steplibs) {
-		return 
-			steplibs
+		String first = "//STEPLIB   DD DSN=" + steplibs.get(0).toUpperCase() + ",DISP=SHR\n";
+		return first +
+			steplibs.subList(1, steplibs.size())
 				.stream()
-				.map(s -> "//STEPLIB   DD DSN=" + s.toUpperCase() + ",DISP=SHR\n")
-				.collect(Collectors.joining("\n", "", "\n"));
+				.map(s -> "//          DD DSN=" + s.toUpperCase() + ",DISP=SHR")
+				.collect(Collectors.joining("\n", "", ""));
 	}
 
 	//TODO code deduplication in DebugsSriptExecutor and here

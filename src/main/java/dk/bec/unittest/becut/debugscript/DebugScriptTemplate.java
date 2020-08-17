@@ -45,10 +45,11 @@ public class DebugScriptTemplate {
 	}
 	
 	private static String generateSteplib(List<String> steplibs) {
-		return 
-			steplibs
+		String first = "//STEPLIB   DD DSN=" + steplibs.get(0).toUpperCase() + ",DISP=SHR\n";
+		return first +
+			steplibs.subList(1, steplibs.size())
 				.stream()
-				.map(s -> "//STEPLIB   DD DSN=" + s.toUpperCase() + ",DISP=SHR")
+				.map(s -> "//          DD DSN=" + s.toUpperCase() + ",DISP=SHR")
 				.collect(Collectors.joining("\n", "", ""));
 	}
 
