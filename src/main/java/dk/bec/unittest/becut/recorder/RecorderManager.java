@@ -57,7 +57,7 @@ public class RecorderManager {
 		
 		// 4. Download result dataset (from step 1) and delete
 		String recordingResult = FTPManager.retrieveMember(ftpClient, datasetName);
-		FTPManager.deleteMember(ftpClient, datasetName);
+		//FTPManager.deleteMember(ftpClient, datasetName);
 		//TODO use OS independent path 
 		Files.copy(new ByteArrayInputStream(recordingResult.getBytes()), Paths.get("/temp", datasetName));
 
