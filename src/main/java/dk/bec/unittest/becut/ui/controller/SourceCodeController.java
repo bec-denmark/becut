@@ -69,7 +69,7 @@ public class SourceCodeController {
 		//TODO give id to line numbers
 		//TODO use external stylesheet for coloring
 		//TODO get rid of this telescope
-		Tree ast = BECutAppContext.getContext().getUnitTest().getCompileListing().getSourceMapAndCrossReference().getAst();
+		Tree ast = BECutAppContext.getContext().getUnitTestSuite().getCompileListing().getSourceMapAndCrossReference().getAst();
 		//FIXME assertion: there is only one call per line
 		Set<Integer> callSites = new HashSet<>();
 		List<Tree> callStatements = TreeUtil.getDescendents(ast, CobolNodeType.CALL_STATEMENT);

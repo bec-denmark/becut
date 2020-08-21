@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.StringJoiner;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.LoadCompileListing;
 import javafx.fxml.FXML;
@@ -51,11 +49,17 @@ public class LoadCompileListingController implements Initializable {
 	
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
+		
 		CompileListing compileListing = Parse.parse(currentCompileListing.getCompileListing());
-		BECutAppContext.getContext().getUnitTest().setCompileListing(compileListing);
-		List<String> lines = BECutAppContext.getContext().getUnitTest()
-				.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
+		
+		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		becutTestCaseSuite.setCompileListing(compileListing);
+		
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
+		
+		List<String> lines = compileListing.getSourceMapAndCrossReference().getOriginalSource();
 		BECutAppContext.getContext().getSourceCode().setValue(lines);
+		
 		ok.getScene().getWindow().hide();
 	}
 

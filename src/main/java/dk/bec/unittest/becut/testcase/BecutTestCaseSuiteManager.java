@@ -1,10 +1,9 @@
 package dk.bec.unittest.becut.testcase;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,12 +26,12 @@ import dk.bec.unittest.becut.compilelist.model.DataNameReference;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
-import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.recorder.model.SessionCall;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
@@ -40,25 +39,29 @@ import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import koopa.core.trees.Tree;
 
-public class BecutTestCaseManager {
+public class BecutTestCaseSuiteManager {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
-	private BecutTestCaseManager() {
+	private BecutTestCaseSuiteManager() {
 	}
 
-	public static BecutTestCase createTestCaseFromCompileListing(CompileListing compileListing) {
+	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing) {
 		String testCaseName = "becut-" + compileListing.getProgramName();
 		String testCaseId = "becut-" + compileListing.getProgramName() + "-" + UUID.randomUUID().toString();
-		return createTestCaseFromCompileListing(compileListing, testCaseName, testCaseId);
+		return createTestCaseSuiteFromCompileListing(compileListing, testCaseName, testCaseId);
 	}
 
-	public static BecutTestCase createTestCaseFromCompileListing(CompileListing compileListing, String testCaseName,
+	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing, String testCaseName,
 			String testCaseId) {
+		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		becutTestCaseSuite.setCompileListing(compileListing);
+		
 		BecutTestCase becutTestCase = new BecutTestCase();
-		becutTestCase.setCompileListing(compileListing);
 		becutTestCase.setProgramName(compileListing.getProgramName());
 		becutTestCase.setTestCaseName(testCaseName);
 		becutTestCase.setTestCaseId(testCaseId);
@@ -101,12 +104,14 @@ public class BecutTestCaseManager {
 		postCondition.setLinkageSection(linkageSectionParms);
 		becutTestCase.setPostCondition(postCondition);
 
-		return becutTestCase;
+		becutTestCaseSuite.add(becutTestCase);
+		
+		return becutTestCaseSuite;
 	}
 
-	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing,
-			SessionRecording sessionRecording) {
-		BecutTestCase becutTestCase = createTestCaseFromCompileListing(compileListing);
+	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, SessionRecording sessionRecording) {
+		BecutTestCaseSuite becutTestCaseSuite = createTestCaseSuiteFromCompileListing(compileListing);
+		BecutTestCase becutTestCase = becutTestCaseSuite.get(0);
 
 		Map<Integer, ExternalCall> callCache = new HashMap<>();
 
@@ -157,22 +162,6 @@ public class BecutTestCaseManager {
 				});
 	}
 
-//  TODO? mark values that were changed	
-//	private static void setParameterValue(Map<String, String> prevs, String path, Parameter p, List<SessionRecord> records) {
-//		records.stream()
-//			.filter(r -> r.getName().equals(p.getName()) && r.getLevel().equals(p.getLevel()))
-//			.forEach(sr -> {
-//				if(sr.getValue() != null) {
-//					if(!(prevs.containsKey(path) && prevs.get(path).equals(sr.getValue()))) {
-//						p.setValue(sr.getValue());
-//					}
-//					prevs.put(path, sr.getValue());
-//				}
-//				p.getSubStructure()
-//					.forEach(sp -> setParameterValue(prevs, path + "-" + sp.getName(), sp, sr.getChildren()));
-//			});
-//	}
-
 	/**
 	 * Run through records in the DataDivision and filter records that is declared
 	 * between start and end line of a section
@@ -201,31 +190,78 @@ public class BecutTestCaseManager {
 		return parameterList;
 	}
 
-	public static BecutTestCase loadTestCase(Path folder) {
-		BecutTestCase becutTestCase = new BecutTestCase();
-		try(FileInputStream fileInputStream = new FileInputStream(Paths.get(folder.toString(), "test_case.json").toFile())) {
-			becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
-			
+	public static BecutTestCaseSuite loadTestCaseSuite(Path folder) {
+		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		
+		try {
 			CompileListing compileListing = Parse.parse(Paths.get(folder.toString(), "compile_listing.txt").toFile());
-			becutTestCase.setCompileListing(compileListing);
-			BECutAppContext.getContext().getUnitTest().setCompileListing(compileListing);
-			List<String> lines = BECutAppContext.getContext().getUnitTest()
-					.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
-			BECutAppContext.getContext().getSourceCode().setValue(lines);
+			becutTestCaseSuite.setCompileListing(compileListing);
 			
-			return becutTestCase;
+			Path suite = Paths.get(folder.toString(), "suite.txt");
+			if(!Files.exists(suite)) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning Dialog");
+				//alert.setHeaderText("Look, a Warning Dialog");
+				alert.setContentText(suite + " is missing.");
+				alert.showAndWait();	
+			}
+			
+			Files.readAllLines(suite).forEach(line -> {
+				BecutTestCase becutTestCase = new BecutTestCase();
+				try(FileInputStream fileInputStream = new FileInputStream(Paths.get(folder.toString(), line, "test_case.json").toFile())) {
+					becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				becutTestCaseSuite.add(becutTestCase);
+			});
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		
+		return becutTestCaseSuite;
 	}
 
-	public static void saveTestCase(BecutTestCase becutTestCase, Path folder) {
+	public static void saveTestCaseSuite(BecutTestCaseSuite becutTestCaseSuite, Path folder) {
+		try {
+			Files.write(Paths.get(folder.toString(), "compile_listing.txt"), 
+					becutTestCaseSuite.getCompileListing().getOriginalSource(),
+					Charset.defaultCharset());
+			
+			List<String> testCaseFolders = new ArrayList<>();
+			for(BecutTestCase testCase : becutTestCaseSuite) {
+				Path path = Paths.get(folder.toString(), testCase.getTestCaseName());
+				if(!Files.exists(path)) {
+					Files.createDirectory(path);
+				}
+				testCaseFolders.add(testCase.getTestCaseName());
+				saveTestCase(testCase, path);
+			}
+
+			Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+    		if (Files.exists(debugScriptPath)) {
+				Files.copy(debugScriptPath, 
+						Paths.get(folder.toString(), debugScriptPath.getFileName().toString()), 
+						StandardCopyOption.REPLACE_EXISTING);
+    		}
+			BECutAppContext.getContext().setUnitTestSuiteFolder(folder);
+			//suite.txt defines which subfolders are tests definitions and 
+			//what is the order of execution (should it be really important?)
+			Files.write(Paths.get(folder.toString(), "suite.txt"), testCaseFolders);
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private static void saveTestCase(BecutTestCase becutTestCase, Path folder) {
 		assert Files.isDirectory(folder);
 		try {
-			Path unitTestFolder = BECutAppContext.getContext().getUnitTestFolder();
+			Path unitTestSuiteFolder = BECutAppContext.getContext().getUnitTestSuiteFolder();
 			becutTestCase.getFileControlAssignments().entrySet()
 				.stream()
-				.map(e -> Paths.get(unitTestFolder.toString(), e.getValue() + ".txt"))
+				.map(e -> Paths.get(unitTestSuiteFolder.toString(), becutTestCase.getTestCaseName(), e.getValue() + ".txt"))
 				.filter(p -> Files.exists(p))
 				.forEach(p -> {
 					try {
@@ -238,16 +274,6 @@ public class BecutTestCaseManager {
 				});
 			mapper.writerWithDefaultPrettyPrinter().writeValue(
 					Paths.get(folder.toString(), "test_case.json").toFile(), becutTestCase);
-			Files.write(Paths.get(folder.toString(), "compile_listing.txt"), 
-					becutTestCase.getCompileListing().getOriginalSource(),
-					Charset.defaultCharset());
-			Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
-    		if (Files.exists(debugScriptPath)) {
-				Files.copy(debugScriptPath, 
-						Paths.get(folder.toString(), debugScriptPath.getFileName().toString()), 
-						StandardCopyOption.REPLACE_EXISTING);
-    		}
-			BECutAppContext.getContext().setUnitTestFolder(folder);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

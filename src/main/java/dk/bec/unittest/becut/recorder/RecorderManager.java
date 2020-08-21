@@ -18,7 +18,7 @@ import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
-import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
+import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.controller.MissingINSPLOGException;
 import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
@@ -65,7 +65,7 @@ public class RecorderManager {
 		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(recordingResult, compileListing.getProgramName());
 		
 		// 6. Create new testcase
-		testCase = BecutTestCaseManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
+		testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
 
 		// 8. return testcase
 		return testCase;

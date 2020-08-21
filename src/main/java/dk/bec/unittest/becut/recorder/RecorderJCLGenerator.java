@@ -86,7 +86,7 @@ public class RecorderJCLGenerator {
 
 	//TODO code deduplication in DebugsSriptExecutor and here
 	private static String generateDDs(FTPClient ftpClient, String userName) {
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
 		return compileListing.getSourceMapAndCrossReference().getFileControlAssignment().entrySet()
 			.stream()
 			.map(entry -> {
@@ -102,8 +102,8 @@ public class RecorderJCLGenerator {
 							.collect(Collectors.joining());
 					
 					//TODO fix this telescope
-					List<Parameter> params = BECutAppContext.getContext().getUnitTest()
-							.getBecutTestCase().getPreCondition().getFileSection();
+					List<Parameter> params = BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get()
+							.get(0).getPreCondition().getFileSection();
 					Optional<Parameter> op = params
 							.stream()
 							.filter(p -> p.getName().equals(recordName))

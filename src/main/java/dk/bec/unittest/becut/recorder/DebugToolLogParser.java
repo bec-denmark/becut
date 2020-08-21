@@ -13,7 +13,6 @@ import dk.bec.unittest.becut.recorder.model.SessionCallPart;
 import dk.bec.unittest.becut.recorder.model.SessionPostCondition;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
-import dk.bec.unittest.becut.testcase.SessionRecordingException;
 
 public class DebugToolLogParser {
 	public static final String BEGIN_POST_CONDITION = "Start BECUT PostCondition";
@@ -48,7 +47,7 @@ public class DebugToolLogParser {
 		
 		int state = LA_AT_CALL_BEGIN;
 		
-		List_Titled titled = null;
+		ListTitled titled = null;
 		SessionCall sc = null;
 		
 		for(LineCountingIterator it = new LineCountingIterator(logLines.iterator()); it.hasNext();) {
@@ -64,7 +63,7 @@ public class DebugToolLogParser {
 					if(at_line_matcher.find()) {
 						lineNumber = Integer.parseInt(at_line_matcher.group(2));
 						sessionRecording.setProgramName(at_line_matcher.group(4));
-						titled = new List_Titled();
+						titled = new ListTitled();
 						sc = new SessionCall();
 						sc.setLineNumber(lineNumber);
 						sc.setStatementId(at_line_matcher.group(1));
@@ -100,7 +99,7 @@ public class DebugToolLogParser {
 					if(from_line_matcher.find()) {
 						state = LA_AT_EXIT_END;
 						sc.setCalleeProgramName(from_line_matcher.group(2));
-						titled = new List_Titled();
+						titled = new ListTitled();
 					} else if(at_exit_program_matcher.find()){
 						if(at_exit_program_matcher.group(2).equals(sessionRecording.getProgramName())) {
 							state = LA_AT_PROGRAM_EXIT_END;
@@ -123,9 +122,8 @@ public class DebugToolLogParser {
 		return sessionRecording;
 	}
 
-	public static SessionRecording parseRunning(String debugToolLog, String programName) throws LogParsingException {
+	public static SessionRecording parseRunning(List<String> logLines) throws LogParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
-		List<String> logLines = Arrays.asList(debugToolLog.split("\\r?\\n"));
 		
 		final int LA_BEGIN_POST_CONDITION = 1;		
 		final int LA_END_POST_CONDITION = 2;
@@ -144,19 +142,14 @@ public class DebugToolLogParser {
 					if(END_POST_CONDITION.equals(logLine)) {
 						state = LA_BEGIN_POST_CONDITION;
 					} else {
-						try {
-							SessionPostCondition sessionPostCondition = new SessionPostCondition();
-							String[] parts = logLine.split("=");
-							assert parts != null && parts.length == 2;
-							String variableName = parts[0].trim();
-							String value = parts[1].trim();
-							SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
-							sessionPostCondition.getSessionRecords().add(record);
-							sessionRecording.getSessionPostConditions().add(sessionPostCondition);
-						} catch (Exception e) {
-							throw new SessionRecordingException("expected: assignement at line " + it.getLineNumber()
-									+ ", actual: " + logLine);
-						}
+						SessionPostCondition sessionPostCondition = new SessionPostCondition();
+						String[] parts = logLine.split("=");
+						assert parts != null && parts.length == 2;
+						String variableName = parts[0].trim();
+						String value = parts[1].trim();
+						SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
+						sessionPostCondition.getSessionRecords().add(record);
+						sessionRecording.getSessionPostConditions().add(sessionPostCondition);
 					}
 					break;
 			}
@@ -165,7 +158,7 @@ public class DebugToolLogParser {
 	}	
 	
 	//a class for storing what's produced by LIST TITLED * debug tool command
-	private static class List_Titled extends LinkedList<String> {
+	private static class ListTitled extends LinkedList<String> {
 		@Override
 		public boolean add(String e) {
 			if(size() > 0) {

@@ -9,14 +9,14 @@
 <StackPane fx:controller="dk.bec.unittest.becut.ui.controller.MenuController" xmlns:fx="http://javafx.com/fxml/1">
 	<MenuBar fx:id="menuBar">
 		<Menu text="File">
-			<MenuItem text="Save test case" onAction="#save"/>
-			<MenuItem text="Save test case as..." onAction="#saveAs"/>
+			<MenuItem text="Save test case suite" onAction="#save"/>
+			<MenuItem text="Save test case suite as..." onAction="#saveAs"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Quit" onAction="#exit"/>
 		</Menu>
 		<Menu text="BECut">
-			<MenuItem text="Create unit test" onAction="#createTestCase"/>
-			<MenuItem text="Load test case" onAction="#loadTestCase"/>
+			<MenuItem text="Create test suite" onAction="#createTestCaseSuite"/>
+			<MenuItem text="Load test suite" onAction="#loadTestCaseSuite"/>
 			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Edit debug script" onAction="#editDebugScript"/>
@@ -26,7 +26,7 @@
 		<Menu text="Remote">
 			<MenuItem text="Setup credentials" onAction="#setupCredentials"/>
 			<MenuItem text="Retrieve file" onAction="#retrieveFile"/>
-			<MenuItem text="Run debug script" onAction="#runDebugScript"/>
+			<MenuItem text="Run suite" onAction="#runSuite"/>
 		</Menu>
 	</MenuBar>
 </StackPane>

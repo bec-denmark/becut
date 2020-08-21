@@ -40,18 +40,19 @@ import dk.bec.unittest.becut.debugscript.model.statement.Statement;
 import dk.bec.unittest.becut.debugscript.model.variable.Literal;
 import dk.bec.unittest.becut.debugscript.model.variable.Pic9Comp;
 import dk.bec.unittest.becut.debugscript.model.variable.Quoted;
-import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
+import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import koopa.core.trees.Tree;
 
 public class ScriptGenerator {
 	
 	public static DebugScript generateDebugScript(BecutTestCase testCase) {
-		CompileListing compileListing = testCase.getCompileListing();
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
 		DebugScript debugScript = new DebugScript(new ArrayList<>());
 		List<DebugEntity> debugEntities = debugScript.getEntities();
 		debugEntities.add(new SetSyndebugOff());
@@ -321,7 +322,7 @@ public class ScriptGenerator {
 			List<Tree> args = TreeUtil.getDescendents(callStatement, CobolNodeType.ARG);
 			int count = 0;
 			for (Tree arg: args) {
-				String argName = BecutTestCaseManager.getArgName(arg);
+				String argName = BecutTestCaseSuiteManager.getArgName(arg);
 				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
 					if (parm.matches(argName)) {
 						count++;
@@ -343,7 +344,7 @@ public class ScriptGenerator {
 			List<Tree> args = TreeUtil.getDescendents(callStatement, CobolNodeType.ARG);
 			int count = 0;
 			for (Tree arg: args) {
-				String argName = BecutTestCaseManager.getArgName(arg);
+				String argName = BecutTestCaseSuiteManager.getArgName(arg);
 				for (Parameter parm: externalCall.getFirstIteration().getParameters()) {
 					DataType scriptDataType = parm.getDataType();
 					Integer scriptDataTypeSize = parm.getSize();

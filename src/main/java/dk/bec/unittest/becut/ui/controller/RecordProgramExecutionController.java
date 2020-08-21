@@ -46,14 +46,14 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 	@FXML
 	protected void ok() {
 		compileListingController.loadCompileListingIntoContext();
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
 		try {
 			jobNameRemembered = jobName.getText();
 			programNameRemembered = programName.getText();
 			
 			BecutTestCase becutTestCase = RecorderManager.recordBatch(compileListing, programName.getText(),
 					jobName.getText(), BECutAppContext.getContext().getCredential());
-			BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
+			BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get().add(becutTestCase);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

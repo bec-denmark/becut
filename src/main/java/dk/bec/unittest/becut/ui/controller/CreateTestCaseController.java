@@ -5,8 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
-import dk.bec.unittest.becut.testcase.BecutTestCaseManager;
-import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
+import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,19 +39,10 @@ public class CreateTestCaseController extends AbstractBECutController implements
 	@FXML 
 	void ok() {
 		compileListingController.loadCompileListingIntoContext();
-
-		BECutAppContext.getContext().setUnitTestFolder(null);
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTest().getCompileListing();
-		BecutTestCase becutTestCase = BecutTestCaseManager.createTestCaseFromCompileListing(compileListing);
-		if (!testCaseName.getText().trim().isEmpty()) {
-			becutTestCase.setTestCaseName(testCaseName.getText());
-		}
-		if (!testCaseID.getText().trim().isEmpty()) {
-			becutTestCase.setTestCaseId(testCaseID.getText());
-		}
-
-		BECutAppContext.getContext().getUnitTest().setBecutTestCase(becutTestCase);
-
+		BECutAppContext.getContext().setUnitTestSuiteFolder(null);
+		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
+		BecutTestCaseSuite becutTestCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
 		closeWindow();
 	}
 
@@ -68,9 +59,7 @@ public class CreateTestCaseController extends AbstractBECutController implements
 			compileListingController = loader.getController();
 			compileListingPane.getChildren().add(compileListingNode);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		
 	}
 }

@@ -13,7 +13,7 @@
 				<SplitPane id="SplitPane" dividerPositions="0.3" orientation="HORIZONTAL">
 					<items>
 						<fx:include fx:id="sourceCode" source="/dk/bec/unittest/becut/ui/view/SourceCode.fxml"/>
-						<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCase.fxml"/>
+						<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCaseSuite.fxml"/>
 					</items>
 				</SplitPane>
 				<fx:include fx:id="Log" source="/dk/bec/unittest/becut/ui/view/Log.fxml" />

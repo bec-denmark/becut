@@ -23,12 +23,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class BECutAppContext {
-	
 	private static BECutAppContext context;
 	
-	private UnitTest unitTest;
+	private UnitTestSuite unitTestSuite;
 	
-	private Path unitTestFolder;
+	private Path unitTestSuiteFolder;
 	
 	private Credential credential;
 	
@@ -50,32 +49,32 @@ public class BECutAppContext {
 	}
 	
 	private BECutAppContext(Stage primaryStage) {
-		this.unitTest = new UnitTest();
+		this.unitTestSuite = new UnitTestSuite("Test suite", "", "");
 		this.primaryStage = primaryStage;
 	}
 
-	public UnitTest getUnitTest() {
-		return unitTest;
+	public UnitTestSuite getUnitTestSuite() {
+		return unitTestSuite;
 	}
-
-	public Path getUnitTestFolder() {
-		if(unitTestFolder == null || !Files.exists(unitTestFolder)) {
+	
+	public Path getUnitTestSuiteFolder() {
+		if(unitTestSuiteFolder == null || !Files.exists(unitTestSuiteFolder)) {
 			try {
-				unitTestFolder = Files.createTempDirectory("becut");
-				return unitTestFolder;
+				unitTestSuiteFolder = Files.createTempDirectory("becut");
+				return unitTestSuiteFolder;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
-		return unitTestFolder;
+		return unitTestSuiteFolder;
 	}
 
 	public Path getDebugScriptPath() {
-		return Paths.get(getUnitTestFolder().toString(), "debug_script.txt");
+		return Paths.get(getUnitTestSuiteFolder().toString(), "debug_script.txt");
 	}
 	
-	public void setUnitTestFolder(Path unitTestFolder) {
-		this.unitTestFolder = unitTestFolder;
+	public void setUnitTestSuiteFolder(Path unitTestSuiteFolder) {
+		this.unitTestSuiteFolder = unitTestSuiteFolder;
 	}
 
 	public Credential getCredential() {

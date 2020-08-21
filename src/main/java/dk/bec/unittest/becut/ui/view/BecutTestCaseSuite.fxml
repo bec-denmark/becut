@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.control.TreeTableColumn?>
 
-<StackPane fx:controller="dk.bec.unittest.becut.ui.controller.BecutTestCaseController" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:controller="dk.bec.unittest.becut.ui.controller.BecutTestCaseSuiteController" xmlns:fx="http://javafx.com/fxml/1">
 	<TreeTableView fx:id="unitTestTreeTableView">
 		<columns>
 			<TreeTableColumn fx:id="name" prefWidth="300.0" text="Name"/>

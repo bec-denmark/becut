@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.Pane?>
 
-<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.RunDebugScriptController" 
+<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.RunSuiteController" 
 	xmlns:fx="http://javafx.com/fxml/1"
 	alignment="center"
 	hgap="10"
