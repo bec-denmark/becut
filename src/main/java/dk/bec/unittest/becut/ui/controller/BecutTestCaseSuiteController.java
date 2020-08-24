@@ -136,7 +136,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 					   this.setContextMenu(cmExternalCall);
 				   } else if (item instanceof FileControlDisplayable) {
 					   this.setContextMenu(cmFileControl);
-					   this.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+					   this.setEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 						   if(e.getClickCount() == 2) {
 							   openFileEditor(unitTestTreeTableView.getSelectionModel());
 						   }
