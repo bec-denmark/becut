@@ -44,6 +44,7 @@ import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 
@@ -131,6 +132,11 @@ public class BecutTestCaseSuiteController implements Initializable {
 					   this.setContextMenu(cmExternalCall);
 				   } else if (item instanceof FileControlDisplayable) {
 					   this.setContextMenu(cmFileControl);
+					   this.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+						   if(e.getClickCount() == 2) {
+							   openFileEditor(unitTestTreeTableView.getSelectionModel());
+						   }
+					   });
 				   } else if (item instanceof UnitTest) {
 					   this.setContextMenu(cmTestCase);
 				   } else {
@@ -177,30 +183,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    });
 
 		    editFileControl.setOnAction(event -> {
-		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
-		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(sm.getSelectedIndex());
-		    	assert item.getValue() instanceof FileControlDisplayable;
-		    	try {
-		    		//TODO make it more complicated ;-), for now it is a name of the test case
-		    		String testCaseName = item.getParent().getParent().getValue().valueProperty().getValue();
-		    		
-		    		Path testCasePath = Paths.get(
-		    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
-		    				testCaseName);
-		    		if (!Files.exists(testCasePath)) {
-		    			Files.createDirectory(testCasePath);
-		    		}
-		    		
-		    		Path path = Paths.get(
-		    				testCasePath.toString(),
-		    				item.getValue().getValue() + ".txt");
-		    		if (!Files.exists(path)) {
-		    		    Files.createFile(path);
-		    		}
-					Desktop.getDesktop().open(path.toFile());
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+		    	openFileEditor(unitTestTreeTableView.getSelectionModel());
 		    });
 		    
 		    dupTestCase.setOnAction(event -> {
@@ -408,5 +391,31 @@ public class BecutTestCaseSuiteController implements Initializable {
 			treeItem.getChildren().add(populateParameters(p));
 		}
 		return treeItem;
+	}
+	
+	private void openFileEditor(TreeTableViewSelectionModel<UnitTestTreeObject> sm) {
+    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(sm.getSelectedIndex());
+    	assert item.getValue() instanceof FileControlDisplayable;
+    	try {
+    		//TODO make it more complicated ;-), for now it is a name of the test case
+    		String testCaseName = item.getParent().getParent().getValue().valueProperty().getValue();
+    		
+    		Path testCasePath = Paths.get(
+    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+    				testCaseName);
+    		if (!Files.exists(testCasePath)) {
+    			Files.createDirectory(testCasePath);
+    		}
+    		
+    		Path path = Paths.get(
+    				testCasePath.toString(),
+    				item.getValue().getValue() + ".txt");
+    		if (!Files.exists(path)) {
+    		    Files.createFile(path);
+    		}
+			Desktop.getDesktop().open(path.toFile());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
