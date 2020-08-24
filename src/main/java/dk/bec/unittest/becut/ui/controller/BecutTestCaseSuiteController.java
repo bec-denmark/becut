@@ -4,7 +4,9 @@ import java.awt.Desktop;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -35,6 +37,8 @@ import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
 import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
@@ -192,7 +196,6 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	assert item.getValue() instanceof UnitTest;
 		    	try {
 		    		String testCaseName = item.getValue().valueProperty().getValue();
-		    		//FIXME -copy already exists
 		    		String newTestCaseName = testCaseName + "-copy";
 		    		
 		    		Path newTestCasePath = Paths.get(
@@ -205,8 +208,15 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    		Files.list(Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), testCaseName))
 		    			.filter(p -> !Files.isDirectory(p))
 		    			.forEach(path -> {
+		    				Path copyTo = Paths.get(newTestCasePath.toString(), path.getFileName().toString());
 		    				try {
-								Files.copy(path, Paths.get(newTestCasePath.toString(), path.getFileName().toString()));
+								Files.copy(path, copyTo);
+							} catch (FileAlreadyExistsException e) {
+								Alert alert = new Alert(AlertType.WARNING);
+								alert.setTitle("Warning Dialog");
+								alert.setContentText(copyTo + " already exists.");
+								alert.showAndWait();								
+								return;
 							} catch (IOException e) {
 								throw new RuntimeException(e);
 							}
@@ -230,9 +240,9 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(sm.getSelectedIndex());
 		    	assert item.getValue() instanceof UnitTest;
 		    	UnitTest ut = (UnitTest)item.getValue();
+	    		String testCaseName = ut.getBecutTestCase().getTestCaseName();
+	    		Path testCasePath = Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), testCaseName);
 		    	try {
-		    		String testCaseName = ut.getBecutTestCase().getTestCaseName();
-		    		Path testCasePath = Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), testCaseName);
 		    		Files.walk(testCasePath)
 		    			.sorted(Comparator.reverseOrder())
 		    		    //.peek(System.out::println)
@@ -245,8 +255,17 @@ public class BecutTestCaseSuiteController implements Initializable {
 						});
 					root.getChildren().remove(item);
 					testSuite.getBecutTestCaseSuite().get().remove(ut.getBecutTestCase());
+				} catch (NoSuchFileException e) {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Warning Dialog");
+					alert.setContentText(testCasePath + " doesn't exist.");
+					alert.showAndWait();								
+					return;
 				} catch (IOException e) {
 					throw new RuntimeException(e);
+				} finally {
+					root.getChildren().remove(item);
+					testSuite.getBecutTestCaseSuite().get().remove(ut.getBecutTestCase());
 				}
 		    });
 		    
@@ -291,7 +310,32 @@ public class BecutTestCaseSuiteController implements Initializable {
 									}
 								}
 								getTableColumn().setOnEditCommit(event -> {
-									event.getRowValue().getValue().updateValue(event.getNewValue());
+							    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+							    	TreeItem<UnitTestTreeObject> item2 = sm.getModelItem(sm.getSelectedIndex());
+							    	assert item2.getValue() instanceof UnitTest;
+							    	UnitTest ut = (UnitTest)item2.getValue();
+							    	
+							    	Path oldTestCasePath = Paths.get(
+						    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+						    				event.getOldValue());
+						    		Path newTestCasePath = Paths.get(
+						    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+						    				event.getNewValue());
+						    		
+						    		try {
+										Files.move(oldTestCasePath, newTestCasePath);
+										ut.getBecutTestCase().setTestCaseName(event.getNewValue());
+										event.getRowValue().getValue().updateValue(event.getNewValue());
+						    		} catch (FileAlreadyExistsException e) {
+										Alert alert = new Alert(AlertType.WARNING);
+										alert.setTitle("Warning Dialog");
+										alert.setContentText(newTestCasePath + " already exists.");
+										alert.showAndWait();
+										event.getTreeTableView().refresh();
+										return;
+									} catch (IOException e) {
+										throw new RuntimeException(e);
+									}
 								});
 								setEditable(isEditable);
 							};
