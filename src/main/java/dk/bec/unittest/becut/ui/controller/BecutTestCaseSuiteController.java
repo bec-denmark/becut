@@ -312,30 +312,33 @@ public class BecutTestCaseSuiteController implements Initializable {
 								getTableColumn().setOnEditCommit(event -> {
 							    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
 							    	TreeItem<UnitTestTreeObject> item2 = sm.getModelItem(sm.getSelectedIndex());
-							    	assert item2.getValue() instanceof UnitTest;
-							    	UnitTest ut = (UnitTest)item2.getValue();
-							    	
-							    	Path oldTestCasePath = Paths.get(
-						    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
-						    				event.getOldValue());
-						    		Path newTestCasePath = Paths.get(
-						    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
-						    				event.getNewValue());
-						    		
-						    		try {
-										Files.move(oldTestCasePath, newTestCasePath);
-										ut.getBecutTestCase().setTestCaseName(event.getNewValue());
-										event.getRowValue().getValue().updateValue(event.getNewValue());
-						    		} catch (FileAlreadyExistsException e) {
-										Alert alert = new Alert(AlertType.WARNING);
-										alert.setTitle("Warning Dialog");
-										alert.setContentText(newTestCasePath + " already exists.");
-										alert.showAndWait();
-										event.getTreeTableView().refresh();
-										return;
-									} catch (IOException e) {
-										throw new RuntimeException(e);
-									}
+							    	if(item2.getValue() instanceof UnitTest) {
+								    	UnitTest ut = (UnitTest)item2.getValue();
+								    	
+								    	Path oldTestCasePath = Paths.get(
+							    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+							    				event.getOldValue());
+							    		Path newTestCasePath = Paths.get(
+							    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+							    				event.getNewValue());
+							    		
+							    		try {
+											Files.move(oldTestCasePath, newTestCasePath);
+											ut.getBecutTestCase().setTestCaseName(event.getNewValue());
+											event.getRowValue().getValue().updateValue(event.getNewValue());
+							    		} catch (FileAlreadyExistsException e) {
+											Alert alert = new Alert(AlertType.WARNING);
+											alert.setTitle("Warning Dialog");
+											alert.setContentText(newTestCasePath + " already exists.");
+											alert.showAndWait();
+											event.getTreeTableView().refresh();
+											return;
+										} catch (IOException e) {
+											throw new RuntimeException(e);
+										}
+							    	} else {
+							    		event.getRowValue().getValue().updateValue(event.getNewValue());
+							    	}
 								});
 								setEditable(isEditable);
 							};
