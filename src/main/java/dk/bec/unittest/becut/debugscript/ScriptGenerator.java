@@ -111,6 +111,8 @@ public class ScriptGenerator {
 //		}
 		
 		debugEntities.add(new Go());
+		//a marker to know that script was run
+		debugEntities.add(new Comment("SUCESS!!!"));
 		debugEntities.add(new Quit());
 		
 		return debugScript;

@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
 
 public class BecutTestCase {
@@ -28,10 +31,12 @@ public class BecutTestCase {
 		this.fileControlAssignments = fileControlAssignments;
 	}
 
+	@JsonIgnore
 	public String getTestCaseName() {
 		return testCaseName;
 	}
 
+	@JsonProperty
 	public void setTestCaseName(String testCaseName) {
 		this.testCaseName = testCaseName;
 	}

@@ -4,8 +4,4 @@
 <?import javafx.scene.control.TextArea?>
 
 <BorderPane fx:controller="dk.bec.unittest.becut.ui.controller.LogController" 
-		xmlns:fx="http://javafx.com/fxml/1">
-	<center>
-		<TextArea fx:id="logArea" />
-	</center>
-</BorderPane>
+		xmlns:fx="http://javafx.com/fxml/1" fx:id="pane"/>

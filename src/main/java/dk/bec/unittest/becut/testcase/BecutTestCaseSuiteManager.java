@@ -203,13 +203,14 @@ public class BecutTestCaseSuiteManager {
 				alert.setTitle("Warning Dialog");
 				//alert.setHeaderText("Look, a Warning Dialog");
 				alert.setContentText(suite + " is missing.");
-				alert.showAndWait();	
+				alert.showAndWait();
 			}
 			
 			Files.readAllLines(suite).forEach(line -> {
 				BecutTestCase becutTestCase = new BecutTestCase();
 				try(FileInputStream fileInputStream = new FileInputStream(Paths.get(folder.toString(), line, "test_case.json").toFile())) {
 					becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
+					becutTestCase.setTestCaseName(line);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
