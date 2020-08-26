@@ -24,6 +24,7 @@ import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
+import dk.bec.unittest.becut.testcase.model.TestResult;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.ExternalCallDisplayable;
 import dk.bec.unittest.becut.ui.model.ExternalCallIterationDisplayable;
@@ -35,6 +36,7 @@ import dk.bec.unittest.becut.ui.model.UnitTest;
 import dk.bec.unittest.becut.ui.model.UnitTestSuite;
 import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
 import javafx.collections.ListChangeListener.Change;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -48,6 +50,8 @@ import javafx.scene.control.TreeTableRow;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
@@ -226,7 +230,9 @@ public class BecutTestCaseSuiteController implements Initializable {
 						BecutTestCase becutTestCase = new ObjectMapper().readValue(fileInputStream, BecutTestCase.class);
 						becutTestCase.setTestCaseName(newTestCaseName);
 						testSuite.getBecutTestCaseSuite().get().add(becutTestCase);
-						TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase));
+						TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase), 
+								new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
+						addTestResultObserver(becutTestCase, testCaseNode);
 						root.getChildren().add(testCaseNode);
 						populateTestCaseNode(testCaseNode, becutTestCase);
 					}
@@ -275,8 +281,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 		value.setCellFactory(
 				new Callback<TreeTableColumn<UnitTestTreeObject, String>, TreeTableCell<UnitTestTreeObject, String>>() {
 					@Override
-					public TreeTableCell<UnitTestTreeObject, String> call(
-							TreeTableColumn<UnitTestTreeObject, String> param) {
+					public TreeTableCell<UnitTestTreeObject, String> call(TreeTableColumn<UnitTestTreeObject, String> param) {
 						return new TextFieldTreeTableCell<UnitTestTreeObject, String>(new DefaultStringConverter()) {
 							@Override
 							public void updateItem(String item, boolean empty) {
@@ -359,10 +364,35 @@ public class BecutTestCaseSuiteController implements Initializable {
 		becutTestCaseSuite
 			.stream()
 			.forEach(becutTestCase -> {
-				TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase));
+				TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase), 
+						new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
+				addTestResultObserver(becutTestCase, testCaseNode);
 				root.getChildren().add(testCaseNode);
 				populateTestCaseNode(testCaseNode, becutTestCase);
 			});
+	}
+
+	private void addTestResultObserver(BecutTestCase becutTestCase, final TreeItem<UnitTestTreeObject> testCaseNode) {
+		ObservableList<TestResult> testResults = BECutAppContext.getContext().getTestResults();
+		testResults.addListener((Change<? extends TestResult> c) -> {
+			if(c.next() && c.wasAdded()) {
+				c.getList()
+					.filtered(e -> e.testCase == becutTestCase)
+					.forEach(result -> {
+						System.out.println(result.status);
+						switch(result.status) {
+						case OK :
+							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("ok.png"))));
+							break;
+						case NOK :
+							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("nok.png"))));
+							break;
+						default :
+							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
+						}
+					});
+			}
+		});
 	}
 
 	private void populateTestCaseNode(TreeItem<UnitTestTreeObject> node, BecutTestCase becutTestCase) {

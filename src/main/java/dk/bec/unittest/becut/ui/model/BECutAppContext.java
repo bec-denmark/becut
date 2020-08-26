@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
+import dk.bec.unittest.becut.testcase.model.TestResult;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -40,6 +41,12 @@ public class BECutAppContext {
 	private ObservableList<Integer> msgToTestCase = FXCollections.observableList(new ArrayList<>());
 	private ObservableList<Integer> msgToSourceCode = FXCollections.observableList(new ArrayList<>());
 	
+	private ObservableList<TestResult> testResults = FXCollections.observableList(new ArrayList<>());
+	
+	public ObservableList<TestResult> getTestResults() {
+		return testResults;
+	}
+
 	public ObservableList<Integer> getToTestCase() {
 		return msgToTestCase;
 	}

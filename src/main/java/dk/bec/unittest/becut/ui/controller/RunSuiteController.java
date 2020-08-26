@@ -14,6 +14,8 @@ import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.PostConditionResolver;
 import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.testcase.model.PostConditionResult;
+import dk.bec.unittest.becut.testcase.model.TestResult;
+import dk.bec.unittest.becut.testcase.model.TestResultStatus;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.RuntimeEnvironment;
 import dk.bec.unittest.becut.ui.view.StandardAlerts;
@@ -45,6 +47,7 @@ public class RunSuiteController extends AbstractBECutController implements Initi
 		try {
 			BecutTestCaseSuite testSuite = BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get();
 			List<String> results = new ArrayList<>();
+			BECutAppContext.getContext().getTestResults().clear();
 			testSuite.forEach(becutTestCase -> {
 				String programName = becutTestCase.getProgramName();
 				if (!loadModuleName.getText().isEmpty()) {
@@ -65,6 +68,11 @@ public class RunSuiteController extends AbstractBECutController implements Initi
 					SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobResult.spool);
 					PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
 					results.add(becutTestCase.getTestCaseName() + "\t" + postConditionResult.prettyPrint());
+					TestResult tr = new TestResult();
+					tr.status = postConditionResult.isSuccess() ? TestResultStatus.OK : TestResultStatus.NOK;
+					tr.message = postConditionResult.prettyPrint();
+					tr.testCase = becutTestCase;
+					BECutAppContext.getContext().getTestResults().add(tr);
 				}
 				//TODO quick and dirty messaging
 				//throw new LogMessage(job.getDataset(DDNAME.SYSOUT).getContents());
