@@ -81,7 +81,7 @@ public class RecorderJCLGenerator {
 			steplibs.subList(1, steplibs.size())
 				.stream()
 				.map(s -> "//          DD DSN=" + s.toUpperCase() + ",DISP=SHR")
-				.collect(Collectors.joining("\n", "", ""));
+				.collect(Collectors.joining("\n", "", "\n"));
 	}
 
 	//TODO code deduplication in DebugsSriptExecutor and here

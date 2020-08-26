@@ -20,8 +20,10 @@ import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.ui.controller.MissingINSPLOGException;
 import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class RecorderManager {
 
@@ -42,6 +44,8 @@ public class RecorderManager {
 		 */
 	
 		BecutTestCase testCase = new BecutTestCase();
+		BecutTestCaseSuite testCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(testCaseSuite);
 		
 		// 1. Allocate dataset to save result
 		FTPClient ftpClient = new FTPClient();
@@ -57,7 +61,7 @@ public class RecorderManager {
 		
 		// 4. Download result dataset (from step 1) and delete
 		String recordingResult = FTPManager.retrieveMember(ftpClient, datasetName);
-		//FTPManager.deleteMember(ftpClient, datasetName);
+		FTPManager.deleteMember(ftpClient, datasetName);
 		//TODO use OS independent path 
 		Files.copy(new ByteArrayInputStream(recordingResult.getBytes()), Paths.get("/temp", datasetName));
 
