@@ -83,9 +83,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 
 		BECutAppContext.getContext().getToTestCase().addListener((Change<? extends Integer> c) -> {
 			if(c.next() && c.wasAdded()) {
-				Integer line1 = c.getList().get(c.getList().size() - 1);
-				//TODO clear; c.getList().clear(); throws exception
-				//c.getList().clear();
+				Integer line1 = c.getAddedSubList().get(0);
 				LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
 				queue.add(unitTestTreeTableView.getRoot());
 				while(!queue.isEmpty()) {
@@ -106,6 +104,8 @@ public class BecutTestCaseSuiteController implements Initializable {
 					}
 					queue.addAll(node.getChildren());
 				}
+				BECutAppContext.getContext().getToTestCase().clear();
+				System.out.println(BECutAppContext.getContext().getToTestCase().size());
 			}
 		});
 		
@@ -150,6 +150,8 @@ public class BecutTestCaseSuiteController implements Initializable {
 				   } else {
 					   //seems that children inherit context menu from parent; it is undesirable here
 					   this.setContextMenu(null);
+					   //FIXME is this the right way to prevent dblclick for items other FileControlDisplayable?
+					   this.setEventHandler(MouseEvent.MOUSE_CLICKED, null);
 				   }
 			   }				
 			};
@@ -376,8 +378,9 @@ public class BecutTestCaseSuiteController implements Initializable {
 		ObservableList<TestResult> testResults = BECutAppContext.getContext().getTestResults();
 		testResults.addListener((Change<? extends TestResult> c) -> {
 			if(c.next() && c.wasAdded()) {
-				c.getList()
-					.filtered(e -> e.testCase == becutTestCase)
+				c.getAddedSubList()
+					.stream()
+					.filter(e -> e.testCase == becutTestCase)
 					.forEach(result -> {
 						System.out.println(result.status);
 						switch(result.status) {
@@ -396,10 +399,10 @@ public class BecutTestCaseSuiteController implements Initializable {
 	}
 
 	private void populateTestCaseNode(TreeItem<UnitTestTreeObject> node, BecutTestCase becutTestCase) {
-		TreeItem<UnitTestTreeObject> fileControlHeader = new TreeItem<>(new UnitTestTreeObject("File Control", "", ""));
-		TreeItem<UnitTestTreeObject> preConditionHeader = new TreeItem<>(new UnitTestTreeObject("Preconditions", "", ""));
-		TreeItem<UnitTestTreeObject> externalCallHeader = new TreeItem<>(new UnitTestTreeObject("External Calls", "", ""));
-		TreeItem<UnitTestTreeObject> postConditionHeader = new TreeItem<>(new UnitTestTreeObject("Postconditions", "", ""));
+		TreeItem<UnitTestTreeObject> fileControlHeader = new TreeItem<>(new UnitTestTreeObject("File Control"));
+		TreeItem<UnitTestTreeObject> preConditionHeader = new TreeItem<>(new UnitTestTreeObject("Preconditions"));
+		TreeItem<UnitTestTreeObject> externalCallHeader = new TreeItem<>(new UnitTestTreeObject("External Calls"));
+		TreeItem<UnitTestTreeObject> postConditionHeader = new TreeItem<>(new UnitTestTreeObject("Postconditions"));
 
 		node.getChildren().add(fileControlHeader);
 		node.getChildren().add(preConditionHeader);

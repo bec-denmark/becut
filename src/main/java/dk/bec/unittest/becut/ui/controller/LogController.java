@@ -7,10 +7,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.ftp.FTPRetrieveFileException;
+import dk.bec.unittest.becut.testcase.model.TestResult;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import javafx.collections.ListChangeListener.Change;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
 public class LogController implements Initializable {
@@ -19,6 +20,17 @@ public class LogController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		BECutAppContext.getContext().getTestResults().addListener((Change<? extends TestResult> c) -> {
+			if(c.next() && c.wasAdded()) {
+				c.getAddedSubList()
+					.forEach(result -> {
+						logArea.appendText(result.testCase.getTestCaseName());
+						logArea.appendText(result.message);
+						logArea.appendText("\n");
+					});
+			}
+		});
+
 		Thread.setDefaultUncaughtExceptionHandler(
 			(t, e) -> {
 				//TODO make this code readable

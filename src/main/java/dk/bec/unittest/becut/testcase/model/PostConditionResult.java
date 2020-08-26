@@ -27,8 +27,6 @@ public class PostConditionResult {
 		else {
 			result += "Fail\n";
 		}
-		result += "\n";
-		result += "\n";
 		for (PostConditionComparison comparison: comparisons) {
 			result += comparison.toString() + "\n";
 		}

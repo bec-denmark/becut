@@ -210,6 +210,7 @@ public class BecutTestCaseSuiteManager {
 				BecutTestCase becutTestCase = new BecutTestCase();
 				try(FileInputStream fileInputStream = new FileInputStream(Paths.get(folder.toString(), line, "test_case.json").toFile())) {
 					becutTestCase = mapper.readValue(fileInputStream, BecutTestCase.class);
+					becutTestCase.setTestCaseName(line);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

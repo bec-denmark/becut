@@ -9,6 +9,10 @@ public class UnitTestTreeObject {
 	private final StringProperty type = new SimpleStringProperty();
 	private final StringProperty value = new SimpleStringProperty();
 	
+	public UnitTestTreeObject(String name) {
+		this(name, "", "");
+	}
+	
 	public UnitTestTreeObject(String name, String type, String value) {
 		setName(name);
 		setType(type);
