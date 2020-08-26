@@ -203,7 +203,7 @@ public class BecutTestCaseSuiteManager {
 				alert.setTitle("Warning Dialog");
 				//alert.setHeaderText("Look, a Warning Dialog");
 				alert.setContentText(suite + " is missing.");
-				alert.showAndWait();	
+				alert.showAndWait();
 			}
 			
 			Files.readAllLines(suite).forEach(line -> {
