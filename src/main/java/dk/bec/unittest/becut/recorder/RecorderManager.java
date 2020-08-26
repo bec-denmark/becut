@@ -7,21 +7,16 @@ import java.util.Random;
 
 import org.apache.commons.net.ftp.FTPClient;
 
-import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.FTPManager;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
-import dk.bec.unittest.becut.ftp.model.HostJob;
-import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
-import dk.bec.unittest.becut.ui.controller.MissingINSPLOGException;
-import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
 
 public class RecorderManager {
 

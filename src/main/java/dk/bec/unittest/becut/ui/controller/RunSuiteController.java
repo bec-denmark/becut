@@ -15,7 +15,6 @@ import dk.bec.unittest.becut.testcase.PostConditionResolver;
 import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.testcase.model.PostConditionResult;
 import dk.bec.unittest.becut.testcase.model.TestResult;
-import dk.bec.unittest.becut.testcase.model.TestResultStatus;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.RuntimeEnvironment;
 import dk.bec.unittest.becut.ui.view.StandardAlerts;
@@ -45,9 +44,9 @@ public class RunSuiteController extends AbstractBECutController implements Initi
 	@FXML 
 	protected void ok() {
 		try {
+			BECutAppContext.getContext().getEventBus().post(new LogController.ClearEvent());
 			BecutTestCaseSuite testSuite = BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get();
 			List<String> results = new ArrayList<>();
-			BECutAppContext.getContext().getTestResults().clear();
 			testSuite.forEach(becutTestCase -> {
 				String programName = becutTestCase.getProgramName();
 				if (!loadModuleName.getText().isEmpty()) {
@@ -57,26 +56,14 @@ public class RunSuiteController extends AbstractBECutController implements Initi
 		
 				JobResult jobResult = DebugScriptExecutor.testBatch(becutTestCase, jobName.getText(), programName);
 				if(!"RC=0000".equals(jobResult.rc)) {
-					//TODO DDNAME.SYSOUT may not exist, show empty? get all dds for the job?
-//					throw new MissingINSPLOGException(jobResult.spool
-//							.stream()
-//							.collect(Collectors.joining("\n"))
-//							);
 					results.add(becutTestCase.getTestCaseName() + "\t" + jobResult.rc);
-					//send spool to log panel
+					BECutAppContext.getContext().getEventBus().post(jobResult);
 				} else {
 					SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobResult.spool);
 					PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
 					results.add(becutTestCase.getTestCaseName() + "\t" + postConditionResult.prettyPrint());
-					TestResult tr = new TestResult();
-					tr.status = postConditionResult.isSuccess() ? TestResultStatus.OK : TestResultStatus.NOK;
-					tr.message = postConditionResult.prettyPrint();
-					tr.testCase = becutTestCase;
-					BECutAppContext.getContext().getTestResults().add(tr);
+					BECutAppContext.getContext().getEventBus().post(new TestResult(becutTestCase, postConditionResult));
 				}
-				//TODO quick and dirty messaging
-				//throw new LogMessage(job.getDataset(DDNAME.SYSOUT).getContents());
-				//TODO Present to result to the user in a meaningful way
 			});
 			StandardAlerts.informationDialog("Test suite results", "Result running test suite", 
 					results

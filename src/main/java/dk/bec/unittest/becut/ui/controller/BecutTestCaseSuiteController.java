@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.eventbus.Subscribe;
 
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -35,8 +36,6 @@ import dk.bec.unittest.becut.ui.model.PreConditionDisplayable;
 import dk.bec.unittest.becut.ui.model.UnitTest;
 import dk.bec.unittest.becut.ui.model.UnitTestSuite;
 import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
-import javafx.collections.ListChangeListener.Change;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -81,16 +80,16 @@ public class BecutTestCaseSuiteController implements Initializable {
 			return param.getValue().getValue().valueProperty();
 		});
 
-		BECutAppContext.getContext().getToTestCase().addListener((Change<? extends Integer> c) -> {
-			if(c.next() && c.wasAdded()) {
-				Integer line1 = c.getAddedSubList().get(0);
+		BECutAppContext.getContext().getEventBus().register(new Object() {
+		    @Subscribe
+		    public void event(ExternalCallLineEvent event) {
 				LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
 				queue.add(unitTestTreeTableView.getRoot());
 				while(!queue.isEmpty()) {
 					TreeItem<UnitTestTreeObject> node = queue.pop();
 					if(node.getValue() instanceof ExternalCallDisplayable) {
-						Integer line2 = ((ExternalCallDisplayable)node.getValue()).getExternalCall().getLineNumber();
-						if(line1.equals(line2)) {
+						Integer line = ((ExternalCallDisplayable)node.getValue()).getExternalCall().getLineNumber();
+						if(event.getLine().equals(line)) {
 							node.setExpanded(true);
 							TreeItem<UnitTestTreeObject> parent = node.getParent();
 							while(parent != null) {
@@ -104,16 +103,14 @@ public class BecutTestCaseSuiteController implements Initializable {
 					}
 					queue.addAll(node.getChildren());
 				}
-				BECutAppContext.getContext().getToTestCase().clear();
-				System.out.println(BECutAppContext.getContext().getToTestCase().size());
-			}
+		    }
 		});
 		
 		unitTestTreeTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             TreeItem<UnitTestTreeObject> selectedItem = newValue;
             if(selectedItem != null && selectedItem.getValue() instanceof ExternalCallDisplayable) {
-            	Integer line2 = ((ExternalCallDisplayable)selectedItem.getValue()).getExternalCall().getLineNumber();
-                BECutAppContext.getContext().getToSourceCode().add(line2);
+            	ExternalCall ec = ((ExternalCallDisplayable)selectedItem.getValue()).getExternalCall();
+            	BECutAppContext.getContext().getEventBus().post(new SourceLineEvent(ec.getLineNumber()));
             }
 		});
 		
@@ -375,26 +372,22 @@ public class BecutTestCaseSuiteController implements Initializable {
 	}
 
 	private void addTestResultObserver(BecutTestCase becutTestCase, final TreeItem<UnitTestTreeObject> testCaseNode) {
-		ObservableList<TestResult> testResults = BECutAppContext.getContext().getTestResults();
-		testResults.addListener((Change<? extends TestResult> c) -> {
-			if(c.next() && c.wasAdded()) {
-				c.getAddedSubList()
-					.stream()
-					.filter(e -> e.testCase == becutTestCase)
-					.forEach(result -> {
-						System.out.println(result.status);
-						switch(result.status) {
-						case OK :
-							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("ok.png"))));
-							break;
-						case NOK :
-							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("nok.png"))));
-							break;
-						default :
-							testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
-						}
-					});
-			}
+		BECutAppContext.getContext().getEventBus().register(new Object() {
+		    @Subscribe
+		    public void event(TestResult result) {
+				if(becutTestCase == result.getTestCase()) {
+					switch(result.getStatus()) {
+					case OK :
+						testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("ok.png"))));
+						break;
+					case NOK :
+						testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("nok.png"))));
+						break;
+					default :
+						testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
+					}
+				};
+		    }
 		});
 	}
 

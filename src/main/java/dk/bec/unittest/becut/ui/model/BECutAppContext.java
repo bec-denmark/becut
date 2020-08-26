@@ -4,17 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.eventbus.EventBus;
+
 import dk.bec.unittest.becut.ftp.model.Credential;
-import dk.bec.unittest.becut.testcase.model.TestResult;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -37,24 +35,12 @@ public class BECutAppContext {
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
 	private SimpleObjectProperty<List<String>> sourceCode = new SimpleObjectProperty<>();
 	
-	//TODO refactor this to a one message queue with different message classes
-	private ObservableList<Integer> msgToTestCase = FXCollections.observableList(new ArrayList<>());
-	private ObservableList<Integer> msgToSourceCode = FXCollections.observableList(new ArrayList<>());
+	EventBus eventBus = new EventBus(); 
 	
-	private ObservableList<TestResult> testResults = FXCollections.observableList(new ArrayList<>());
-	
-	public ObservableList<TestResult> getTestResults() {
-		return testResults;
+	public EventBus getEventBus() {
+		return eventBus;
 	}
 
-	public ObservableList<Integer> getToTestCase() {
-		return msgToTestCase;
-	}
-
-	public ObservableList<Integer> getToSourceCode() {
-		return msgToSourceCode;
-	}
-	
 	private BECutAppContext(Stage primaryStage) {
 		this.unitTestSuite = new UnitTestSuite("Test suite", "", "");
 		this.primaryStage = primaryStage;
