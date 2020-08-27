@@ -5,8 +5,6 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.google.common.eventbus.Subscribe;
-
 import dk.bec.unittest.becut.testcase.model.TestResult;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.application.Platform;
@@ -37,9 +35,8 @@ public class LogController implements Initializable {
 		});
 
 		pane.setCenter(htmlEditor);
-		BECutAppContext.getContext().getEventBus().register(new Object() {
-		    @Subscribe
-		    public void event(TestResult result) {
+		BECutAppContext.getContext().getEventBus().register(TestResult.class, 
+		    result -> {
 				switch (result.getStatus()) {
 				case OK:
 					appendText(htmlEditor, 
@@ -55,15 +52,10 @@ public class LogController implements Initializable {
 					break;
 				}
 				appendText(htmlEditor, "<p>");
-		    }
-		});
+		    });
 
-		BECutAppContext.getContext().getEventBus().register(new Object() {
-		    @Subscribe
-		    public void event(LogController.ClearEvent clear) {
-		    	htmlEditor.setHtmlText("");
-		    }
-		});
+		BECutAppContext.getContext().getEventBus().register(LogController.ClearEvent.class, 
+		    clear -> htmlEditor.setHtmlText(""));
 		
 		Thread.setDefaultUncaughtExceptionHandler(
 				(t, e) -> {

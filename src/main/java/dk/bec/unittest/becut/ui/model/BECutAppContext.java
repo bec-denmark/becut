@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.google.common.eventbus.EventBus;
-
 import dk.bec.unittest.becut.ftp.model.Credential;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;

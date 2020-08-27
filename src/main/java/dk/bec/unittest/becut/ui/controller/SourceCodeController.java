@@ -14,8 +14,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.EventTarget;
 
-import com.google.common.eventbus.Subscribe;
-
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
@@ -55,16 +53,14 @@ public class SourceCodeController {
 				}
 			}
 		});
-		BECutAppContext.getContext().getEventBus().register(new Object() {
-		    @Subscribe
-		    public void event(SourceLineEvent event) {
+		BECutAppContext.getContext().getEventBus().register(SourceLineEvent.class, 
+			event -> {
 				webEngine.executeScript(
 						String.format(
 								"document.getElementById('%s').scrollIntoView({behavior: 'smooth', block: 'center'});", event.getLineNumber()));
 				//{behavior: 'smooth', block: 'center'} should center the selected element within window; it does not seem to work so: 
 				webEngine.executeScript("window.scrollBy(0, -200);");
-		    }
-		});
+		    });
 	}
 
 	String html(List<String> source) {

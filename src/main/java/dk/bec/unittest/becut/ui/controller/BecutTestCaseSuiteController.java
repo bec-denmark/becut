@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.eventbus.Subscribe;
 
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -80,31 +79,29 @@ public class BecutTestCaseSuiteController implements Initializable {
 			return param.getValue().getValue().valueProperty();
 		});
 
-		BECutAppContext.getContext().getEventBus().register(new Object() {
-		    @Subscribe
-		    public void event(ExternalCallLineEvent event) {
-				LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
-				queue.add(unitTestTreeTableView.getRoot());
-				while(!queue.isEmpty()) {
-					TreeItem<UnitTestTreeObject> node = queue.pop();
-					if(node.getValue() instanceof ExternalCallDisplayable) {
-						Integer line = ((ExternalCallDisplayable)node.getValue()).getExternalCall().getLineNumber();
-						if(event.getLine().equals(line)) {
-							node.setExpanded(true);
-							TreeItem<UnitTestTreeObject> parent = node.getParent();
-							while(parent != null) {
-								parent.setExpanded(true);
-								parent = parent.getParent();
+		BECutAppContext.getContext().getEventBus().register(ExternalCallLineEvent.class, 
+				event -> {
+					LinkedList<TreeItem<UnitTestTreeObject>> queue = new LinkedList<>();
+					queue.add(unitTestTreeTableView.getRoot());
+					while(!queue.isEmpty()) {
+						TreeItem<UnitTestTreeObject> node = queue.pop();
+						if(node.getValue() instanceof ExternalCallDisplayable) {
+							Integer line = ((ExternalCallDisplayable)node.getValue()).getExternalCall().getLineNumber();
+							if(event.getLine().equals(line)) {
+								node.setExpanded(true);
+								TreeItem<UnitTestTreeObject> parent = node.getParent();
+								while(parent != null) {
+									parent.setExpanded(true);
+									parent = parent.getParent();
+								}
+								unitTestTreeTableView.getSelectionModel().select(node);
+								unitTestTreeTableView.scrollTo(unitTestTreeTableView.getSelectionModel().getSelectedIndex());
+								return;
 							}
-							unitTestTreeTableView.getSelectionModel().select(node);
-							unitTestTreeTableView.scrollTo(unitTestTreeTableView.getSelectionModel().getSelectedIndex());
-							return;
 						}
+						queue.addAll(node.getChildren());
 					}
-					queue.addAll(node.getChildren());
-				}
-		    }
-		});
+			    });
 		
 		unitTestTreeTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             TreeItem<UnitTestTreeObject> selectedItem = newValue;
@@ -372,9 +369,8 @@ public class BecutTestCaseSuiteController implements Initializable {
 	}
 
 	private void addTestResultObserver(BecutTestCase becutTestCase, final TreeItem<UnitTestTreeObject> testCaseNode) {
-		BECutAppContext.getContext().getEventBus().register(new Object() {
-		    @Subscribe
-		    public void event(TestResult result) {
+		BECutAppContext.getContext().getEventBus().register(TestResult.class,
+				result -> {
 				if(becutTestCase == result.getTestCase()) {
 					switch(result.getStatus()) {
 					case OK :
@@ -387,8 +383,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 						testCaseNode.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
 					}
 				};
-		    }
-		});
+		    });
 	}
 
 	private void populateTestCaseNode(TreeItem<UnitTestTreeObject> node, BecutTestCase becutTestCase) {
