@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.Constants;
+import dk.bec.unittest.becut.Either;
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
@@ -39,8 +40,6 @@ import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import koopa.core.trees.Tree;
 
 public class BecutTestCaseSuiteManager {
@@ -190,7 +189,7 @@ public class BecutTestCaseSuiteManager {
 		return parameterList;
 	}
 
-	public static BecutTestCaseSuite loadTestCaseSuite(Path folder) {
+	public static Either<BecutTestCaseSuite, String> loadTestCaseSuite(Path folder) {
 		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
 		
 		try {
@@ -199,11 +198,7 @@ public class BecutTestCaseSuiteManager {
 			
 			Path suite = Paths.get(folder.toString(), "suite.txt");
 			if(!Files.exists(suite)) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning Dialog");
-				//alert.setHeaderText("Look, a Warning Dialog");
-				alert.setContentText(suite + " is missing.");
-				alert.showAndWait();
+				return Either.right(suite + " is missing.");
 			}
 			
 			Files.readAllLines(suite).forEach(line -> {
@@ -219,10 +214,10 @@ public class BecutTestCaseSuiteManager {
 				becutTestCaseSuite.add(becutTestCase);
 			});
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			return Either.right(e.getMessage());
 		}
 		
-		return becutTestCaseSuite;
+		return Either.left(becutTestCaseSuite);
 	}
 
 	public static void saveTestCaseSuite(BecutTestCaseSuite becutTestCaseSuite, Path folder) {

@@ -1,0 +1,401 @@
+{
+  "testCaseId" : "becut-MAT510-77273a47-f974-4ae7-8d8b-84c307479663",
+  "programName" : "MAT510",
+  "preCondition" : {
+    "workingStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 6,
+      "name" : "TMAT5110",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 16,
+      "name" : "MAT511-PGM-NAVN",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 18,
+      "name" : "MAT511-AREA",
+      "dataType" : "GROUP",
+      "size" : 30,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 19,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 20,
+        "name" : "MAT511-DATA-LENGTH",
+        "dataType" : "BINARY",
+        "size" : 4,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 22,
+        "name" : "MAT511-DATA",
+        "dataType" : "GROUP",
+        "size" : 18,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 3,
+          "lineNumber" : 23,
+          "name" : "MAT511-RETURKODE",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 88,
+            "lineNumber" : 24,
+            "name" : "MAT511-RETURKODE-OK",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 88,
+            "lineNumber" : 25,
+            "name" : "MAT511-RETURKODE-UKENDT",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          } ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 27,
+          "name" : "MAT511-I-NUMBER",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 28,
+          "name" : "MAT511-SUM",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 10,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        } ]
+      } ]
+    } ],
+    "localStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 36,
+      "name" : "DIVERSE",
+      "dataType" : "GROUP",
+      "size" : 61,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 37,
+        "name" : "DEBUG",
+        "dataType" : "PIC",
+        "size" : 1,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 88,
+          "lineNumber" : 38,
+          "name" : "DEBUG-YES",
+          "dataType" : "EIGHTYEIGHT",
+          "size" : 1,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 88,
+          "lineNumber" : 39,
+          "name" : "DEBUG-NO",
+          "dataType" : "EIGHTYEIGHT",
+          "size" : 1,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        } ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 40,
+        "name" : "LOG-TEKST",
+        "dataType" : "PIC",
+        "size" : 60,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      } ]
+    } ],
+    "linkageSection" : [ ],
+    "fileSection" : [ ]
+  },
+  "externalCalls" : [ {
+    "name" : "TMAT5110",
+    "displayableName" : "000052 CALL TMAT5110 USING MAT511-AREA",
+    "lineNumber" : 52,
+    "statementId" : null,
+    "callType" : "DYNAMIC",
+    "iterations" : [ {
+      "numericalOrder" : 0,
+      "name" : "iteration_0",
+      "isDefault" : true,
+      "parameters" : [ {
+        "level" : 1,
+        "lineNumber" : 18,
+        "name" : "MAT511-AREA",
+        "dataType" : "GROUP",
+        "size" : 30,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 2,
+          "lineNumber" : 19,
+          "name" : "FILLER",
+          "dataType" : "PIC",
+          "size" : 8,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 20,
+          "name" : "MAT511-DATA-LENGTH",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 22,
+          "name" : "MAT511-DATA",
+          "dataType" : "GROUP",
+          "size" : 18,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 3,
+            "lineNumber" : 23,
+            "name" : "MAT511-RETURKODE",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ {
+              "level" : 88,
+              "lineNumber" : 24,
+              "name" : "MAT511-RETURKODE-OK",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            }, {
+              "level" : 88,
+              "lineNumber" : 25,
+              "name" : "MAT511-RETURKODE-UKENDT",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            } ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 27,
+            "name" : "MAT511-I-NUMBER",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 28,
+            "name" : "MAT511-SUM",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 10,
+            "isSeventySeven" : false,
+            "value" : "88",
+            "subStructure" : [ ]
+          } ]
+        } ]
+      } ],
+      "default" : true
+    } ]
+  } ],
+  "postCondition" : {
+    "workingStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 6,
+      "name" : "TMAT5110",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 16,
+      "name" : "MAT511-PGM-NAVN",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 18,
+      "name" : "MAT511-AREA",
+      "dataType" : "GROUP",
+      "size" : 30,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 19,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 20,
+        "name" : "MAT511-DATA-LENGTH",
+        "dataType" : "BINARY",
+        "size" : 4,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 22,
+        "name" : "MAT511-DATA",
+        "dataType" : "GROUP",
+        "size" : 18,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 3,
+          "lineNumber" : 23,
+          "name" : "MAT511-RETURKODE",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 88,
+            "lineNumber" : 24,
+            "name" : "MAT511-RETURKODE-OK",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 88,
+            "lineNumber" : 25,
+            "name" : "MAT511-RETURKODE-UKENDT",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          } ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 27,
+          "name" : "MAT511-I-NUMBER",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 28,
+          "name" : "MAT511-SUM",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 10,
+          "isSeventySeven" : false,
+          "value" : "88",
+          "subStructure" : [ ]
+        } ]
+      } ]
+    } ],
+    "localStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 36,
+      "name" : "DIVERSE",
+      "dataType" : "GROUP",
+      "size" : 61,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 37,
+        "name" : "DEBUG",
+        "dataType" : "PIC",
+        "size" : 1,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 88,
+          "lineNumber" : 38,
+          "name" : "DEBUG-YES",
+          "dataType" : "EIGHTYEIGHT",
+          "size" : 1,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 88,
+          "lineNumber" : 39,
+          "name" : "DEBUG-NO",
+          "dataType" : "EIGHTYEIGHT",
+          "size" : 1,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        } ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 40,
+        "name" : "LOG-TEKST",
+        "dataType" : "PIC",
+        "size" : 60,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      } ]
+    } ],
+    "linkageSection" : [ ],
+    "fileSection" : [ ]
+  },
+  "debugScript" : null,
+  "fileControlAssignments" : { }
+}

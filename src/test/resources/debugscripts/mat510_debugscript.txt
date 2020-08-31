@@ -1,0 +1,30 @@
+
+        01 BECUT-IC-52-TMAT5110 PIC 9(9) COMP;
+        MOVE 0 TO BECUT-IC-52-TMAT5110;
+
+           SET DYNDEBUG OFF;
+      * Setup preconditions
+
+      * Setup postconditions
+           AT EXIT MAT510
+           PERFORM
+       LIST ("Start BECUT PostCondition");
+       LIST (MAT511-SUM);
+       LIST ("End BECUT PostCondition");
+
+           END-PERFORM;
+           AT CALL TMAT5110
+           PERFORM
+       IF %LINE = '52.1' THEN
+       IF BECUT-IC-52-TMAT5110 = 0 THEN
+       MOVE 88 TO MAT511-SUM;       END-IF;
+
+        COMPUTE BECUT-IC-52-TMAT5110 = 
+        BECUT-IC-52-TMAT5110 + 1;
+       END-IF;
+
+           GO BYPASS;
+           END-PERFORM;
+           GO;
+      * SUCESS!!!
+           QUIT;

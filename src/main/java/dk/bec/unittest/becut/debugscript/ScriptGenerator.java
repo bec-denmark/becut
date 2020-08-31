@@ -46,13 +46,10 @@ import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
-import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import koopa.core.trees.Tree;
 
 public class ScriptGenerator {
-	
-	public static DebugScript generateDebugScript(BecutTestCase testCase) {
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
+	public static DebugScript generateDebugScript(CompileListing compileListing, BecutTestCase testCase) {
 		DebugScript debugScript = new DebugScript(new ArrayList<>());
 		List<DebugEntity> debugEntities = debugScript.getEntities();
 		debugEntities.add(new SetSyndebugOff());

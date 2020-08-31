@@ -6,13 +6,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 
 public class DebugToolLogParserTest {
-	@Ignore
 	@Test
 	public void testParseMAT561Recording() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/mat561.txt"));
@@ -30,6 +28,4 @@ public class DebugToolLogParserTest {
 		assertEquals("Program name", "MAT561", recording.getProgramName());
 		assertEquals("Session calls count", 4, recording.getSessionCalls().size());
 	}
-	
-	//TODO another test cases for more than one external call
 }

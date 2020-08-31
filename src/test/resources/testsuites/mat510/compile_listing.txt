@@ -1,0 +1,362 @@
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0                         Date 08/31/2020  Time 13:07:19   Page     1
+Invocation parameters:
+ OBJECT TEST(HOOK)
+Options in effect:
+ NOADATA
+   ADV
+   APOST
+   ARITH(EXTEND)
+ NOAWO
+ NOBLOCK0
+   BUFSIZE(4096)
+ NOCICS
+   CODEPAGE(1142)
+ NOCOMPILE(S)
+ NOCURRENCY
+   DATA(31)
+ NODATEPROC
+   DBCS
+ NODECK
+ NODIAGTRUNC
+ NODLL
+ NODUMP
+ NODYNAM
+ NOEXIT
+ NOEXPORTALL
+ NOFASTSRT
+   FLAG(W,E)
+ NOFLAGSTD
+   INTDATE(ANSI)
+   LANGUAGE(EN)
+   LIB
+   LINECOUNT(68)
+ NOLIST
+   MAP
+ NOMDECK
+ NONAME
+   NSYMBOL(NATIONAL)
+ NONUMBER
+   NUMPROC(PFD)
+   OBJECT
+   OFFSET
+ NOOPTIMIZE
+   OUTDD(SYSOUT)
+   PGMNAME(COMPAT)
+   RENT
+   RMODE(AUTO)
+ NOSEQUENCE
+   SIZE(MAX)
+   SOURCE
+   SPACE(1)
+ NOSQL
+   SQLCCSID
+ NOSSRANGE
+ NOTERM
+   TEST(HOOK,NOSEPARATE,NOEJPD)
+ NOTHREAD
+   TRUNC(OPT)
+ NOVBREF
+ NOWORD
+   XMLPARSE(XMLSS)
+   XREF(SHORT)
+   YEARWINDOW(1900)
+   ZWB
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     2
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference
+/* MAT510
+  000001                IDENTIFICATION DIVISION.
+  000002                PROGRAM-ID. MAT510.
+  000003                DATA DIVISION.
+  000004                WORKING-STORAGE SECTION.
+  000005
+  000006                01 TMAT5110 PIC X(8) VALUE 'TMAT5110'.                                    BLW=00000+000         8C
+  000007
+  000008                    COPY MAT511AR REPLACING ==:PFX:== BY ==MAT511==.
+  000009C        000010******************************************************************
+  000010C        000020*    MAT511AR - COPYBOOK WITH PARAMETRE FOR MAT511.
+  000011C        000030*
+  000012C        000040*
+  000013C        000050*    Established: 26.03.2019 ADB
+  000014C        000060******************************************************************
+  000015C        000070
+  000016C        000080 01  MAT511-PGM-NAVN              PIC X(08)    VALUE 'SMAT511P'.           BLW=00000+008         8C
+  000017C        000090
+  000018C        000100 01  MAT511-AREA.                                                          BLW=00000+010         0CL30
+  000019C        000110   03  FILLER                    PIC X(08)    VALUE 'MAT511AR'.            BLW=00000+010,0000000 8C
+  000020C        000120   03  MAT511-DATA-LENGTH         PIC S9(8)    COMP VALUE +0000.           BLW=00000+018,0000008 4C
+  000021C        000130*      :PFX:-DATA-LENGTH ER LÆNGDEN AF :PFX:-DATA.
+  000022C        000140   03  MAT511-DATA.                                                        BLW=00000+01C,000000C 0CL18
+  000023C        000150     05  MAT511-RETURKODE         PIC 9(4).                                BLW=00000+01C,000000C 4C
+  000024C        000160       88  MAT511-RETURKODE-OK                 VALUE 0000.
+  000025C        000170       88  MAT511-RETURKODE-UKENDT             VALUE 9999.
+  000026C        000180*          UKENDT FEJL, BØR IKKE SKE. FEJL I UNDERPROGRAM.
+  000027C        000190     05  MAT511-I-NUMBER          PIC 9(4).                                BLW=00000+020,0000010 4C
+  000028C        000200     05  MAT511-SUM               PIC 9(10).                               BLW=00000+024,0000014 10C
+  000029C        000210
+  000030C        000220******************************************************************
+  000031C        000230*    MAT511AR SLUT.
+  000032C        000240******************************************************************
+  000033
+  000034                LOCAL-STORAGE SECTION.
+  000035
+  000036                01 DIVERSE.                                                               BLK=00000+000         0CL61
+  000037                  03 DEBUG               PIC X(01)   VALUE 'N'.                           BLK=00000+000,0000000 1C
+  000038                     88 DEBUG-YES                    VALUE 'Y'.
+  000039                     88 DEBUG-NO                     VALUE 'N'.
+  000040                  03 LOG-TEKST           PIC X(60).                                       BLK=00000+001,0000001 60C
+  000041
+  000042                PROCEDURE DIVISION.
+  000043                    DISPLAY 'Main program MAT510 WAS CALLED'
+  000044
+  000045                    STRING 'VALUE OF MAT511-I-NUMBER: '
+  000046                           MAT511-I-NUMBER                                                27
+  000047                    DELIMITED BY SIZE
+  000048                    INTO LOG-TEKST                                                        40
+  000049                    PERFORM DEBUG-LOG                                                     63
+  000050
+  000051                    MOVE 10 TO MAT511-I-NUMBER                                            27
+  000052                    CALL TMAT5110 USING MAT511-AREA                                       6 18
+  000053                    EVALUATE TRUE
+  000054                    WHEN MAT511-RETURKODE-OK                                              24
+  000055      1                  DISPLAY 'Result of call is: ' MAT511-SUM                         28
+  000056                    WHEN OTHER
+  000057      1                  DISPLAY 'Call to MAT5111 failed with error: '
+  000058      1                          MAT511-RETURKODE                                         23
+  000059                    END-EVALUATE
+  000060                    GOBACK.
+  000061
+  000062
+  000063                DEBUG-LOG SECTION.
+  000064               *----------------------------------------------------------------*
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     3
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference
+  000065               *
+  000066               *----------------------------------------------------------------*
+  000067
+  000068                    IF DEBUG-YES                                                          38
+  000069      1                  DISPLAY LOG-TEKST                                                40
+  000070      1                  MOVE ' ' TO LOG-TEKST                                            40
+  000071                    END-IF.
+  000072
+  000073                DEBUG-LOG-X.
+  000074                    EXIT.
+*/ MAT510
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     4
+An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
+
+ Defined   Cross-reference of data names   References
+
+      38   DEBUG-YES. . . . . . . . . . .  68
+      40   LOG-TEKST. . . . . . . . . . .  M48 69 M70
+      18   MAT511-AREA. . . . . . . . . .  52
+      27   MAT511-I-NUMBER. . . . . . . .  46 M51
+      23   MAT511-RETURKODE . . . . . . .  58
+      24   MAT511-RETURKODE-OK. . . . . .  54
+      28   MAT511-SUM . . . . . . . . . .  55
+       6   TMAT5110 . . . . . . . . . . .  52
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     5
+Context usage is indicated by the letter preceding a procedure-name reference.
+These letters and their meanings are:
+    A = ALTER (procedure-name)
+    D = GO TO (procedure-name) DEPENDING ON
+    E = End of range of (PERFORM) through (procedure-name)
+    G = GO TO (procedure-name)
+    P = PERFORM (procedure-name)
+    T = (ALTER) TO PROCEED TO (procedure-name)
+    U = USE FOR DEBUGGING (procedure-name)
+
+ Defined   Cross-reference of procedures   References
+
+      63   DEBUG-LOG. . . . . . . . . . .  P49
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     6
+ Defined   Cross-reference of programs     References
+
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     7
+
+         COPY/BASIS cross-reference of text-names, library names and dataset information
+
+ Text-name Library   File name                                    Concat   ISPF statistics
+ (Member)  (DDNAME)  (Dataset name)                               Level    Created         Changed
+
+ MAT511AR  SYSLIB    ZT4.SOURCE.COBCOPY                             0
+
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     8
+Data Division Map
+Data Definition Attribute codes (rightmost column) have the following meanings:
+    D = Object of OCCURS DEPENDING    G = GLOBAL                             S = Spanned file
+    E = EXTERNAL                      O = Has OCCURS clause                  U = Undefined format file
+    F = Fixed-length file             OG= Group has own length definition    V = Variable-length file
+    FB= Fixed-length blocked file     R = REDEFINES                          VB= Variable-length blocked file
+Source   Hierarchy and                                    Base       Hex-Displacement  Asmblr Data                    Data Def
+LineID   Data Name                                        Locator    Blk   Structure   Definition      Data Type      Attributes
+     2  PROGRAM-ID MAT510------------------------------------------------------------------------------------------------------*
+     6   1  TMAT5110. . . . . . . . . . . . . . . . . . . BLW=00000  000               DS 8C           Display
+    16   1  MAT511-PGM-NAVN . . . . . . . . . . . . . . . BLW=00000  008               DS 8C           Display
+    18   1  MAT511-AREA . . . . . . . . . . . . . . . . . BLW=00000  010               DS 0CL30        Group
+    19     2  FILLER. . . . . . . . . . . . . . . . . . . BLW=00000  010   0 000 000   DS 8C           Display
+    20     2  MAT511-DATA-LENGTH. . . . . . . . . . . . . BLW=00000  018   0 000 008   DS 4C           Binary
+    22     2  MAT511-DATA . . . . . . . . . . . . . . . . BLW=00000  01C   0 000 00C   DS 0CL18        Group
+    23       3  MAT511-RETURKODE. . . . . . . . . . . . . BLW=00000  01C   0 000 00C   DS 4C           Disp-Num
+    24       88 MAT511-RETURKODE-OK . . . . . . . . . . .
+    25       88 MAT511-RETURKODE-UKENDT . . . . . . . . .
+    27       3  MAT511-I-NUMBER . . . . . . . . . . . . . BLW=00000  020   0 000 010   DS 4C           Disp-Num
+    28       3  MAT511-SUM. . . . . . . . . . . . . . . . BLW=00000  024   0 000 014   DS 10C          Disp-Num
+    36   1  DIVERSE . . . . . . . . . . . . . . . . . . . BLK=00000  000               DS 0CL61        Group
+    37     2  DEBUG . . . . . . . . . . . . . . . . . . . BLK=00000  000   0 000 000   DS 1C           Display
+    38     88 DEBUG-YES . . . . . . . . . . . . . . . . .
+    39     88 DEBUG-NO. . . . . . . . . . . . . . . . . .
+    40     2  LOG-TEKST . . . . . . . . . . . . . . . . . BLK=00000  001   0 000 001   DS 60C          Display
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page     9
+PROGRAM GLOBAL TABLE BEGINS AT LOCATION 0000FC FOR 000034 BYTES
+THE PGT CONTAINS 000001 CELL(S) FOR ADDRESSABILITY TO THE CGT
+PBL1    AT LOCATION 0003C0 FOR LINE 2
+
+LITERAL POOL MAP FOR SYSTEM LITERALS IN THE PGT:
+0000FC  (LIT+0)      00000001 00000000 40404040 40404040 40404040 40404040 40404040 40404040  !........                        !
+00011C  (LIT+32)     40404040 4040F0F0 F0F0                                                   !      0000                      !
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page    10
+CONSTANT GLOBAL TABLE BEGINS AT LOCATION 000130 FOR 000290 BYTES
+LITERAL POOL MAP FOR LITERALS IN THE CGT:
+
+000140  (LIT+0)      FFFFFFFC 00001000 00000001 00000000 C3819393 40A39640 D4C1E3F5 F1F1F140  !................Call to MAT5111 !
+000160  (LIT+32)     86818993 858440A6 89A38840 85999996 997A40D4 81899540 97999687 99819440  !failed with error: Main program !
+000180  (LIT+64)     D4C1E3F5 F1F040E6 C1E240C3 C1D3D3C5 C4D985A2 A493A340 96864083 81939340  !MAT510 WAS CALLEDResult of call !
+0001A0  (LIT+96)     89A27A40 D4C1E3F5 F1F1C1D9 E2D4C1E3 F5F1F1D7 E3D4C1E3 F5F1F1F0 E2E8E2D6  !is: MAT511ARSMAT511PTMAT5110SYSO!
+0001C0  (LIT+128)    E4E34040 C9C7E9E2 D9E3C3C4 00010203 04050607 08090A0B 0C0D0E0F 10111213  !UT  IGZSRTCD....................!
+0001E0  (LIT+160)    14151617 18191A1B 1C1D1E1F 20212223 24252627 28292A2B 2C2D2E2F 30313233  !................................!
+000200  (LIT+192)    34353637 38393A3B 3C3D3E3F 40414243 44454647 48494A4B 4C4D4E4F 50515253  !............ .........#.<(+!&...!
+000220  (LIT+224)    54555657 58595A5B 5C5D5E5F 60616263 64656667 68696A6B 6C6D6E6F 70717273  !......¤Å*).^-/.........,%_>?....!
+000240  (LIT+256)    74757677 78797A7B 7C7D7E7F 80C1C2C3 C4C5C6C7 C8C98A8B 8C8D8E8F 90D1D2D3  !......:ÆØ'=".ABCDEFGHI.......JKL!
+000260  (LIT+288)    D4D5D6D7 D8D99A9B 9C9D9E9F A0A1E2E3 E4E5E6E7 E8E9AAAB ACADAEAF B0B1B2B3  !MNOPQR........STUVWXYZ..........!
+000280  (LIT+320)    B4B5B6B7 B8B9BABB BCBDBEBF C0C1C2C3 C4C5C6C7 C8C9CACB CCCDCECF D0D1D2D3  !.............ABCDEFGHI.......JKL!
+0002A0  (LIT+352)    D4D5D6D7 D8D9DADB DCDDDEDF E0E1E2E3 E4E5E6E7 E8E9EAEB ECEDEEEF F0F1F2F3  !MNOPQR........STUVWXYZ......0123!
+0002C0  (LIT+384)    F4F5F6F7 F8F9FAFB FCFDFEFF 00000000 0000012C 00000001 00000130 00000001  !456789..........................!
+0002E0  (LIT+416)    00000000 00000000 00000000 00000000 00000000 00000130 00000001 00000000  !................................!
+000300  (LIT+448)    00000000 00000000 80000000 E5C1D3E4 C540D6C6 40D4C1E3 F5F1F160 C960D5E4  !............VALUE OF MAT511-I-NU!
+000320  (LIT+480)    D4C2C5D9 7A404000 00000000 00000000 0000A608 0000F0F0 F1F04000 00000000  !MBER:  ...........w...0010 .....!
+000340  (LIT+512)    00000000 00000000 00004000 00000025 C00001C0 00060800 002C0050 01400000  !.......... ................&. ..!
+000360  (LIT+544)    3C2D0058 00000130 0001FF01 40000023 0800002C 00204000 00040900 012C001C  !............ ......... .........!
+000380  (LIT+576)    FF014000 00130800 002C0061 4000000A 0900012C 0024FF01 4000001E 0800002C  !.. ......../ ........... .......!
+0003A0  (LIT+608)    0043FF40 00000000 40C00001 40000608 00002C00 5002C000 06080000 2C0050FF  !... .... ... .......&.........&.!
+LINE Æ  HEXLOC  VERB                        LINE Æ  HEXLOC  VERB                        LINE Æ  HEXLOC  VERB
+000043 00056C DISPLAY                       000045 00057E STRING                        000049 000592 PERFORM
+000051 0005B2 MOVE                          000052 0005BC CALL                          000053 000626 EVALUATE
+000054 00062A WHEN                          000055 000644 DISPLAY                       000056 00065E WHEN
+000057 000662 DISPLAY                       000060 000678 GOBACK                        000068 00068C IF
+000069 0006A4 DISPLAY                       000070 0006B6 MOVE                          000074 0006D0 EXIT
+
+
+   PROGSUM TABLE LOCATED AT 000780 FOR 000134 BYTES
+   PROCTAB TABLE LOCATED AT 0008BC FOR 000060 BYTES
+    REGION TABLE LOCATED AT 00091C FOR 000008 BYTES
+      PATH TABLE LOCATED AT 000924 FOR 000098 BYTES
+ ATTRIBUTE TABLE LOCATED AT 0009BC FOR 000D20 BYTES
+    SYMBOL TABLE LOCATED AT 0016DC FOR 0003B8 BYTES
+GEN. INFO. TABLE LOCATED AT 001A94 FOR 000110 BYTES
+      HASH TABLE LOCATED AT 001BA4 FOR 001000 BYTES
+      AUTO TABLE LOCATED AT 002BA4 FOR 000084 BYTES
+ AUTO AREA TABLE LOCATED AT 002C28 FOR 000069 BYTES
+
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page    11
+                   *** TGT MEMORY MAP ***
+                   TGTLOC
+
+                   000000  RESERVED - 72 BYTES
+                   000048  TGT IDENTIFIER
+                   00004C  RESERVED - 4 BYTES
+                   000050  TGT LEVEL INDICATOR
+                   000051  RESERVED - 3 BYTES
+                   000054  32 BIT SWITCH
+                   000058  POINTER TO RUNCOM
+                   00005C  POINTER TO COBVEC
+                   000060  POINTER TO PROGRAM DYNAMIC BLOCK TABLE
+                   000064  NUMBER OF FCB'S
+                   000068  WORKING-STORAGE LENGTH
+                   00006C  RESERVED - 4 BYTES
+                   000070  ADDRESS OF IGZESMG WORK AREA
+                   000074  ADDRESS OF 1ST GETMAIN BLOCK (SPACE MGR)
+                   000078  RESERVED - 2 BYTES
+                   00007A  RESERVED - 2 BYTES
+                   00007C  RESERVED - 2 BYTES
+                   00007E  MERGE FILE NUMBER
+                   000080  ADDRESS OF CEL COMMON ANCHOR AREA
+                   000084  LENGTH OF TGT
+                   000088  RESERVED - 1 SINGLE BYTE FIELD
+                   000089  PROGRAM MASK USED BY THIS PROGRAM
+                   00008A  RESERVED - 2 SINGLE BYTE FIELDS
+                   00008C  NUMBER OF SECONDARY FCB CELLS
+                   000090  LENGTH OF THE ALTER VN(VNI) VECTOR
+                   000094  COUNT OF NESTED PROGRAMS IN COMPILE UNIT
+                   000098  DDNAME FOR DISPLAY OUTPUT
+                   0000A0  RESERVED - 8 BYTES
+                   0000A8  POINTER TO COM-REG SPECIAL REGISTER
+                   0000AC  RESERVED - 52 BYTES
+                   0000E0  ALTERNATE COLLATING SEQUENCE TABLE PTR.
+                   0000E4  ADDRESS OF SORT G.N. ADDRESS BLOCK
+                   0000E8  ADDRESS OF PGT
+                   0000EC  RESERVED - 4 BYTES
+                   0000F0  POINTER TO 1ST IPCB
+                   0000F4  ADDRESS OF THE CLLE FOR THIS PROGRAM
+                   0000F8  POINTER TO ABEND INFORMATION TABLE
+                   0000FC  POINTER TO TEST INFO FIELDS IN THE TGT
+                   000100  ADDRESS OF START OF COBOL PROGRAM
+                   000104  POINTER TO ALTER VNI'S IN CGT
+                   000108  POINTER TO ALTER VN'S IN TGT
+                   00010C  POINTER TO FIRST PBL IN THE PGT
+                   000110  POINTER TO FIRST FCB CELL
+                   000114  WORKING-STORAGE ADDRESS
+                   000118  POINTER TO FIRST SECONDARY FCB CELL
+                   00011C  POINTER TO STATIC CLASS INFO BLOCK 1
+                   000120  POINTER TO STATIC CLASS INFO BLOCK 2
+
+                   *** VARIABLE PORTION OF TGT ***
+
+                   000124  BASE LOCATORS FOR SPECIAL REGISTERS
+                   00012C  BASE LOCATORS FOR WORKING-STORAGE
+                   000130  BASE LOCATORS FOR LINKAGE-SECTION
+                   000134  TEST INFORMATION AREA
+                   00015C  INTERNAL PROGRAM CONTROL BLOCKS
+
+                   *** DSA MEMORY MAP ***
+                 DSALOC
+
+                 00000000  REGISTER SAVE AREA
+                 0000004C  STACK NAB (NEXT AVAILABLE BYTE)
+                 00000058  ADDRESS OF INLINE-CODE PRIMARY DSA
+                 0000005C  ADDRESS OF TGT
+PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               MAT510    Date 08/31/2020  Time 13:07:19   Page    12
+                 00000060  ADDRESS OF CAA
+                 00000080  XML PARSE WORK AREA ANCHOR
+                 00000084  SWITCHES
+                 00000088  CURRENT INT. PROGRAM OR METHOD NUMBER
+                 0000008C  ADDRESS OF CALL STATEMENT PROGRAM NAME
+                 00000090  CALC ROUTINE REGISTER SAVE AREA
+                 000000C4  ADDRESS OF FILE MUTEX USE COUNT CELLS
+                 000000C8  PROCEDURE DIVISION RETURNING VALUE
+
+                   *** VARIABLE PORTION OF DSA ***
+
+                 000000D0  SAVE AREA FOR FLOAT REGISTERS 8-15
+                 00000110  BACKSTORE CELLS FOR SYMBOLIC REGISTERS
+                 00000130  BASE LOCATORS FOR LOCAL-STORAGE SECTION
+                 00000134  VARIABLE-LENGTH CELLS
+                 0000014C  VARIABLE NAME (VN) CELLS FOR PERFORM
+                 0000015C  PERFORM SAVE CELLS
+                 00000170  TEMPORARY STORAGE-2
+                 00000190  CALL STATEMENT PROGRAM NAME
+                 00000230  LOCAL-STORAGE SECTION
+
+TGT      WILL BE ALLOCATED FOR 00000170 BYTES
+SPEC-REG WILL BE ALLOCATED FOR 0000007E BYTES
+WRK-STOR WILL BE ALLOCATED FOR 0000002E BYTES
+DSA      WILL BE ALLOCATED FOR 00000270 BYTES
+CONSTANT GLOBAL TABLE FOR DYNAMIC STORAGE INITIALIZATION AT LOCATION 002CC8
+INITD CODE FOR DYNAMIC STORAGE INITIALIZATION BEGINS AT LOCATION 002E24 FOR LENGTH 00009A
+Messages    Total    Informational    Warning    Error    Severe    Terminating
+Suppressed:    1           1
+* Statistics for COBOL program MAT510:
+*    Source records = 74
+*    Data Division statements = 15
+*    Procedure Division statements = 13
+End of compilation 1,  program MAT510,  highest severity 0.
+Return code 0

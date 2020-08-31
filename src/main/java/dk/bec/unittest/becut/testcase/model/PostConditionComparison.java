@@ -16,8 +16,11 @@ public class PostConditionComparison {
 	}
 
 	public boolean compare() {
+		if(actual.getValue() == null && expected.getValue() != null) {
+			return false;
+		}
 		// for numeric and alphanumeric ignore leading zeroes, whitespaces
-		if (expected.dataType.equals(DataType.PIC_NUMERIC)) {
+		else if (expected.dataType.equals(DataType.PIC_NUMERIC)) {
 			return new BigDecimal(expected.getValue()).equals(new BigDecimal(actual.getValue()));
 		} else if (expected.dataType.equals(DataType.PIC)) {
 			return expected.getValue().trim().equals(stripQuotes(actual.getValue()).trim());

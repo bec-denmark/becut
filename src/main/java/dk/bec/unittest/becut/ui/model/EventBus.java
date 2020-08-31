@@ -23,7 +23,7 @@ public class EventBus {
 			listeners.get(klass)
 				.forEach(consumer -> consumer.accept((Object)event));
 		} else {
-			System.err.printf("No listener for %s class of event\n", event.getClass());
+			System.err.printf("No listener for a %s event\n", event.getClass().getName());
 		}
 	}
 }

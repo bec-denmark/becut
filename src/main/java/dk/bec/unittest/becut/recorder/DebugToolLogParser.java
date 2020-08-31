@@ -144,12 +144,21 @@ public class DebugToolLogParser {
 					} else {
 						SessionPostCondition sessionPostCondition = new SessionPostCondition();
 						String[] parts = logLine.split("=");
-						assert parts != null && parts.length == 2;
 						String variableName = parts[0].trim();
-						String value = parts[1].trim();
-						SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
-						sessionPostCondition.getSessionRecords().add(record);
-						sessionRecording.getSessionPostConditions().add(sessionPostCondition);
+						if(parts.length != 2) {
+							//variable was not initialized:
+							//* possible mismatch between the listing and the actual load module
+							//* something wrong with the debug script
+							String value = null;
+							SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
+							sessionPostCondition.getSessionRecords().add(record);
+							sessionRecording.getSessionPostConditions().add(sessionPostCondition);
+						} else {
+							String value = parts[1].trim();
+							SessionRecord record = new SessionRecord(-1, "", variableName, value, null, null);
+							sessionPostCondition.getSessionRecords().add(record);
+							sessionRecording.getSessionPostConditions().add(sessionPostCondition);
+						}
 					}
 					break;
 			}

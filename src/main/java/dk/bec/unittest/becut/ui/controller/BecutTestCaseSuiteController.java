@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.compilelist.model.DataType;
+import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
@@ -195,6 +196,9 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(sm.getSelectedIndex());
 		    	assert item.getValue() instanceof UnitTest;
 		    	try {
+		    		BecutTestCaseSuiteManager.saveTestCaseSuite(
+		    				BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get(), BECutAppContext.getContext().getUnitTestSuiteFolder());
+		    		
 		    		String testCaseName = item.getValue().valueProperty().getValue();
 		    		String newTestCaseName = testCaseName + "-copy";
 		    		

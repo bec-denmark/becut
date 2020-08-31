@@ -60,7 +60,7 @@ public class DebugScriptExecutor {
 			putDatasets(ftpClient, becutTestCase, datasetNames, user);
 			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
 			String DDs = jclDDs(datasetNames);
-			String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
+			String debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase).generate();
 			String jcl = DebugScriptTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript);
 			
 			InputStream is = new ByteArrayInputStream(jcl.getBytes());
@@ -222,9 +222,7 @@ public class DebugScriptExecutor {
 			throw new RuntimeException(e);
 		}
 		if(lines.size() > 0) {
-			System.out.println(String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
-//			throw new RuntimeException(
-//					String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
+			System.err.println(String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
 		}
 	}
 
@@ -237,17 +235,5 @@ public class DebugScriptExecutor {
 			jobId = matcher.group(1);
 		}
 		return jobId;
-	}
-	
-	private static void checkReply(FTPClient ftp, String status) {
-		if (!ftp.getReplyString().substring(0, 3).equals(status)) {
-			throw new RuntimeException(replyStrings(ftp));
-		}
-	}
-	
-	private static String replyStrings(FTPClient ftp) {
-		return Arrays.asList(ftp.getReplyStrings())
-				.stream()
-				.collect(Collectors.joining(" "));		
 	}
 }

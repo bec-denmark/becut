@@ -17,8 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
@@ -51,7 +49,6 @@ public class ParseTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testCreateCompileListMAT560() throws FileNotFoundException {
 		File file = new File("./src/test/resources/compilelistings/mat561_compile_listing.txt");

@@ -5,10 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import dk.bec.unittest.becut.Either;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 
@@ -43,14 +46,21 @@ public class LoadTestCaseSuiteController {
 	
 	@FXML 
 	private void ok() {
-		BecutTestCaseSuite becutTestCaseSuite = BecutTestCaseSuiteManager.loadTestCaseSuite(testCaseSuiteFolder.toPath());
-		initialDirectory = testCaseSuiteFolder.toPath();
-		BECutAppContext.getContext().setUnitTestSuiteFolder(testCaseSuiteFolder.toPath());
-		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
-		
-		List<String> lines = becutTestCaseSuite.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
-		BECutAppContext.getContext().getSourceCode().setValue(lines);
-		
+		Either<BecutTestCaseSuite, String> becutTestCaseSuite = BecutTestCaseSuiteManager.loadTestCaseSuite(testCaseSuiteFolder.toPath());
+		becutTestCaseSuite.apply(testSuite -> {
+				initialDirectory = testCaseSuiteFolder.toPath();
+				BECutAppContext.getContext().setUnitTestSuiteFolder(testCaseSuiteFolder.toPath());
+				BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(testSuite);
+				
+				List<String> lines = testSuite.getCompileListing().getSourceMapAndCrossReference().getOriginalSource();
+				BECutAppContext.getContext().getSourceCode().setValue(lines);
+			}, 
+			errors -> {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning Dialog");
+				alert.setContentText(errors.toString());
+				alert.showAndWait();
+			});
 		close();
 	}
 	
