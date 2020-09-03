@@ -26,7 +26,8 @@ import koopa.core.trees.Tree;
 public class ParseTest {
 	@Test
 	public void testCreateCompileListMAT510RS() throws Exception {
-		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
+		//File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
+		File file = new File("C:/temp/sql-suite/compile_listing.txt");
 		CompileListing compileListing = Parse.parse(file);
 		assertNotNullCompileListing(compileListing);
 	}

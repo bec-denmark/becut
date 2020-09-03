@@ -1,11 +1,10 @@
 package dk.bec.unittest.becut.ftp;
 
-import static org.mockito.Mockito.*;
-
-import java.io.IOException;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;

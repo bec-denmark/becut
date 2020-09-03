@@ -35,8 +35,8 @@ public class TestTemplate {
 				"\n" + 
 				"//INSPIN      DD *\n" + 
 				"GO;\n" + 
-				"/*", DebugScriptTemplate.fillTemplate(lines, "TST1", "SUMA", "BECUT", 
-				"FXSORTED    DD DSN=TST1.BECUT.T644111,DISP=SHR\n", "GO;")
+				"/*", JCLTemplate.fillTemplate(lines, "TST1", "SUMA", "BECUT", 
+				"FXSORTED    DD DSN=TST1.BECUT.T644111,DISP=SHR\n", "GO;", "")
 				);
 		
 	}

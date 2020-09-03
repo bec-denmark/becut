@@ -3,6 +3,7 @@
         MOVE 0 TO BECUT-IC-52-TMAT5110;
 
            SET DYNDEBUG OFF;
+        SET LOG ON FILE ALA.INSLOG;
       * Setup preconditions
 
       * Setup postconditions
@@ -26,5 +27,5 @@
            GO BYPASS;
            END-PERFORM;
            GO;
-      * SUCESS!!!
-           QUIT;
+      * kilroy was here
+          QUIT;

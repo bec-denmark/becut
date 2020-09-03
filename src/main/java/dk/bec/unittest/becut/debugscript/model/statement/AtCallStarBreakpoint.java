@@ -3,12 +3,10 @@ package dk.bec.unittest.becut.debugscript.model.statement;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 
-public class AtCallBreakpoint extends StatementBase implements DebugEntity {
-	private String entryName;
+public class AtCallStarBreakpoint extends StatementBase implements DebugEntity {
 	private Perform perform;
 
-	public AtCallBreakpoint(String entryName, Perform perform) {
-		this.entryName = entryName;
+	public AtCallStarBreakpoint(Perform perform) {
 		this.perform = perform;
 	}
 
@@ -22,6 +20,6 @@ public class AtCallBreakpoint extends StatementBase implements DebugEntity {
 
 	@Override
 	public String generate() {
-		return "           AT CALL " + entryName + "\n" + perform.generate();
+		return "           AT CALL *\n" + perform.generate();
 	}
 }

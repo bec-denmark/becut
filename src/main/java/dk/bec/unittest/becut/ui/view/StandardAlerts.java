@@ -31,4 +31,9 @@ public class StandardAlerts {
 		alert.showAndWait();
 	}
 
+	public static void errorDialog(String content) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
 }

@@ -29,7 +29,7 @@ public class DebugToolLogParser {
 	private static final Pattern AT_LINE = Pattern.compile("At LINE ((\\d+)\\.\\d+) in COBOL program (.*) ::> (.*)\\."); 
 	private static final Pattern FROM_LINE = Pattern.compile("From LINE (\\d+)\\.\\d+ in COBOL program (.*) ::> (.*)\\.");
 	
-	public static SessionRecording parseRecording(String debugToolLog, String programName) throws LogParsingException {
+	public static SessionRecording parseRecording(String debugToolLog, String programName) throws ParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
 		List<String> logLines = Arrays.asList(debugToolLog.split("\\r?\\n"));
 
@@ -77,7 +77,7 @@ public class DebugToolLogParser {
 						previousLine = lineNumber;
 						state = LA_AT_CALL_END;
 					} else {
-						throw new LogParsingException("missing LINE info at line " + it.getLineNumber());
+						throw new ParsingException("missing LINE info at line " + it.getLineNumber());
 					}
 					break;
 				case LA_AT_CALL_END :
@@ -122,7 +122,7 @@ public class DebugToolLogParser {
 		return sessionRecording;
 	}
 
-	public static SessionRecording parseRunning(List<String> logLines) throws LogParsingException {
+	public static SessionRecording parseRunning(List<String> logLines) throws ParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
 		
 		final int LA_BEGIN_POST_CONDITION = 1;		
@@ -217,5 +217,11 @@ public class DebugToolLogParser {
 		}
 		
 		public int getLineNumber() { return lineNumber; }
+	}
+	
+	public static class ParsingException extends RuntimeException {
+		public ParsingException(String message) {
+			super(message);
+		}
 	}
 }

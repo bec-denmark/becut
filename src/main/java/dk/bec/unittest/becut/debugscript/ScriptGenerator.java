@@ -18,24 +18,25 @@ import dk.bec.unittest.becut.debugscript.model.Addition;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
-import dk.bec.unittest.becut.debugscript.model.Go;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 import dk.bec.unittest.becut.debugscript.model.ProgramStartBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.ProgramTerminationBreakpoint;
-import dk.bec.unittest.becut.debugscript.model.Quit;
-import dk.bec.unittest.becut.debugscript.model.SetSyndebugOff;
 import dk.bec.unittest.becut.debugscript.model.Step;
 import dk.bec.unittest.becut.debugscript.model.conditional.ConditionalLeaf;
 import dk.bec.unittest.becut.debugscript.model.conditional.EqualsConditional;
 import dk.bec.unittest.becut.debugscript.model.statement.Assertion;
-import dk.bec.unittest.becut.debugscript.model.statement.AtCallBreakpoint;
+import dk.bec.unittest.becut.debugscript.model.statement.AtCallStarBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.statement.Comment;
 import dk.bec.unittest.becut.debugscript.model.statement.Compute;
+import dk.bec.unittest.becut.debugscript.model.statement.Go;
 import dk.bec.unittest.becut.debugscript.model.statement.GoBypass;
 import dk.bec.unittest.becut.debugscript.model.statement.Goto;
 import dk.bec.unittest.becut.debugscript.model.statement.If;
 import dk.bec.unittest.becut.debugscript.model.statement.LineBreakpoint;
 import dk.bec.unittest.becut.debugscript.model.statement.Move;
+import dk.bec.unittest.becut.debugscript.model.statement.Quit;
+import dk.bec.unittest.becut.debugscript.model.statement.SetLogOnFile;
+import dk.bec.unittest.becut.debugscript.model.statement.SetSyndebugOff;
 import dk.bec.unittest.becut.debugscript.model.statement.Statement;
 import dk.bec.unittest.becut.debugscript.model.variable.Literal;
 import dk.bec.unittest.becut.debugscript.model.variable.Pic9Comp;
@@ -49,10 +50,11 @@ import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import koopa.core.trees.Tree;
 
 public class ScriptGenerator {
-	public static DebugScript generateDebugScript(CompileListing compileListing, BecutTestCase testCase) {
+	public static DebugScript generateDebugScript(CompileListing compileListing, BecutTestCase testCase, String inspLog) {
 		DebugScript debugScript = new DebugScript(new ArrayList<>());
 		List<DebugEntity> debugEntities = debugScript.getEntities();
 		debugEntities.add(new SetSyndebugOff());
+		debugEntities.add(new SetLogOnFile(inspLog));
 
 		debugEntities.add(new Comment("Setup preconditions"));
 		List<Statement> preConditionStatements = new ArrayList<Statement>();
@@ -108,8 +110,7 @@ public class ScriptGenerator {
 //		}
 		
 		debugEntities.add(new Go());
-		//a marker to know that script was run
-		debugEntities.add(new Comment("SUCESS!!!"));
+		debugEntities.add(SUCCESS_MARKER);
 		debugEntities.add(new Quit());
 		
 		return debugScript;
@@ -117,7 +118,7 @@ public class ScriptGenerator {
 	
 	public static List<DebugEntity> dynamicExternalCalls(String name, List<ExternalCall> calls, CompileListing compileListing, DebugScript debugScript) {
 		List<DebugEntity> debugEntities = new ArrayList<>();
-		AtCallBreakpoint breakpoint = createAtCallBreakpoint(name, calls, compileListing, debugScript);
+		AtCallStarBreakpoint breakpoint = createAtCallStarBreakpoint(calls, compileListing, debugScript);
 		debugEntities.add(breakpoint);
 		return debugEntities;
 	}
@@ -194,35 +195,37 @@ public class ScriptGenerator {
 		return new LineBreakpoint(reconciledExternalCall.getStartPosition().getLinenumber(), perform);
 	}
 
-	private static AtCallBreakpoint createAtCallBreakpoint(String name, List<ExternalCall> calls, 
+	private static AtCallStarBreakpoint createAtCallStarBreakpoint(List<ExternalCall> calls, 
 			CompileListing compileListing, DebugScript debugScript) {
 		List<Statement> statements = new ArrayList<>();
 		Set<Tree> alreadyMatched = new HashSet<>();		
 		List<Tree> callStatements = TreeUtil.getDescendents(
 				compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		calls.stream().forEach(call -> {
-			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + call.getLineNumber() + "-" + call.getName(), 9, "0");
+			Pic9Comp counter = new Pic9Comp("BECUT-IC-" + call.getLineNumber() + "-1", 9, "0");
 			List<Statement> ifBody = new ArrayList<>();
+			
 			call.getIterations().forEach((s, iteration) -> {
 				List<Statement> iterationBody = createAssignmentStatements(iteration);  
-				ifBody.add(new If(new EqualsConditional(counter, new ConditionalLeaf(iteration.getNumericalOrder().toString())), iterationBody));
+				ifBody.add(new If(new EqualsConditional(counter, 
+						new ConditionalLeaf(iteration.getNumericalOrder().toString())), iterationBody));
 			});
+			
 			ifBody.addAll(incrementCounter(counter));
+			ifBody.add(new GoBypass());
 			
 			debugScript.getVariableDeclarations().add(counter);
 			
 			Tree reconciledExternalCall = reconcileExternalCall(compileListing, call, alreadyMatched, callStatements);
-			//TODO show warning
 			if(reconciledExternalCall != null) {
 				String statemendId = reconciledExternalCall.getStartPosition().getLinenumber() + ".1";
-				//String statemendId = call.getStatementId();
 				statements.add(
 						new If(new EqualsConditional(new Literal("%LINE"), new Quoted(statemendId)), ifBody));
 			}
 		});
-		statements.add(new GoBypass());
+
 		Perform perform = new Perform(statements);
-		return new AtCallBreakpoint(name, perform);
+		return new AtCallStarBreakpoint(perform);
 	}
 	
 	private static List<Statement> createAssignmentStatements(Parameter parameter) {
@@ -445,4 +448,5 @@ public class ScriptGenerator {
 		return -1;
 	}
 
+	public static final DebugEntity SUCCESS_MARKER = new Comment("kilroy was here");	
 }

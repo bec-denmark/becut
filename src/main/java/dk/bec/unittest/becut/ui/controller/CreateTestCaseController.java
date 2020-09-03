@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,10 +39,10 @@ public class CreateTestCaseController extends AbstractBECutController implements
 	@FXML 
 	void ok() {
 		compileListingController.loadCompileListingIntoContext();
-		BECutAppContext.getContext().setUnitTestSuiteFolder(null);
+		BECutAppContext.getContext().setTestSuiteFolder(null);
 		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
-		BecutTestCaseSuite becutTestCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
-		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
+		BecutTestSuite becutTestCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestSuite(becutTestCaseSuite);
 		closeWindow();
 	}
 

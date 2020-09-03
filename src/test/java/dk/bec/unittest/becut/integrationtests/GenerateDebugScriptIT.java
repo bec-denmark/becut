@@ -17,14 +17,14 @@ import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 public class GenerateDebugScriptIT {
 	@Test
 	public void testCreateDebugScriptMAT510RS() throws Exception {
-		Path testSuitePath = Paths.get("src/test/resources/testsuites/mat510");
+		Path testSuitePath = Paths.get("src/test/resources/testsuites/caller-suite");
 		final String expectedScript = new String(
-				Files.readAllBytes(Paths.get("src/test/resources/debugscripts/mat510_debugscript.txt")), StandardCharsets.UTF_8);
+				Files.readAllBytes(Paths.get("src/test/resources/debugscripts/caller_debugscript.txt")), StandardCharsets.UTF_8);
 
 		BecutTestCaseSuiteManager.loadTestCaseSuite(testSuitePath).apply(
 			testCaseSuite -> { 
 				BecutTestCase testCase = testCaseSuite.get(0); 
-				DebugScript debugScript = ScriptGenerator.generateDebugScript(testCaseSuite.getCompileListing(), testCase);
+				DebugScript debugScript = ScriptGenerator.generateDebugScript(testCaseSuite.getCompileListing(), testCase, "DUMMY");
 				String actualScript = debugScript.generate();
 				assertEquals(expectedScript, actualScript);
 			},

@@ -32,7 +32,7 @@ import dk.bec.unittest.becut.recorder.model.SessionCall;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
@@ -49,15 +49,15 @@ public class BecutTestCaseSuiteManager {
 	private BecutTestCaseSuiteManager() {
 	}
 
-	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing) {
+	public static BecutTestSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing) {
 		String testCaseName = "becut-" + compileListing.getProgramName();
 		String testCaseId = "becut-" + compileListing.getProgramName() + "-" + UUID.randomUUID().toString();
 		return createTestCaseSuiteFromCompileListing(compileListing, testCaseName, testCaseId);
 	}
 
-	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing, String testCaseName,
+	public static BecutTestSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing, String testCaseName,
 			String testCaseId) {
-		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		BecutTestSuite becutTestCaseSuite = new BecutTestSuite();
 		becutTestCaseSuite.setCompileListing(compileListing);
 		
 		BecutTestCase becutTestCase = new BecutTestCase();
@@ -109,7 +109,7 @@ public class BecutTestCaseSuiteManager {
 	}
 
 	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, SessionRecording sessionRecording) {
-		BecutTestCaseSuite becutTestCaseSuite = createTestCaseSuiteFromCompileListing(compileListing);
+		BecutTestSuite becutTestCaseSuite = createTestCaseSuiteFromCompileListing(compileListing);
 		BecutTestCase becutTestCase = becutTestCaseSuite.get(0);
 
 		Map<Integer, ExternalCall> callCache = new HashMap<>();
@@ -169,7 +169,7 @@ public class BecutTestCaseSuiteManager {
 	 * @param dataSection    - CobolNodeType describing the desired section
 	 * @return List of parameters in the dataSection
 	 */
-	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
+	public static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
 		List<Parameter> parameterList = new ArrayList<Parameter>();
 
 		List<Tree> sourceSectionList = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
@@ -189,8 +189,8 @@ public class BecutTestCaseSuiteManager {
 		return parameterList;
 	}
 
-	public static Either<BecutTestCaseSuite, String> loadTestCaseSuite(Path folder) {
-		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+	public static Either<BecutTestSuite, String> loadTestCaseSuite(Path folder) {
+		BecutTestSuite becutTestCaseSuite = new BecutTestSuite();
 		
 		try {
 			CompileListing compileListing = Parse.parse(Paths.get(folder.toString(), "compile_listing.txt").toFile());
@@ -220,7 +220,7 @@ public class BecutTestCaseSuiteManager {
 		return Either.left(becutTestCaseSuite);
 	}
 
-	public static void saveTestCaseSuite(BecutTestCaseSuite becutTestCaseSuite, Path folder) {
+	public static void saveTestCaseSuite(BecutTestSuite becutTestCaseSuite, Path folder) {
 		try {
 			Files.write(Paths.get(folder.toString(), "compile_listing.txt"), 
 					becutTestCaseSuite.getCompileListing().getOriginalSource(),
@@ -236,13 +236,13 @@ public class BecutTestCaseSuiteManager {
 				saveTestCase(testCase, path);
 			}
 
-			Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+			Path debugScriptPath = BECutAppContext.getContext().getTestScriptPath();
     		if (Files.exists(debugScriptPath)) {
 				Files.copy(debugScriptPath, 
 						Paths.get(folder.toString(), debugScriptPath.getFileName().toString()), 
 						StandardCopyOption.REPLACE_EXISTING);
     		}
-			BECutAppContext.getContext().setUnitTestSuiteFolder(folder);
+			BECutAppContext.getContext().setTestSuiteFolder(folder);
 			//suite.txt defines which subfolders are tests definitions and 
 			//what is the order of execution (should it be really important?)
 			Files.write(Paths.get(folder.toString(), "suite.txt"), testCaseFolders);

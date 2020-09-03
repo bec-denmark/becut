@@ -50,6 +50,8 @@ public class LogController implements Initializable {
 									result.getTestCase().getTestCaseName() + "<p>" + result.getMessage() +
 							"</div>");
 					break;
+				case UNKNOWN:
+					break;
 				}
 				appendText(htmlEditor, "<p>");
 		    });

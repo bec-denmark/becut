@@ -17,10 +17,12 @@ import java.util.ResourceBundle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
+import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
@@ -33,9 +35,10 @@ import dk.bec.unittest.becut.ui.model.FileControlDisplayable;
 import dk.bec.unittest.becut.ui.model.ParameterDisplayable;
 import dk.bec.unittest.becut.ui.model.PostConditionDisplayable;
 import dk.bec.unittest.becut.ui.model.PreConditionDisplayable;
+import dk.bec.unittest.becut.ui.model.TestSuite;
 import dk.bec.unittest.becut.ui.model.UnitTest;
-import dk.bec.unittest.becut.ui.model.UnitTestSuite;
 import dk.bec.unittest.becut.ui.model.UnitTestTreeObject;
+import dk.bec.unittest.becut.ui.view.StandardAlerts;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -70,7 +73,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		UnitTestSuite testSuite = BECutAppContext.getContext().getUnitTestSuite();
+		TestSuite testSuite = BECutAppContext.getContext().getUnitTestSuite();
 		TreeItem<UnitTestTreeObject> root = new TreeItem<UnitTestTreeObject>(testSuite);
 		unitTestTreeTableView.setRoot(root);
 		unitTestTreeTableView.setEditable(true);
@@ -125,7 +128,8 @@ public class BecutTestCaseSuiteController implements Initializable {
 			ContextMenu cmTestCase = new ContextMenu();
 			MenuItem dupTestCase = new MenuItem("Duplicate");
 			MenuItem delTestCase = new MenuItem("Delete");
-			cmTestCase.getItems().addAll(dupTestCase, delTestCase);
+			MenuItem recTestCaseExecution = new MenuItem("Record execution");
+			cmTestCase.getItems().addAll(dupTestCase, delTestCase, recTestCaseExecution);
 			
 			TreeTableRow<UnitTestTreeObject> row = new TreeTableRow<UnitTestTreeObject>() {
 			   @Override
@@ -197,7 +201,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	assert item.getValue() instanceof UnitTest;
 		    	try {
 		    		BecutTestCaseSuiteManager.saveTestCaseSuite(
-		    				BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get(), BECutAppContext.getContext().getUnitTestSuiteFolder());
+		    				BECutAppContext.getContext().getUnitTestSuite().getBecutTestSuite().get(), BECutAppContext.getContext().getUnitTestSuiteFolder());
 		    		
 		    		String testCaseName = item.getValue().valueProperty().getValue();
 		    		String newTestCaseName = testCaseName + "-copy";
@@ -229,12 +233,8 @@ public class BecutTestCaseSuiteController implements Initializable {
 					try(FileInputStream fileInputStream = new FileInputStream(Paths.get(newTestCasePath.toString(), "test_case.json").toFile())) {
 						BecutTestCase becutTestCase = new ObjectMapper().readValue(fileInputStream, BecutTestCase.class);
 						becutTestCase.setTestCaseName(newTestCaseName);
-						testSuite.getBecutTestCaseSuite().get().add(becutTestCase);
-						TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase), 
-								new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
-						addTestResultObserver(becutTestCase, testCaseNode);
-						root.getChildren().add(testCaseNode);
-						populateTestCaseNode(testCaseNode, becutTestCase);
+						testSuite.getBecutTestSuite().get().add(becutTestCase);
+						addTestCaseToTree(root, becutTestCase);
 					}
 				} catch (IOException e) {
 					throw new RuntimeException(e);
@@ -260,7 +260,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 							}
 						});
 					root.getChildren().remove(item);
-					testSuite.getBecutTestCaseSuite().get().remove(ut.getBecutTestCase());
+					testSuite.getBecutTestSuite().get().remove(ut.getBecutTestCase());
 				} catch (NoSuchFileException e) {
 					Alert alert = new Alert(AlertType.WARNING);
 					alert.setTitle("Warning Dialog");
@@ -271,7 +271,32 @@ public class BecutTestCaseSuiteController implements Initializable {
 					throw new RuntimeException(e);
 				} finally {
 					root.getChildren().remove(item);
-					testSuite.getBecutTestCaseSuite().get().remove(ut.getBecutTestCase());
+					testSuite.getBecutTestSuite().get().remove(ut.getBecutTestCase());
+				}
+		    });
+		    
+		    recTestCaseExecution.setOnAction(event -> {
+		    	TreeTableViewSelectionModel<UnitTestTreeObject> sm = unitTestTreeTableView.getSelectionModel();
+		    	TreeItem<UnitTestTreeObject> item = sm.getModelItem(sm.getSelectedIndex());
+		    	assert item.getValue() instanceof UnitTest;
+
+		    	Path datasetsPath = Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), 
+		    			((UnitTest)item.getValue()).getBecutTestCase().getTestCaseName());
+		    	
+		    	CompileListing compileListing = testSuite.getBecutTestSuite().get().getCompileListing();
+				BecutTestCase becutTestCase;
+				try {
+					becutTestCase = RecorderManager.recordBatch(
+							compileListing, 
+							compileListing.getProgramName(),
+							"BECUTREC",
+							datasetsPath,
+							BECutAppContext.getContext().getCredential());
+					testSuite.getBecutTestSuite().get().add(becutTestCase);
+					addTestCaseToTree(root, becutTestCase);
+				} catch (Exception e) {
+					// TODO log exception
+					StandardAlerts.errorDialog(e.getMessage());
 				}
 		    });
 		    
@@ -295,6 +320,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 										ParameterDisplayable parameterDisplayable = (ParameterDisplayable) getTreeTableRow()
 												.getItem();
 										if (parameterDisplayable.getParameter() instanceof ParameterLiteral
+												//TODO radio group for 88												
 												|| DataType.EIGHTYEIGHT.equals(parameterDisplayable.getParameter().getDataType())
 												|| DataType.GROUP.equals(parameterDisplayable.getParameter().getDataType())
 												|| parameterDisplayable.getParameter().getIsSeventySeven()
@@ -352,12 +378,20 @@ public class BecutTestCaseSuiteController implements Initializable {
 					}
 				});
 
-		testSuite.getBecutTestCaseSuite().addListener(
+		testSuite.getBecutTestSuite().addListener(
 			(observable, oldValue, newValue) -> populateRoot(newValue)
 		);
 	}
 
-	private void populateRoot(BecutTestCaseSuite becutTestCaseSuite) {
+	private void addTestCaseToTree(TreeItem<UnitTestTreeObject> root, BecutTestCase becutTestCase) {
+		TreeItem<UnitTestTreeObject> testCaseNode = new TreeItem<>(new UnitTest(becutTestCase), 
+				new ImageView(new Image(getClass().getResourceAsStream("unknown.png"))));
+		addTestResultObserver(becutTestCase, testCaseNode);
+		root.getChildren().add(testCaseNode);
+		populateTestCaseNode(testCaseNode, becutTestCase);
+	}
+
+	private void populateRoot(BecutTestSuite becutTestCaseSuite) {
 		TreeItem<UnitTestTreeObject> root = unitTestTreeTableView.getRoot(); 
 		root.getChildren().clear();
 

@@ -13,7 +13,7 @@ import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import junit.framework.TestCase;
 
@@ -26,7 +26,7 @@ public class TestCaseSerializationIT extends TestCase {
 		File file = new File("./src/test/resources/compilelistings/mat510rs_compile_listing.txt");
 		CompileListing compileListing = Parse.parse(file);
 		
-		BecutTestCaseSuite testCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
+		BecutTestSuite testCaseSuite = BecutTestCaseSuiteManager.createTestCaseSuiteFromCompileListing(compileListing);
 		BecutTestCase testCase = testCaseSuite.get(0);
 		ExternalCall externalCall = testCase.getExternalCalls().get(0);
 

@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 public class EventBus {
 	Map<Class<? extends Object>, List<Consumer<Object>>> listeners = new HashMap<>();
 
+	@SuppressWarnings("unchecked")
 	public <T> void register(Class<T> klass, Consumer<T> consumer) {
 		if(!listeners.containsKey(klass)) {
 			listeners.put(klass, new ArrayList<>());
