@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
@@ -47,14 +46,13 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 	@FXML
 	protected void ok() {
 		compileListingController.loadCompileListingIntoContext();
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
 		try {
 			Preferences pref = Preferences.userNodeForPackage(this.getClass());
 			pref.put("jobNameRemembered", jobName.getText());
 			pref.put("programNameRemembered", programName.getText());
 			
-			BecutTestCase becutTestCase = RecorderManager.recordBatch(compileListing, programName.getText(),
-					jobName.getText(), BECutAppContext.getContext().getUnitTestSuiteFolder(), BECutAppContext.getContext().getCredential());
+			BecutTestCase becutTestCase = RecorderManager.recordBatch(BECutAppContext.getContext(),
+					jobName.getText(), BECutAppContext.getContext().getUnitTestSuiteFolder());
 			BECutAppContext.getContext().getUnitTestSuite().getBecutTestSuite().get().add(becutTestCase);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

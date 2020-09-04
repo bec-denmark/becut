@@ -1,6 +1,7 @@
 package dk.bec.unittest.becut.recorder;
 
 import java.io.ByteArrayInputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +20,16 @@ import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class RecorderManager {
 
 	private RecorderManager() { }
 
 	public static BecutTestCase recordBatch(
-			CompileListing compileListing, 
-			String programName, 
+			BECutAppContext ctx,
 			String jobName,
-			Path datasetsPath,
-			Credential credential) throws Exception {
+			Path datasetsPath) throws Exception {
 		/*
 		 * 1. Allocate dataset to save result
 		 * 2. Generate JCL
@@ -43,11 +43,15 @@ public class RecorderManager {
 	
 		BecutTestCase testCase = new BecutTestCase();
 		
+		Credential credential = ctx.getCredential();
+		CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
+		String programName = compileListing.getProgramName();
 		// 1. Allocate dataset to save result
 		FTPClient ftpClient = new FTPClient();
 		String insplog = DebugScriptExecutor.randomDDName(credential.getUsername(), programName, "INSPLOG"); 
 		
-		DatasetProperties datasetProperties = new SequentialDatasetProperties(RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+		DatasetProperties datasetProperties = new SequentialDatasetProperties(
+				RecordFormat.VARIABLE, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
 		allocateDataset(ftpClient, credential, insplog, datasetProperties);
 
 		String user = credential.getUsername();
@@ -55,8 +59,15 @@ public class RecorderManager {
 		DebugScriptExecutor.putDatasets(compileListing, ftpClient, datasetsPath, datasetNames, user);
 		
 		// 2. Generate JCL
-		List<String> jclTemplate = JCLTemplate.recording();
-		String jcl = JCLTemplate.fillTemplate(jclTemplate, user, programName, jobName, DebugScriptExecutor.jclDDs(datasetNames), "", insplog);
+		Path scriptPath = ctx.getRecordScriptPath();
+		if (!Files.exists(scriptPath)) {
+    		List<String> jcl = JCLTemplate.recording();
+    		Files.write(scriptPath, jcl);
+		}
+		List<String> jclTemplate = Files.readAllLines(scriptPath);
+		
+		String jcl = JCLTemplate.fillTemplate(jclTemplate, 
+				user, programName, jobName, DebugScriptExecutor.jclDDs(datasetNames), "", insplog);
 		
 		// 3. Submit JCL and wait for it to complete
 		FTPManager.submitJobAndWaitToComplete(ftpClient, new ByteArrayInputStream(jcl.getBytes()), 60, false);

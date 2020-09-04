@@ -52,11 +52,12 @@ public class DebugScriptExecutor {
 			Credential credential = ctx.getCredential();
 			FTPManager.connectAndLogin(ftpClient, credential);
 			
-    		Path debugScriptPath = ctx.getTestScriptPath();
-    		if (!Files.exists(debugScriptPath)) {
+    		Path scriptPath = ctx.getTestScriptPath();
+    		if (!Files.exists(scriptPath)) {
         		List<String> jcl = JCLTemplate.generic();
-        		Files.write(debugScriptPath, jcl);
+        		Files.write(scriptPath, jcl);
     		}
+    		List<String> jclTemplate = Files.readAllLines(scriptPath);
 			
 			String user = credential.getUsername();
 			CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
@@ -64,7 +65,6 @@ public class DebugScriptExecutor {
 			Map<String, String> datasetNames = generateDDnames(compileListing, user, programName);
 			Path base = Paths.get(ctx.getUnitTestSuiteFolder().toString(), becutTestCase.getTestCaseName());
 			putDatasets(compileListing, ftpClient, base, datasetNames, user);
-			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
 			
 			String inspLog = randomDDName(user, programName);
 			allocateInspLog(ftpClient, inspLog);

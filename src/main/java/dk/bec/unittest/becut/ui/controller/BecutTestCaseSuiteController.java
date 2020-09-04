@@ -17,7 +17,6 @@ import java.util.ResourceBundle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
 import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
@@ -283,15 +282,12 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	Path datasetsPath = Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), 
 		    			((UnitTest)item.getValue()).getBecutTestCase().getTestCaseName());
 		    	
-		    	CompileListing compileListing = testSuite.getBecutTestSuite().get().getCompileListing();
 				BecutTestCase becutTestCase;
 				try {
 					becutTestCase = RecorderManager.recordBatch(
-							compileListing, 
-							compileListing.getProgramName(),
+							BECutAppContext.getContext(),
 							"BECUTREC",
-							datasetsPath,
-							BECutAppContext.getContext().getCredential());
+							datasetsPath);
 					testSuite.getBecutTestSuite().get().add(becutTestCase);
 					addTestCaseToTree(root, becutTestCase);
 				} catch (Exception e) {

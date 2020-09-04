@@ -1,6 +1,7 @@
 package dk.bec.unittest.becut.recorder;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class DebugToolLogParser {
 	
 	public static SessionRecording parseRecording(String debugToolLog, String programName) throws ParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
-		List<String> logLines = Arrays.asList(debugToolLog.split("\\r?\\n"));
+		List<String> logLines = splitLines(debugToolLog);
 
 		int iteration = 0;
 		Integer lineNumber = null;
@@ -51,15 +52,15 @@ public class DebugToolLogParser {
 		SessionCall sc = null;
 		
 		for(LineCountingIterator it = new LineCountingIterator(logLines.iterator()); it.hasNext();) {
-			String logLine = removeProlog(it.next());
+			String line = removeProlog(it.next());
 			switch(state) {
 				case LA_AT_CALL_BEGIN :
-					if(AT_CALL_BEGIN.equals(logLine)) {
+					if(line.startsWith(AT_CALL_BEGIN)) {
 						state = LA_LINE_WITHIN_AT_CALL;
 					}
 					break;
 				case LA_LINE_WITHIN_AT_CALL :
-					Matcher at_line_matcher = AT_LINE.matcher(logLine);
+					Matcher at_line_matcher = AT_LINE.matcher(line);
 					if(at_line_matcher.find()) {
 						lineNumber = Integer.parseInt(at_line_matcher.group(2));
 						sessionRecording.setProgramName(at_line_matcher.group(4));
@@ -67,7 +68,6 @@ public class DebugToolLogParser {
 						sc = new SessionCall();
 						sc.setLineNumber(lineNumber);
 						sc.setStatementId(at_line_matcher.group(1));
-						state = LA_AT_CALL_END;
 						if(!Objects.equals(previousLine, lineNumber)) {
 							iteration = 0;
 						} else {
@@ -81,21 +81,21 @@ public class DebugToolLogParser {
 					}
 					break;
 				case LA_AT_CALL_END :
-					if(AT_CALL_END.equals(logLine)) {
+					if(line.startsWith(AT_CALL_END)) {
 						state = LA_AT_EXIT_BEGIN;
 						sc.setBefore(new SessionCallPart(titled)); 
 					} else {
-						titled.add(logLine);
+						titled.add(line);
 					}
 					break;
 				case LA_AT_EXIT_BEGIN :
-					if(AT_EXIT_BEGIN.equals(logLine)) {
+					if(line.startsWith(AT_EXIT_BEGIN)) {
 						state = LA_LINE_WITHIN_AT_EXIT;
 					}
 					break;
 				case LA_LINE_WITHIN_AT_EXIT :
-					Matcher from_line_matcher = FROM_LINE.matcher(logLine);
-					Matcher at_exit_program_matcher = AT_EXIT_PROGRAM.matcher(logLine);
+					Matcher from_line_matcher = FROM_LINE.matcher(line);
+					Matcher at_exit_program_matcher = AT_EXIT_PROGRAM.matcher(line);
 					if(from_line_matcher.find()) {
 						state = LA_AT_EXIT_END;
 						sc.setCalleeProgramName(from_line_matcher.group(2));
@@ -107,12 +107,12 @@ public class DebugToolLogParser {
 					}
 					break;
 				case LA_AT_EXIT_END :
-					if(AT_EXIT_END.equals(logLine)) {
+					if(line.startsWith(AT_EXIT_END)) {
 						state = LA_AT_CALL_BEGIN;
 						sc.setAfter(new SessionCallPart(titled));
 						sessionRecording.getSessionCalls().add(sc);
 					} else {
-						titled.add(logLine);
+						titled.add(line);
 					}
 					break;
 				case LA_AT_PROGRAM_EXIT_END :
@@ -189,12 +189,37 @@ public class DebugToolLogParser {
 	}
 	
 	private static Pattern prolog = Pattern.compile("\\s+\\* ");
-	private static String removeProlog(String line) {
+	public static String removeProlog(String line) {
 		Matcher m = prolog.matcher(line);
 		if(line != null && m.find()) {
 			return line.substring(m.end());
 		}
 		return line;
+	}
+
+	public static List<String> splitLines(String s) {
+		if(s == null || s.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<String> lines = new ArrayList<>();
+		
+		int start = 0;
+		for(int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if(c == '\n') {
+				if(i > 0 && s.charAt(i - 1) == '\r') {
+					lines.add(s.substring(start, i - 1));
+				} else {
+					lines.add(s.substring(start, i));
+				}
+				start = i + 1;
+			}
+		}
+		if(start < s.length()) {
+			lines.add(s.substring(start, s.length()));
+		}
+		return lines;
 	}
 	
 	//counting iterator for a better diagnostics of parsing debug tool log problems
