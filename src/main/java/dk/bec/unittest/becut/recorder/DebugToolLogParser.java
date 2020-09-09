@@ -3,7 +3,6 @@ package dk.bec.unittest.becut.recorder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -19,18 +18,18 @@ public class DebugToolLogParser {
 	public static final String BEGIN_POST_CONDITION = "Start BECUT PostCondition";
 	public static final String END_POST_CONDITION = "End BECUT PostCondition";
 	
-	private static final String AT_CALL_BEGIN = "AT CALL BEGIN";
-	private static final String AT_CALL_END = "AT CALL END";
-	private static final String AT_EXIT_BEGIN = "AT EXIT BEGIN";
-	private static final String AT_EXIT_END = "AT EXIT END";
-	private static final Pattern AT_EXIT_PROGRAM = Pattern.compile("At EXIT in COBOL program (.*) ::> (.*)\\.");
-	//line may be 45.2, it means second statement on line 45 like here:
-	//DISPLAY 'HI' CALL TMAT5110 USING MAT511-AREA
-	//let's assume that everybody is reasonable and there is only one call per line
-	private static final Pattern AT_LINE = Pattern.compile("At LINE ((\\d+)\\.\\d+) in COBOL program (.*) ::> (.*)\\."); 
-	private static final Pattern FROM_LINE = Pattern.compile("From LINE (\\d+)\\.\\d+ in COBOL program (.*) ::> (.*)\\.");
+	private static final String BEGIN_BEFORE_CALL = "BEGIN BEFORE CALL";
+	private static final String END_BEFORE_CALL = "END BEFORE CALL";
+	private static final String BEGIN_AFTER_CALL = "BEGIN AFTER CALL";
+	private static final String END_AFTER_CALL = "END AFTER CALL";
+
+	private static final String BEGIN_EXIT = "BEGIN EXIT";
+	private static final String END_EXIT = "END EXIT";
 	
-	public static SessionRecording parseRecording(String debugToolLog, String programName) throws ParsingException {
+	private static final Pattern AT_LINE = Pattern.compile("At LINE ((\\d+)\\.\\d+) in COBOL program (.*) ::> (.*)\\."); 
+	private static final Pattern AT_EXIT = Pattern.compile("At EXIT in COBOL program (.*) ::> (.*)\\.");
+	
+	public static SessionRecording parseRecording(String debugToolLog) throws ParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
 		List<String> logLines = splitLines(debugToolLog);
 
@@ -38,84 +37,87 @@ public class DebugToolLogParser {
 		Integer lineNumber = null;
 		Integer previousLine = null;
 		
-		final int LA_AT_CALL_BEGIN = 0;
-		final int LA_LINE_WITHIN_AT_CALL = 1;
-		final int LA_AT_CALL_END = 2;
-		final int LA_AT_EXIT_BEGIN = 3;
-		final int LA_LINE_WITHIN_AT_EXIT = 4;
-		final int LA_AT_EXIT_END = 5;		
-		final int LA_AT_PROGRAM_EXIT_END = 6;
+		final int LA_BEGIN_BEFORE_CALL = 0;
+		final int LA_END_BEFORE_CALL = 2;
+		final int LA_BEGIN_AFTER_CALL = 3;
+		final int LA_END_AFTER_CALL = 5;		
+		final int LA_END_EXIT = 7;
 		
-		int state = LA_AT_CALL_BEGIN;
+		int state = LA_BEGIN_BEFORE_CALL;
 		
-		ListTitled titled = null;
+		List<String> titled = null;
 		SessionCall sc = null;
 		
 		for(LineCountingIterator it = new LineCountingIterator(logLines.iterator()); it.hasNext();) {
 			String line = removeProlog(it.next());
 			switch(state) {
-				case LA_AT_CALL_BEGIN :
-					if(line.startsWith(AT_CALL_BEGIN)) {
-						state = LA_LINE_WITHIN_AT_CALL;
-					}
-					break;
-				case LA_LINE_WITHIN_AT_CALL :
-					Matcher at_line_matcher = AT_LINE.matcher(line);
-					if(at_line_matcher.find()) {
-						lineNumber = Integer.parseInt(at_line_matcher.group(2));
-						sessionRecording.setProgramName(at_line_matcher.group(4));
-						titled = new ListTitled();
-						sc = new SessionCall();
-						sc.setLineNumber(lineNumber);
-						sc.setStatementId(at_line_matcher.group(1));
-						if(!Objects.equals(previousLine, lineNumber)) {
-							iteration = 0;
+				case LA_BEGIN_BEFORE_CALL :
+					if(line.startsWith(BEGIN_BEFORE_CALL) || line.startsWith(BEGIN_EXIT)) {
+						line = removeProlog(it.next());
+						Matcher at_line_matcher = AT_LINE.matcher(line);
+						Matcher at_exit_matcher = AT_EXIT.matcher(line);
+						if(at_line_matcher.find()) {
+							lineNumber = Integer.parseInt(at_line_matcher.group(2));
+							sessionRecording.setProgramName(at_line_matcher.group(4));
+							titled = new ArrayList<>();
+							sc = new SessionCall();
+							sc.setLineNumber(lineNumber);
+							sc.setStatementId(at_line_matcher.group(1));
+							if(!Objects.equals(previousLine, lineNumber)) {
+								iteration = 0;
+							} else {
+								iteration++;
+							}
+							sc.setIteration(iteration);
+							previousLine = lineNumber;
+							state = LA_END_BEFORE_CALL;
+						} else if(at_exit_matcher.find()) {
+							sessionRecording.setProgramName(at_exit_matcher.group(1));
+							titled = new ArrayList<>();
+							state = LA_END_EXIT;
 						} else {
-							iteration++;
+							throw new ParsingException("missing LINE info at line " + it.getLineNumber());
 						}
-						sc.setIteration(iteration);
-						previousLine = lineNumber;
-						state = LA_AT_CALL_END;
-					} else {
-						throw new ParsingException("missing LINE info at line " + it.getLineNumber());
 					}
 					break;
-				case LA_AT_CALL_END :
-					if(line.startsWith(AT_CALL_END)) {
-						state = LA_AT_EXIT_BEGIN;
+				case LA_END_BEFORE_CALL :
+					if(line.startsWith(END_BEFORE_CALL)) {
+						state = LA_BEGIN_AFTER_CALL;
 						sc.setBefore(new SessionCallPart(titled)); 
 					} else {
 						titled.add(line);
 					}
 					break;
-				case LA_AT_EXIT_BEGIN :
-					if(line.startsWith(AT_EXIT_BEGIN)) {
-						state = LA_LINE_WITHIN_AT_EXIT;
+				case LA_END_EXIT :
+					if(line.startsWith(END_EXIT)) {
+						SessionPostCondition spc = new SessionPostCondition();
+						spc.getSessionRecords().addAll(new SessionCallPart(titled).getRecords());
+						sessionRecording.getSessionPostConditions().add(spc);
+						break;
+					} else {
+						titled.add(line);
 					}
 					break;
-				case LA_LINE_WITHIN_AT_EXIT :
-					Matcher from_line_matcher = FROM_LINE.matcher(line);
-					Matcher at_exit_program_matcher = AT_EXIT_PROGRAM.matcher(line);
-					if(from_line_matcher.find()) {
-						state = LA_AT_EXIT_END;
-						sc.setCalleeProgramName(from_line_matcher.group(2));
-						titled = new ListTitled();
-					} else if(at_exit_program_matcher.find()){
-						if(at_exit_program_matcher.group(2).equals(sessionRecording.getProgramName())) {
-							state = LA_AT_PROGRAM_EXIT_END;
+				case LA_BEGIN_AFTER_CALL :
+					if(line.startsWith(BEGIN_AFTER_CALL)) {
+						line = removeProlog(it.next());
+						Matcher at_line_matcher = AT_LINE.matcher(line);
+						if(at_line_matcher.find()) {
+							state = LA_END_AFTER_CALL;
+							titled = new ArrayList<>();
+						} else {
+							throw new ParsingException("missing LINE info at line " + it.getLineNumber());
 						}
 					}
 					break;
-				case LA_AT_EXIT_END :
-					if(line.startsWith(AT_EXIT_END)) {
-						state = LA_AT_CALL_BEGIN;
+				case LA_END_AFTER_CALL :
+					if(line.startsWith(END_AFTER_CALL)) {
+						state = LA_BEGIN_BEFORE_CALL;
 						sc.setAfter(new SessionCallPart(titled));
 						sessionRecording.getSessionCalls().add(sc);
 					} else {
 						titled.add(line);
 					}
-					break;
-				case LA_AT_PROGRAM_EXIT_END :
 					break;
 			}
 		}
@@ -165,28 +167,6 @@ public class DebugToolLogParser {
 		}
 		return sessionRecording;
 	}	
-	
-	//a class for storing what's produced by LIST TITLED * debug tool command
-	private static class ListTitled extends LinkedList<String> {
-		@Override
-		public boolean add(String e) {
-			if(size() > 0) {
-				String previous = peekLast();
-				//list for nested records can take more than one line:
-			    //03 MAT561:>MAT511-SUM  of 02 MAT561:>MAT511-DATA  of 01
-			    //MAT561:>MAT511-AREA  = 0000000001
-				//.. let's join them
-				if(previous.matches(".* of \\d+")) {
-					super.add(pollLast() + " " + e);
-				} else {
-					super.add(e);
-				}
-			} else if(e.matches("\\d+ .*")) {
-				return super.add(e);
-			}
-			return false;
-		}
-	}
 	
 	private static Pattern prolog = Pattern.compile("\\s+\\* ");
 	public static String removeProlog(String line) {

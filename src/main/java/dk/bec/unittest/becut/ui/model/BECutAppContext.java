@@ -18,6 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import koopa.core.trees.Tree;
 
 public class BECutAppContext {
 	private static BECutAppContext context;
@@ -46,6 +47,10 @@ public class BECutAppContext {
 
 	public TestSuite getUnitTestSuite() {
 		return testSuite;
+	}
+	
+	public Tree getAst() {
+		return testSuite.getCompileListing().getSourceMapAndCrossReference().getAst();
 	}
 	
 	public Path getUnitTestSuiteFolder() {

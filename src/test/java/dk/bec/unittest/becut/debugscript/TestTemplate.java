@@ -40,4 +40,27 @@ public class TestTemplate {
 				);
 		
 	}
+	
+	@Test
+	public void shouldNotGenerateEMptyLines() {
+		List<String> lines = Arrays.asList(
+				"//${jobname} JOB ,'${user}',", 
+				"//             UJOBCORR=${user}",
+				"${dd}",
+				"${debug}", 
+				"/*"
+		);
+		//DISP=SHR,DSN=SYS1.EQAW.SEQAMOD
+		System.out.println(JCLTemplate.fillTemplate(lines, "TST1", "SUMA", "BECUT", "", "GO;", ""));
+		
+		assertEquals(
+				"//BECUT JOB ,'TST1',\n" + 
+				"//             UJOBCORR=TST1\n" + 
+				"//*\n" + 
+				"GO;\n" + 
+				"/*", 
+				JCLTemplate.fillTemplate(lines, "TST1", "SUMA", "BECUT", "", "GO;", "")
+				);
+		
+	}
 }

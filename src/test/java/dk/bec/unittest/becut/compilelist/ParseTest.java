@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
-import dk.bec.unittest.becut.compilelist.model.Functions;
 import koopa.core.trees.Tree;
 
 public class ParseTest {

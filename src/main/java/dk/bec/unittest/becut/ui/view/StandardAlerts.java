@@ -2,6 +2,7 @@ package dk.bec.unittest.becut.ui.view;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Window;
 
 public class StandardAlerts {
 	
@@ -34,6 +35,8 @@ public class StandardAlerts {
 	public static void errorDialog(String content) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setContentText(content);
+		Window window = alert.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(e -> alert.hide());
 		alert.showAndWait();
 	}
 }

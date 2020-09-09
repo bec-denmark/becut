@@ -2,6 +2,7 @@ package dk.bec.unittest.becut.compilelist.model;
 
 import java.util.List;
 
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 
 public class CompileListing extends AbstractCompileListingSection {
@@ -27,7 +28,7 @@ public class CompileListing extends AbstractCompileListingSection {
 		this.proceduresCrossReference = proceduresCrossReference;
 		this.programsCrossReference = programsCrossReference;
 		this.dataDivisionMap = dataDivisionMap;
-		this.programName = TreeUtil.stripQuotes(
+		this.programName = Functions.stripQuotes(
 				TreeUtil.getFirst(sourceMapAndCrossReference.getAst(), "programName").getProgramText());
 	}
 

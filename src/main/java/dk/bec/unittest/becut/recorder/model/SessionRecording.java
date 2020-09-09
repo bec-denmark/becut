@@ -7,8 +7,8 @@ public class SessionRecording {
 	
 	private String programName;
 
-	private List<SessionCall> sessionCalls = new ArrayList<SessionCall>();
-	private List<SessionPostCondition> sessionPostConditions = new ArrayList<SessionPostCondition>();
+	private List<SessionCall> sessionCalls = new ArrayList<>();
+	private List<SessionPostCondition> sessionPostConditions = new ArrayList<>();
 
 	public SessionRecording() {
 	}

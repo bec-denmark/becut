@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.compilelist.model.DataType;
@@ -276,7 +277,7 @@ public class ScriptGenerator {
 		List<Tree> matches = new ArrayList<>();
 		
 		for (Tree callStatement: callStatements) {
-			String programName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
+			String programName = Functions.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			if (programName.equals(externalCall.getName())) {
 				matches.add(callStatement);
 			}
@@ -388,7 +389,7 @@ public class ScriptGenerator {
 		List<Tree> matches = new ArrayList<>();
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement: callStatements) {
-			String programName = TreeUtil.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
+			String programName = Functions.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			if (programName.equals("DSNHLI")) {
 				matches.add(callStatement);
 			}

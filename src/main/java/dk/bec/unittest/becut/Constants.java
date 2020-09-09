@@ -9,7 +9,8 @@ public class Constants {
 	private Constants() {}
 
 	public static final List<String> IBMHostVariableMemoryAllocationPrograms = Collections .unmodifiableList(
-			Arrays.asList("DSNHADDR", "DSNHADD2"));
+			//using xpath gives ""DSNHADDR""
+			Arrays.asList("DSNHADDR", "DSNHADD2", "\"DSNHADDR\"", "\"DSNHADD2\""));
 
 	public static final List<String> IBMSQLPrograms = Collections .unmodifiableList(
 			Arrays.asList("DSNHLI"));

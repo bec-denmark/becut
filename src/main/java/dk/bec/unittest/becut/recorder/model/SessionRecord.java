@@ -10,7 +10,7 @@ public class SessionRecord {
 	private String name;
 	private String value;
 	private SessionRecord parent;
-	private List<SessionRecord> children = new ArrayList<SessionRecord>();
+	private List<SessionRecord> children = new ArrayList<>();
 
 	public SessionRecord(Integer level, String compileUnit, String name, String value, SessionRecord parent,
 			List<SessionRecord> children) {
@@ -38,6 +38,10 @@ public class SessionRecord {
 		}
 	}
 
+	public SessionRecord(Integer level, String compileUnit, String name, SessionRecord parent) {
+		this(level, compileUnit, name, null, parent, new ArrayList<>());
+	}
+
 	public Integer getLevel() {
 		return level;
 	}
@@ -54,6 +58,10 @@ public class SessionRecord {
 		return value;
 	}
 
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	public SessionRecord getParent() {
 		return parent;
 	}
@@ -66,6 +74,20 @@ public class SessionRecord {
 		return children;
 	}
 	
+	@Override
+	public int hashCode() {
+		return fullyQualifiedName().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		SessionRecord that = (SessionRecord) obj;
+		return fullyQualifiedName().equals(that.fullyQualifiedName());
+	}
+
 	public String fullyQualifiedName() {
 		String fqn = name;
 		SessionRecord currentRecord = this;

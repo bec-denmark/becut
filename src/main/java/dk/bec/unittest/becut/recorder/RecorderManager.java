@@ -51,7 +51,7 @@ public class RecorderManager {
 		String insplog = DebugScriptExecutor.randomDDName(credential.getUsername(), programName, "INSPLOG"); 
 		
 		DatasetProperties datasetProperties = new SequentialDatasetProperties(
-				RecordFormat.VARIABLE, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+				RecordFormat.VARIABLE, 256, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
 		allocateDataset(ftpClient, credential, insplog, datasetProperties);
 
 		String user = credential.getUsername();
@@ -61,7 +61,7 @@ public class RecorderManager {
 		// 2. Generate JCL
 		Path scriptPath = ctx.getRecordScriptPath();
 		if (!Files.exists(scriptPath)) {
-    		List<String> jcl = JCLTemplate.recording();
+    		List<String> jcl = JCLTemplate.recording(ctx.getAst());
     		Files.write(scriptPath, jcl);
 		}
 		List<String> jclTemplate = Files.readAllLines(scriptPath);
@@ -77,7 +77,7 @@ public class RecorderManager {
 		//FTPManager.deleteMember(ftpClient, datasetName);
 
 		// 5. Parse result file
-		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(recordingResult, compileListing.getProgramName());
+		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(recordingResult);
 		
 		// 6. Create new testcase
 		testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);

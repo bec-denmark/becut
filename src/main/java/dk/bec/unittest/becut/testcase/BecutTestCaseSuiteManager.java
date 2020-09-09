@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.bec.unittest.becut.Constants;
 import dk.bec.unittest.becut.Either;
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
@@ -29,6 +30,7 @@ import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.recorder.model.SessionCall;
+import dk.bec.unittest.becut.recorder.model.SessionCallPart;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
@@ -41,6 +43,7 @@ import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import koopa.core.trees.Tree;
+import koopa.core.trees.jaxen.Jaxen;
 
 public class BecutTestCaseSuiteManager {
 
@@ -71,7 +74,7 @@ public class BecutTestCaseSuiteManager {
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
 				CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement : callStatements) {
-			String callProgramName = TreeUtil
+			String callProgramName = Functions
 					.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			// We are skipping the SQL generated calls
 			if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
@@ -114,7 +117,21 @@ public class BecutTestCaseSuiteManager {
 
 		Map<Integer, ExternalCall> callCache = new HashMap<>();
 
-		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
+a:		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
+			List<Tree> callStatements = TreeUtil.getDescendents(
+					compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
+			for (Tree callStatement : callStatements) {
+				if(callStatement.getStartPosition().getLinenumber() == sessionCall.getLineNumber()) {
+					String callProgramName = Jaxen.evaluate(callStatement, "programName//text()")
+							.stream()
+							.map(Tree.class::cast)
+							.map(Tree::getText).collect(Collectors.joining());
+					if (Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
+						continue a;
+					}
+				}
+			}			
+			
 			Integer lineNumber = sessionCall.getLineNumber();
 			// first iteration
 			if (!callCache.containsKey(lineNumber)) {
@@ -133,7 +150,7 @@ public class BecutTestCaseSuiteManager {
 				externalCall.setStatementId(sessionCall.getStatementId());
 
 				externalCall.getFirstIteration().getParameters()
-						.forEach(p -> setParameterValue(p, sessionCall.getAfter().getRecords()));
+						.forEach(p -> setParameterValue(p, sessionCall.getAfter()));
 
 				callCache.put(lineNumber, externalCall);
 			} else {
@@ -141,7 +158,7 @@ public class BecutTestCaseSuiteManager {
 				List<Parameter> iterationParameters = externalCall.getFirstIteration().getParameters().stream()
 						.map(Parameter::copyWithNoValues).collect(Collectors.toList());
 
-				iterationParameters.forEach(p -> setParameterValue(p, sessionCall.getAfter().getRecords()));
+				iterationParameters.forEach(p -> setParameterValue(p, sessionCall.getAfter()));
 
 				externalCall.addIteration(iterationParameters);
 			}
@@ -149,16 +166,14 @@ public class BecutTestCaseSuiteManager {
 		return becutTestCase;
 	}
 
-	private static void setParameterValue(Parameter p, List<SessionRecord> records) {
-		records.stream().filter(sr -> sr.getName().equals(p.getName()) && sr.getLevel().equals(p.getLevel()))
-				.forEach(sr -> {
-					// TODO create an util function to exclude 'consts'
-					if (!DataType.GROUP.equals(p.getDataType()) && !DataType.BINARY.equals(p.getDataType())
-							&& !p.getName().equals("FILLER")) {
-						p.setValue(sr.getValue());
-					}
-					p.getSubStructure().forEach(sp -> setParameterValue(sp, sr.getChildren()));
-				});
+	private static void setParameterValue(Parameter p, SessionCallPart scp) {
+		SessionRecord sr = scp.getSessionRecord(p.getLevel(), p.getName());
+		// TODO create an util function to exclude 'consts'
+		if (!DataType.GROUP.equals(p.getDataType()) && !DataType.BINARY.equals(p.getDataType())
+				&& !p.getName().equals("FILLER")) {
+			p.setValue(sr.getValue());
+		}
+		p.getSubStructure().forEach(sp -> setParameterValue(sp, scp));
 	}
 
 	/**
@@ -276,7 +291,7 @@ public class BecutTestCaseSuiteManager {
 	}
 
 	private static ExternalCall createExternalCall(Tree callStatement, CompileListing compileListing) {
-		String callProgramName = TreeUtil.stripQuotes(
+		String callProgramName = Functions.stripQuotes(
 				TreeUtil.getDescendents(callStatement, CobolNodeType.PROGRAM_NAME).get(0).getProgramText());
 		// FIXME This is currently getting the absolute line number (from the expanded
 		// source).

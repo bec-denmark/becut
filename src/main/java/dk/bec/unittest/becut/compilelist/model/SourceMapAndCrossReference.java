@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.ParseExpandedSource;
 import koopa.core.trees.Tree;
 import koopa.core.trees.jaxen.Jaxen;

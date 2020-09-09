@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.Settings;
+import dk.bec.unittest.becut.compilelist.Functions;
+import koopa.core.trees.Tree;
 
 public class JCLTemplate {
 	static final Pattern $USER = Pattern.compile(Pattern.quote("${user}"), Pattern.CASE_INSENSITIVE);
@@ -79,69 +81,90 @@ public class JCLTemplate {
 		));
 	}
 
-	public static List<String> recording() {
-		return recording(generateSteplib(Settings.STEPLIB));
+	public static List<String> recording(Tree ast) {
+		return recording(generateJob(ast), generateSteplib(Settings.STEPLIB));
 	}
 
-	public static List<String> recording(String stepLibs) {
-		String depthOfCall = String.format("BECUT-%03d-DEPTH", new Random().nextInt(1000));
+	public static String generateJob(Tree ast) {
+		if(Functions.hasDB2Calls(ast)) {
+			return 
+					"//${jobname} JOB ,'" + unquote($USER) + "',   \n" +
+					"//             SCHENV=TSTSYS,                 \n" +
+					"//             MSGCLASS=Q,                    \n" +
+					"//             NOTIFY=" + unquote($USER) +  ",\n" +
+					"//             UJOBCORR=" + unquote($USER) + "\n" +
+					"//STEP01 EXEC PGM=IKJEFT01\n" + 
+					"//SYSPRINT DD  SYSOUT=*\n" + 
+					"//SYSTSPRT DD  SYSOUT=*\n" + 
+					"//SYSUDUMP DD  SYSOUT=*\n" + 
+					"//SYSTSIN  DD *\n" + 
+					"DSN SYSTEM (TD99)\n" + 
+					"  RUN PROGRAM (RDZDB2) -\n" + 
+					"     PLAN (PLN2) -\n" + 
+					"     LIBRARY (COMP.LOAD)\n" + 
+					"END\n" + 
+					"/*"; 
+		} else {
+			return 
+					"//${jobname} JOB ,'" + unquote($USER) + "',   \n" +
+					"//             SCHENV=TSTSYS,                 \n" +
+					"//             MSGCLASS=Q,                    \n" +
+					"//             NOTIFY=" + unquote($USER) +  ",\n" +
+					"//             UJOBCORR=" + unquote($USER) + "\n" +
+					"//PGMEXEC  EXEC PGM=" + unquote($PROGRAM);
+		}
+	}
+	
+	public static List<String> recording(String job, String stepLibs) {
+		String pgm = String.format("BECUT-%03d-PGM", new Random().nextInt(1000));
 		return new ArrayList<String>(Arrays.asList(
-					"//${jobname} JOB ,'" + unquote($USER) + "',",
-					"//             SCHENV=TSTSYS,",
-					"//             MSGCLASS=Q,",
-					"//             NOTIFY=" + unquote($USER) + ",",
-					"//             UJOBCORR=" + unquote($USER) + "",
-					"//PGMEXEC  EXEC PGM=" + unquote($PROGRAM),
+					job,
 					stepLibs,
 					unquote($DD),
 					"//INSPIN    DD *",
-					"            SET LOG ON FILE ${insplog};", 
-					"            SET DYNDEBUG OFF;", 
-					"            77 " + depthOfCall + " PIC 9(9) COMP;",
-					"            MOVE 0 TO " + depthOfCall + ";", 
-					"            AT CALL * BEGIN;",
-					"               IF " + depthOfCall + " < 1 THEN", 
-					"                 LIST UNTITLED('AT CALL BEGIN');", 
-					"                 LIST CALLS;", 
-					"                 LIST TITLED *;", 
-					"                 LIST UNTITLED('AT CALL END');", 
-					"                 LIST UNTITLED('');",
-					"                 ENABLE AT LINE *;",
-					"               END-IF;", 
-					"        COMPUTE " + depthOfCall + " =  " + depthOfCall + " + 1;", 
-					"               GO;", 
-					"            END;", 
-					"            AT LINE * BEGIN;", 
-					"               IF " + depthOfCall + " < 2 THEN", 
-					"                 LIST UNTITLED('AT EXIT BEGIN');", 
-					"                 LIST %PROGRAM;", 
-					"                 LIST CALLS;", 
-					"                 LIST TITLED *;", 
-					"                 LIST UNTITLED('AT EXIT END');", 
-					"                 LIST UNTITLED('');", 
-				    "                 DISABLE AT LINE *;",              
-				    "                 ENABLE AT CALL *;",               
-					"               END-IF;", 
-					"        COMPUTE " + depthOfCall + " =  " + depthOfCall + " - 1;\n", 
-					"               GO;",
-					"            END;", 
-					"            AT EXIT * BEGIN;", 
-					"               IF " + depthOfCall + " < 2 THEN", 
-					"                 LIST UNTITLED('AT EXIT BEGIN');", 
-					"                 LIST %PROGRAM;", 
-					"                 LIST CALLS;", 
-					"                 LIST TITLED *;", 
-					"                 LIST UNTITLED('AT EXIT END');", 
-					"                 LIST UNTITLED('');", 
-				    "                 DISABLE AT LINE *;",              
-				    "                 ENABLE AT CALL *;",               
-					"               END-IF;", 
-					"        COMPUTE " + depthOfCall + " =  " + depthOfCall + " - 1;\n", 
-					"               GO;",
-					"            END;", 
-				    "            DISABLE AT LINE *;",              
-				    "            ENABLE AT CALL *;",               
-					"            GO;", 
+					"        SET LOG ON FILE ${insplog};", 
+					"        SET DYNDEBUG OFF;", 
+					"        SET LIST TABULAR OFF;",
+					"        77 " + pgm + " PIC X(8) ;                                       \r\n" + 
+					"        MOVE %PROGRAM TO " + pgm + ";                                   \r\n" + 
+					"        AT CALL *                                                       \r\n" + 
+					"          BEGIN ;                                                       \r\n" + 
+					"            IF %PROGRAM = " + pgm + " THEN                              \r\n" + 
+					"              LIST UNTITLED ( 'BEGIN BEFORE CALL' ) ;                   \r\n" + 
+					"              LIST CALLS ;                                              \r\n" + 
+					"              LIST TITLED * ;                                           \r\n" + 
+					"              LIST UNTITLED ( 'END BEFORE CALL' ) ;                     \r\n" + 
+					"              LIST UNTITLED ( '' ) ;                                    \r\n" + 
+					"              ENABLE AT LINE * ;                                        \r\n" + 
+					"            END-IF ;                                                    \r\n" + 
+					"            STEP OVER ;                                                 \r\n" + 
+					"          END ;                                                         \r\n" + 
+					"        AT LINE *                                                       \r\n" + 
+					"          BEGIN ;                                                       \r\n" + 
+					"            IF %PROGRAM = " + pgm + " THEN                              \r\n" + 
+					"              LIST UNTITLED ( 'BEGIN AFTER CALL' ) ;                    \r\n" + 
+					"              LIST CALLS ;                                              \r\n" + 
+					"              LIST TITLED * ;                                           \r\n" + 
+					"              LIST UNTITLED ( 'END AFTER CALL' ) ;                      \r\n" + 
+					"              LIST UNTITLED ( '' ) ;                                    \r\n" + 
+					"              DISABLE AT LINE * ;                                       \r\n" + 
+					"            END-IF ;                                                    \r\n" + 
+					"            GO ;                                                        \r\n" + 
+					"          END ;                                                         \r\n" + 
+					"        AT EXIT *                                                       \r\n" + 
+					"          BEGIN ;                                                       \r\n" + 
+					"            IF %PROGRAM = " + pgm + " THEN                              \r\n" + 
+					"              LIST UNTITLED ( 'BEGIN EXIT' ) ;                          \r\n" + 
+					"              LIST CALLS ;                                              \r\n" + 
+					"              LIST TITLED * ;                                           \r\n" + 
+					"              LIST UNTITLED ( 'END EXIT' ) ;                            \r\n" + 
+					"              LIST UNTITLED ( '' ) ;                                    \r\n" + 
+					"              DISABLE AT LINE * ;                                       \r\n" + 
+					"            END-IF ;                                                    \r\n" + 
+					"            GO ;                                                        \r\n" + 
+					"          END ;                                                         \r\n" + 
+					"        DISABLE AT LINE * ;                                             \r\n" + 
+					"        GO ;  \r\n" + 
 					"            QUIT;", 
 					"/*", 
 					"//INSPLOG   DD SYSOUT=*", 
@@ -154,7 +177,11 @@ public class JCLTemplate {
 	private static String replace(String line, Pattern placeholder, String value) {
 		Matcher m = placeholder.matcher(line);
 		if(m.find()) {
-			return m.replaceAll(value);
+			if(value.isEmpty()) {
+				return m.replaceAll("//*");
+			} else {
+				return m.replaceAll(value);
+			}
 		}
 		return line;
 	}

@@ -41,11 +41,4 @@ public class TreeUtil {
 		}
 		return child;
 	}
-
-	public static String stripQuotes(String s) {
-		return s.replaceAll("^['\"]*", "").replaceAll("['\"]*$", ""); 
-	}
-	
-
-
 }

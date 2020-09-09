@@ -110,7 +110,7 @@ public class MenuController extends AbstractBECutController {
     	try {
     		Path recordScriptPath = BECutAppContext.getContext().getRecordScriptPath();
     		if (!Files.exists(recordScriptPath)) {
-        		List<String> jcl = JCLTemplate.recording();
+        		List<String> jcl = JCLTemplate.recording(BECutAppContext.getContext().getAst());
         		Files.write(recordScriptPath, jcl);
     		}
 			Desktop.getDesktop().open(recordScriptPath.toFile());
