@@ -7,8 +7,6 @@ public class SessionCall {
 	private String calleeProgramName;
 	private Integer lineNumber;
 	
-	//A statement_id identifies an executable statement. 
-	//The statement id is an integer or integer.integer (where the first integer is the line number and the second integer is the relative statement number). 
 	private String statementId;
 	private Integer iteration;
 	private SessionCallPart before;

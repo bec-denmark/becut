@@ -43,15 +43,17 @@ public class DebugToolLogParserTest {
 		assertEquals("Session calls count", 4, recording.getSessionCalls().size());
 	}
 
-	@Ignore
 	@Test
 	public void testRDZDB2() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get(
 				"./src/test/resources/parameter_recordings/RDZDB2.txt"));
-		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+		//String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+		String fileContents = new String(fileContentsUnencoded);
 		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents);
 		assertEquals("Program name", "RDZDB2", recording.getProgramName());
 		assertEquals("Session calls count", 13, recording.getSessionCalls().size());
+		assertEquals("LASTNAME-TEXT", "'NICHOLLS       '", 
+				recording.getAfter().getSessionRecord(3, "LASTNAME-TEXT").getValue());
 	}
 
 	@Test
@@ -62,6 +64,6 @@ public class DebugToolLogParserTest {
 		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents);
 		assertEquals("Program name", "SUMER", recording.getProgramName());
 		assertEquals("Session calls count", 0, recording.getSessionCalls().size());
-		//assertEquals("", "006", recording.getSessionPostConditions().
+		assertEquals("WS-SUM", "006", recording.getAfter().getSessionRecord(1, "WS-SUM").getValue());
 	}
 }

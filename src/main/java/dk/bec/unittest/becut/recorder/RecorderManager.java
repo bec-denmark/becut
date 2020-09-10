@@ -20,6 +20,7 @@ import dk.bec.unittest.becut.ftp.model.SpaceUnits;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class RecorderManager {
@@ -41,8 +42,6 @@ public class RecorderManager {
 		 * 8. return testcase
 		 */
 	
-		BecutTestCase testCase = new BecutTestCase();
-		
 		Credential credential = ctx.getCredential();
 		CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
 		String programName = compileListing.getProgramName();
@@ -80,7 +79,14 @@ public class RecorderManager {
 		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(recordingResult);
 		
 		// 6. Create new testcase
-		testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
+		BecutTestCase testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
+
+		BecutTestSuite becutTestSuite = ctx.getUnitTestSuite().getBecutTestSuite().get();
+		if(!becutTestSuite.isEmpty()) { 
+			testCase.setTestCaseName(becutTestSuite.get(becutTestSuite.size() - 1).getTestCaseName() + "_$");
+		} else {
+			testCase.setTestCaseName("recording result");
+		}
 		//TODO copy input files from base test
 		//Files.copy(source, target, options);
 

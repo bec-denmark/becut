@@ -49,7 +49,7 @@ public class SessionCallPartTest {
 		List<String> lines = DebugToolLogParser.splitLines(log);		
 		SessionCallPart scp = new SessionCallPart(lines);
 		assertNotNull(scp.getSessionRecord(3, "SQLERRML"));
-		assertEquals(scp.getSessionRecord(3, "SQLERRML").getValue(), " +00000");
+		assertEquals(scp.getSessionRecord(3, "SQLERRML").getValue(), "+00000");
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class SessionCallPartTest {
 				"      * CALLER:>CALLEE-AREA  = 00000                                    \r\n"; 
 		List<String> lines = DebugToolLogParser.splitLines(log);
 		SessionCallPart scp = new SessionCallPart(lines);
-		assertEquals("0000000001                               ", 
+		assertEquals("0000000001", 
 				scp.getSessionRecord(3, "CALLEE-I-NUMBER").getValue());
 	}
 
@@ -89,9 +89,9 @@ public class SessionCallPartTest {
 				"      * 77 MAT563:>PGM-NAME  = 'MAT562  '                               \r\n"; 
 		List<String> lines = DebugToolLogParser.splitLines(log);		
 		SessionCallPart scp = new SessionCallPart(lines);
-		assertEquals("0000                                         ", 
+		assertEquals("0000", 
 				scp.getSessionRecord(1, "NUMB").getValue());
-		assertEquals("'MAT562  '                               ", 
+		assertEquals("'MAT562  '", 
 				scp.getSessionRecord(77, "PGM-NAME").getValue());
 	}
 
@@ -121,7 +121,7 @@ public class SessionCallPartTest {
 		List<String> lines = DebugToolLogParser.splitLines(log);
 		SessionCallPart scp = new SessionCallPart(lines);
 		assertNotNull(scp.getSessionRecord(2, "WORKDEPT"));
-		assertEquals(scp.getSessionRecord(2, "WORKDEPT").getValue(), "'C01'           ");
+		assertEquals(scp.getSessionRecord(2, "WORKDEPT").getValue(), "'C01'");
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class SessionCallPartTest {
 		List<String> lines = DebugToolLogParser.splitLines(log);
 		SessionCallPart scp = new SessionCallPart(lines);
 		assertNotNull(scp.getSessionRecord(2, "SALARY"));
-		assertEquals("                  ", scp.getSessionRecord(2, "SALARY").getValue());
+		assertEquals("", scp.getSessionRecord(2, "SALARY").getValue());
 	}
 	
 	@Test
@@ -165,7 +165,7 @@ public class SessionCallPartTest {
 		List<String> lines = DebugToolLogParser.splitLines(log);		
 		SessionCallPart scp = new SessionCallPart(lines);
 		assertEquals(2, scp.getRecords().size());
-		assertEquals("'        '           ", 
+		assertEquals("'        '", 
 				scp.getSessionRecord(2, "SQLERRP").getValue());
 	}
 }

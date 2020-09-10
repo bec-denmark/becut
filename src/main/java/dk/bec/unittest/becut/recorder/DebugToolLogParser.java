@@ -90,9 +90,7 @@ public class DebugToolLogParser {
 					break;
 				case LA_END_EXIT :
 					if(line.startsWith(END_EXIT)) {
-						SessionPostCondition spc = new SessionPostCondition();
-						spc.getSessionRecords().addAll(new SessionCallPart(titled).getRecords());
-						sessionRecording.getSessionPostConditions().add(spc);
+						sessionRecording.setAfter(new SessionCallPart(titled));
 						break;
 					} else {
 						titled.add(line);

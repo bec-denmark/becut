@@ -55,7 +55,7 @@ public class SessionCallPart {
 				String[] as = split(line);
 				assert as.length == 2 : "Couldn't find value part in '" + line + '"';
 				String path = as[0];
-				String value = as[1];
+				String value = as[1] != null ? as[1].trim() : as[1];
 				LinkedList<String> stack = new LinkedList<>(Arrays.asList(path.split(" of ")));
 				SessionRecord parent = null;
 				while(!stack.isEmpty()) {

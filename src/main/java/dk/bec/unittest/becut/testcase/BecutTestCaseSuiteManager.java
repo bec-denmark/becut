@@ -140,10 +140,10 @@ a:		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
 						.collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
 							if (list.isEmpty())
 								throw new SessionRecordingException(
-										"cannot match the call; a mismatch between the listing and the program?");
+										"Can't match the call; a mismatch between the listing and the program?");
 							if (list.size() > 1)
 								throw new SessionRecordingException(
-										"an inconclusive match: more than one call in the line " + lineNumber);
+										"An inconclusive match: more than one call in the line " + lineNumber);
 							return list.get(0);
 						}));
 
@@ -163,15 +163,23 @@ a:		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
 				externalCall.addIteration(iterationParameters);
 			}
 		}
+		
+		becutTestCase.getPostCondition().getWorkingStorage()
+			.forEach(p -> setParameterValue(p, sessionRecording.getAfter()));
+		
 		return becutTestCase;
 	}
 
 	private static void setParameterValue(Parameter p, SessionCallPart scp) {
 		SessionRecord sr = scp.getSessionRecord(p.getLevel(), p.getName());
-		// TODO create an util function to exclude 'consts'
 		if (!DataType.GROUP.equals(p.getDataType()) && !DataType.BINARY.equals(p.getDataType())
-				&& !p.getName().equals("FILLER")) {
-			p.setValue(sr.getValue());
+				&& !p.getName().equals("FILLER") && !DataType.EIGHTYEIGHT.equals(p.getDataType())) {
+			if(sr == null) {
+				//TODO handle 'table' type
+				System.err.println("Cannot find session record for " + p);
+			} else {
+				p.setValue(sr.getValue());
+			}
 		}
 		p.getSubStructure().forEach(sp -> setParameterValue(sp, scp));
 	}

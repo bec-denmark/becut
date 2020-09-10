@@ -291,7 +291,7 @@ public class BecutTestCaseSuiteController implements Initializable {
 					testSuite.getBecutTestSuite().get().add(becutTestCase);
 					addTestCaseToTree(root, becutTestCase);
 				} catch (Exception e) {
-					// TODO log exception
+					System.err.print(e);
 					StandardAlerts.errorDialog(e.getMessage());
 				}
 		    });
