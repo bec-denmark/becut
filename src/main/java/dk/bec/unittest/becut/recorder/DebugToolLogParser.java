@@ -122,6 +122,10 @@ public class DebugToolLogParser {
 		return sessionRecording;
 	}
 
+	public static SessionRecording parseRunning(String logLines) throws ParsingException {
+		return parseRunning(splitLines(logLines));
+	}
+	
 	public static SessionRecording parseRunning(List<String> logLines) throws ParsingException {
 		SessionRecording sessionRecording = new SessionRecording();
 		

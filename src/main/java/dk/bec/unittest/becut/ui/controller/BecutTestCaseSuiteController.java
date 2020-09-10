@@ -282,12 +282,44 @@ public class BecutTestCaseSuiteController implements Initializable {
 		    	Path datasetsPath = Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), 
 		    			((UnitTest)item.getValue()).getBecutTestCase().getTestCaseName());
 		    	
-				BecutTestCase becutTestCase;
 				try {
-					becutTestCase = RecorderManager.recordBatch(
+					BecutTestCase becutTestCase = RecorderManager.recordBatch(
 							BECutAppContext.getContext(),
 							"BECUTREC",
 							datasetsPath);
+					
+					BecutTestCase becutTestCaseBase = testSuite.getBecutTestSuite().get().get(0);
+					if(becutTestCaseBase != null) {
+						String newTestCaseName = becutTestCaseBase.getTestCaseName() + "_$";
+						String baseTestCaseName = becutTestCaseBase.getTestCaseName(); 
+						becutTestCase.setTestCaseName(newTestCaseName);
+			    		Path newTestCasePath = Paths.get(
+			    				BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
+			    				newTestCaseName);
+			    		if (!Files.exists(newTestCasePath)) {
+			    			Files.createDirectory(newTestCasePath);
+			    		}
+
+			    		Files.list(Paths.get(BECutAppContext.getContext().getUnitTestSuiteFolder().toString(), baseTestCaseName))
+			    			.filter(p -> !Files.isDirectory(p))
+			    			.forEach(path -> {
+			    				Path copyTo = Paths.get(newTestCasePath.toString(), path.getFileName().toString());
+			    				try {
+									Files.copy(path, copyTo);
+								} catch (FileAlreadyExistsException e) {
+									Alert alert = new Alert(AlertType.WARNING);
+									alert.setTitle("Warning Dialog");
+									alert.setContentText(copyTo + " already exists.");
+									alert.showAndWait();								
+									return;
+								} catch (IOException e) {
+									throw new RuntimeException(e);
+								}
+			    			});
+					} else {
+						becutTestCase.setTestCaseName("recording result");
+					}
+					
 					testSuite.getBecutTestSuite().get().add(becutTestCase);
 					addTestCaseToTree(root, becutTestCase);
 				} catch (Exception e) {

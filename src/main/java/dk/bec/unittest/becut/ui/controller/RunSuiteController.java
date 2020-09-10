@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.debugscript.DebugScriptExecutor;
-import dk.bec.unittest.becut.ftp.model.JobResult;
 import dk.bec.unittest.becut.recorder.DebugToolLogParser;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.PostConditionResolver;
@@ -55,15 +54,14 @@ public class RunSuiteController extends AbstractBECutController implements Initi
 					loadModuleNameRemembered = loadModuleName.getText();
 				}
 		
-				JobResult jobResult = DebugScriptExecutor.testBatch(ctx, becutTestCase, jobName.getText(), programName);
-				if(!"RC=0000".equals(jobResult.rc)) {
-					results.add(becutTestCase.getTestCaseName() + "\t" + jobResult.rc);
-					ctx.getEventBus().post(jobResult);
-				} else {
-					SessionRecording sessionRecording = DebugToolLogParser.parseRunning(jobResult.spool);
+				try {
+					String result = DebugScriptExecutor.testBatch(ctx, becutTestCase, jobName.getText(), programName);
+					SessionRecording sessionRecording = DebugToolLogParser.parseRunning(result);
 					PostConditionResult postConditionResult = PostConditionResolver.verify(becutTestCase, sessionRecording);
 					results.add(becutTestCase.getTestCaseName() + "\t" + postConditionResult.prettyPrint());
 					ctx.getEventBus().post(new TestResult(becutTestCase, postConditionResult));
+				} catch (Exception e) {
+					ctx.getEventBus().post(e);
 				}
 			});
 			StandardAlerts.informationDialog("Test suite results", "Result running test suite", 

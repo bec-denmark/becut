@@ -35,7 +35,6 @@ import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.FTPManager;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
-import dk.bec.unittest.becut.ftp.model.JobResult;
 import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
@@ -45,41 +44,37 @@ import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class DebugScriptExecutor {
-	public static JobResult testBatch(BECutAppContext ctx, BecutTestCase becutTestCase, String jobName, String programName) {
+	public static String testBatch(BECutAppContext ctx, BecutTestCase becutTestCase, String jobName, String programName) throws Exception {
 		//TODO cleanup files in finally
 		FTPClient ftpClient = new FTPClient();
-		try {
-			Credential credential = ctx.getCredential();
-			FTPManager.connectAndLogin(ftpClient, credential);
-			
-    		Path scriptPath = ctx.getTestScriptPath();
-    		if (!Files.exists(scriptPath)) {
-        		List<String> jcl = JCLTemplate.generic();
-        		Files.write(scriptPath, jcl);
-    		}
-    		List<String> jclTemplate = Files.readAllLines(scriptPath);
-			
-			String user = credential.getUsername();
-			CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
-			
-			Map<String, String> datasetNames = generateDDnames(compileListing, user, programName);
-			Path base = Paths.get(ctx.getUnitTestSuiteFolder().toString(), becutTestCase.getTestCaseName());
-			putDatasets(compileListing, ftpClient, base, datasetNames, user);
-			
-			String inspLog = randomDDName(user, programName);
-			allocateInspLog(ftpClient, inspLog);
-
-			String debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase, inspLog).generate();
-			
-			String DDs = jclDDs(datasetNames);
-			String jcl = JCLTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript, "");
-			
-			InputStream is = new ByteArrayInputStream(jcl.getBytes());
-			String jobId = submitJob(ftpClient, is);
-			return retriveJobResult(ftpClient, jobId, inspLog, TimeUnit.SECONDS, 60);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		Credential credential = ctx.getCredential();
+		FTPManager.connectAndLogin(ftpClient, credential);
+		
+		Path scriptPath = ctx.getTestScriptPath();
+		if (!Files.exists(scriptPath)) {
+    		List<String> jcl = JCLTemplate.generic();
+    		Files.write(scriptPath, jcl);
 		}
+		List<String> jclTemplate = Files.readAllLines(scriptPath);
+		
+		String user = credential.getUsername();
+		CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
+		
+		Map<String, String> datasetNames = generateDDnames(compileListing, user, programName);
+		Path base = Paths.get(ctx.getUnitTestSuiteFolder().toString(), becutTestCase.getTestCaseName());
+		putDatasets(compileListing, ftpClient, base, datasetNames, user);
+		
+		String insplog = randomDDName(user, programName);
+		allocateInspLog(ftpClient, insplog);
+
+		String debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase, insplog).generate();
+		
+		String DDs = jclDDs(datasetNames);
+		String jcl = JCLTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript, "");
+		
+		FTPManager.submitJobAndWaitToComplete(ftpClient, new ByteArrayInputStream(jcl.getBytes()), 60, false);
+		
+		return FTPManager.retrieveMember(ftpClient, insplog);
 	}
 
 	private static void allocateInspLog(FTPClient ftpClient, String inspLog) {
@@ -98,8 +93,8 @@ public class DebugScriptExecutor {
 		return getJobId(ftp.getReplyString());
 	}
 	
-	static JobResult retriveJobResult(FTPClient ftp, String jobId, String inspLog, TimeUnit units, int time) throws Exception {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(100000);
+	static String retriveJobResult(FTPClient ftp, String jobId, String inspLog, TimeUnit units, int time) throws Exception {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(16384);
 		ftp.setBufferSize(16384);
 		
 		ftp.site("JESOWNER=*");
@@ -160,20 +155,10 @@ public class DebugScriptExecutor {
 			Thread.sleep(200);
 		}
 		
-//		ftp.retrieveFile(jobId, outputStream);
-//		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-//			throw new Exception(ftp.getReplyString());
-//		}
-
 		ftp.site("FILETYP=SEQ");
 		ftp.retrieveFile(inspLog, outputStream);
-//		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-//		throw new Exception(ftp.getReplyString());
-//	}
-		//there is no SUCCESS_MARKER in insplog or RC != CC 0000
-		//something went wrong and spool must be checked
 		
-		return new JobResult(rc.get(), Arrays.asList(outputStream.toString("Cp1252").split("\\r?\\n")));
+		return outputStream.toString("Cp1252");
 	}
 	
 	public static Map<String, String> generateDDnames(CompileListing compileListing, String... parts) {
