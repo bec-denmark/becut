@@ -22,7 +22,12 @@ public class PostConditionComparison {
 		}
 		// for numeric and alphanumeric ignore leading zeroes, whitespaces
 		else if (expected.dataType.equals(DataType.PIC_NUMERIC)) {
-			return new BigDecimal(expected.getValue()).equals(new BigDecimal(actual.getValue()));
+			try {
+				return new BigDecimal(expected.getValue()).equals(new BigDecimal(actual.getValue()));
+			} catch(NumberFormatException e) {
+				System.err.println(e.getMessage());
+				return false;
+			}
 		} else if (expected.dataType.equals(DataType.PIC)) {
 			return expected.getValue().trim().equals(actual.getValue().trim());
 		}

@@ -2,9 +2,9 @@ package dk.bec.unittest.becut.testcase.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PostConditionResult {
-	
 	List<PostConditionComparison> comparisons = new ArrayList<PostConditionComparison>();
 
 	public List<PostConditionComparison> getComparisons() {
@@ -12,27 +12,18 @@ public class PostConditionResult {
 	}
 	
 	public Boolean isSuccess() {
-		Boolean success = Boolean.TRUE;
-		for (PostConditionComparison comparison: comparisons) {
-			success = success && comparison.compare();
-		}
-		return success;
+		return comparisons
+				.stream()
+				.allMatch(PostConditionComparison::compare);
 	}
 
 	public String prettyPrint() {
-		String result = "";
-		if (isSuccess()) {
-			result += "Success\n";
-		}
-		else {
-			result += "Fail\n";
-		}
-		for (PostConditionComparison comparison: comparisons) {
-			result += comparison.toString() + "\n";
-		}
-		return result;
+		if (isSuccess()) return "Success\n";
+		return "Fail\n" +
+				comparisons
+				.stream()
+				.filter(c -> !c.compare())
+				.map(PostConditionComparison::toString)
+				.collect(Collectors.joining("\n", "", ""));
 	}
-	
-	
-
 }
