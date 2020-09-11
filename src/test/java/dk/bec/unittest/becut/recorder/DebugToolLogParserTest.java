@@ -66,4 +66,15 @@ public class DebugToolLogParserTest {
 		assertEquals("Session calls count", 0, recording.getSessionCalls().size());
 		assertEquals("WS-SUM", "006", recording.getAfter().getSessionRecord(1, "WS-SUM").getValue());
 	}
+
+	@Test
+	public void testCALLER() throws Exception {
+		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get(
+				"./src/test/resources/parameter_recordings/CALLER.txt"));
+		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents);
+		assertEquals("Program name", "CALLER", recording.getProgramName());
+		assertEquals("Session calls count", 3, recording.getSessionCalls().size());
+		assertEquals("CALLEE-I-NUMBER", "0000000018", recording.getAfter().getSessionRecord(3, "CALLEE-I-NUMBER").getValue());
+	}
 }

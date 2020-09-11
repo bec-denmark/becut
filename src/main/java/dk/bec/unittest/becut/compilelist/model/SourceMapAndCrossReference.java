@@ -23,7 +23,7 @@ public class SourceMapAndCrossReference extends AbstractCompileListingSection {
 		ast = new ParseExpandedSource(source).createTree();
 
 		if(ast == null) {
-			throw new AssertionError("ast is null, there is a problem with the compile listing");
+			throw new AssertionError("Ast is null, there is a problem with the compile listing - wrong DDNAME/StepName?");
 		}
 		
 		// In following assignment: SELECT NUM-LIST ASSIGN TO INPUT1.

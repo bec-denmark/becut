@@ -172,8 +172,8 @@ a:		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
 
 	private static void setParameterValue(Parameter p, SessionCallPart scp) {
 		SessionRecord sr = scp.getSessionRecord(p.getLevel(), p.getName());
-		if (!DataType.GROUP.equals(p.getDataType()) && !DataType.BINARY.equals(p.getDataType())
-				&& !p.getName().equals("FILLER") && !DataType.EIGHTYEIGHT.equals(p.getDataType())) {
+		if (!DataType.GROUP.equals(p.getDataType()) && !p.getName().equals("FILLER") 
+				&& !DataType.EIGHTYEIGHT.equals(p.getDataType())) {
 			if(sr == null) {
 				//TODO handle 'table' type
 				System.err.println("Cannot find session record for " + p);
