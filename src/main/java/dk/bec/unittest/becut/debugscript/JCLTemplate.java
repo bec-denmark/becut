@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.compilelist.Functions;
-import koopa.core.trees.Tree;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 
 public class JCLTemplate {
 	static final Pattern $USER = Pattern.compile(Pattern.quote("${user}"), Pattern.CASE_INSENSITIVE);
@@ -81,12 +81,13 @@ public class JCLTemplate {
 		));
 	}
 
-	public static List<String> recording(Tree ast) {
-		return recording(generateJob(ast), generateSteplib(Settings.STEPLIB));
+	public static List<String> recording(CompileListing listing) {
+		return recording(generateJob(listing), generateSteplib(Settings.STEPLIB));
 	}
 
-	public static String generateJob(Tree ast) {
-		if(Functions.hasDB2Calls(ast)) {
+	public static String generateJob(CompileListing listing) {
+		if(Functions.hasDB2Calls(listing.getSourceMapAndCrossReference().getAst())
+				|| Functions.compiledWithCoprocessor(listing)) {
 			return 
 					"//${jobname} JOB ,'" + unquote($USER) + "',   \n" +
 					"//             SCHENV=TSTSYS,                 \n" +

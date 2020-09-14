@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -51,6 +52,10 @@ public class BECutAppContext {
 	
 	public Tree getAst() {
 		return testSuite.getCompileListing().getSourceMapAndCrossReference().getAst();
+	}
+	
+	public CompileListing getCompileListing() {
+		return testSuite.getCompileListing();
 	}
 	
 	public Path getUnitTestSuiteFolder() {

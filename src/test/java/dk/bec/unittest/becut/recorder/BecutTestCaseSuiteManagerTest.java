@@ -29,4 +29,19 @@ public class BecutTestCaseSuiteManagerTest {
 		BecutTestCase testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
 		System.out.println(testCase);
 	}
+
+	@Test
+	public void testRDZDB2_coprocessor() throws Exception {
+//		byte[] fileContentsUnencoded = Files.readAllBytes(
+//				Paths.get("./src/test/resources/parameter_recordings/RDZDB2.txt"));
+//		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+//		SessionRecording sessionRecording = DebugToolLogParser.parseRecording(fileContents);
+		
+		File file = new File("./src/test/resources/compilelistings/RDZDB2-COPROCESSOR.txt");
+		CompileListing compileListing = Parse.parse(file);
+		System.out.println(compileListing);
+		
+//		BecutTestCase testCase = BecutTestCaseSuiteManager.createTestCaseFromSessionRecording(compileListing, sessionRecording);
+//		System.out.println(testCase);
+	}
 }

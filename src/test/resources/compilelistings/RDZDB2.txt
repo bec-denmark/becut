@@ -1,4 +1,4 @@
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0                         Date 09/08/2020  Time 11:11:01   Page     1                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0                         Date 09/14/2020  Time 11:22:15   Page     1                
 0Invocation parameters:                                                                                                              
   OBJECT,XREF,RENT,LIB,TEST(HOOK)                                                                                                    
 0Options in effect:                                                                                                                  
@@ -61,7 +61,7 @@
     XREF(FULL)                                                                                                                       
     YEARWINDOW(1900)                                                                                                                 
     ZWB                                                                                                                              
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     2                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     2                
    LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference           
 0/* RDZDB2                                                                                                                           
    000001                IDENTIFICATION DIVISION.                                                                                    
@@ -128,7 +128,7 @@
    000062                    10 EMPNO                PIC X(6).                                     BLW=00000+088,0000000 6C          
    000063                    10 FIRSTNME.                                                          BLW=00000+08E,0000006 0CL14       
    000064                       49 FIRSTNME-LEN      PIC S9(4) USAGE COMP.                         BLW=00000+08E,0000006 2C          
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     3                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     3                
    LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference           
 0  000065                       49 FIRSTNME-TEXT     PIC X(12).                                    BLW=00000+090,0000008 12C         
    000066                    10 MIDINIT              PIC X(1).                                     BLW=00000+09C,0000014 1C          
@@ -158,7 +158,7 @@
    000090                 01 SQL-VERS.                                                             BLW=00000+0F0         0CL68       
    000091                    05 SQL-VERS-PREF    PIC X(04) VALUE "VER.".                           BLW=00000+0F0,0000000 4C          
    000092                    05 SQL-VERS-DATA    PIC X(64)                                         BLW=00000+0F4,0000004 64C         
-   000093                                        VALUE "2020-09-08-09.11.01.580644".                                                 
+   000093                                        VALUE "2020-09-14-09.22.15.343002".                                                 
    000094                 77 SQL-TEMP      PIC X(128).                                             BLW=00000+138         128C        
    000095                 77 DSN-TEMP      PIC S9(9)  COMP-5.                                      BLW=00000+1B8         4C          
    000096                 77 DSN-TMP2      PIC S9(18) COMP-3.                                      BLW=00000+1C0         10P         
@@ -176,8 +176,8 @@
    000108                    05 SQL-PLIST-CON   PIC S9(9) COMP-5 VALUE +4210688.                   BLW=00000+218,0000000 4C          
    000109                    05 SQL-CALLTYPE    PIC S9(4) COMP-5 VALUE +50.                        BLW=00000+21C,0000004 2C          
    000110                    05 SQL-PROG-NAME   PIC X(8)  VALUE X"52445A4442322020".               BLW=00000+21E,0000006 8C          
-   000111                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454013951.                 BLW=00000+226,000000E 4C          
-   000112                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +7067906.                   BLW=00000+22A,0000012 4C          
+   000111                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454075829.                 BLW=00000+226,000000E 4C          
+   000112                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +229566118.                 BLW=00000+22A,0000012 4C          
    000113                    05 SQL-SECTION     PIC S9(4) COMP-5 VALUE +1.                         BLW=00000+22E,0000016 2C          
    000114                    05 SQL-CODEPTR     PIC S9(9) COMP-5.                                  BLW=00000+230,0000018 4C          
    000115                    05 SQL-VPARMPTR    PIC S9(9) COMP-5 VALUE +0.                         BLW=00000+234,000001C 4C          
@@ -195,7 +195,7 @@
    000127                       10 PRE-SQLLD    PIC S9(4) COMP-5 VALUE +1.                         BLW=00000+266,000004E 2C          
    000128                       10 PRE-SQLVAR.                                                     BLW=00000+268,0000050 0CL44       
    000129                         12 SQLVAR-BASE1.                                                 BLW=00000+268,0000050 0CL44       
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     4                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     4                
    LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference           
 0  000130                           15 SQL-PVAR-TYPE1      PIC S9(4) COMP-5 VALUE +452.            BLW=00000+268,0000050 2C          
    000131                           15 SQL-PVAR-LEN1       PIC S9(4) COMP-5 VALUE +3.              BLW=00000+26A,0000052 2C          
@@ -209,8 +209,8 @@
    000139                    05 SQL-PLIST-CON   PIC S9(9) COMP-5 VALUE +4195328.                   BLW=00000+298,0000000 4C          
    000140                    05 SQL-CALLTYPE    PIC S9(4) COMP-5 VALUE +30.                        BLW=00000+29C,0000004 2C          
    000141                    05 SQL-PROG-NAME   PIC X(8)  VALUE X"52445A4442322020".               BLW=00000+29E,0000006 8C          
-   000142                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454013951.                 BLW=00000+2A6,000000E 4C          
-   000143                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +7067906.                   BLW=00000+2AA,0000012 4C          
+   000142                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454075829.                 BLW=00000+2A6,000000E 4C          
+   000143                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +229566118.                 BLW=00000+2AA,0000012 4C          
    000144                    05 SQL-SECTION     PIC S9(4) COMP-5 VALUE +1.                         BLW=00000+2AE,0000016 2C          
    000145                    05 SQL-CODEPTR     PIC S9(9) COMP-5.                                  BLW=00000+2B0,0000018 4C          
    000146                    05 SQL-VPARMPTR    PIC S9(9) COMP-5 VALUE +0.                         BLW=00000+2B4,000001C 4C          
@@ -258,11 +258,11 @@
    000188                    05 SQL-PLIST-CON   PIC S9(9) COMP-5 VALUE +4194304.                   BLW=00000+370,0000000 4C          
    000189                    05 SQL-CALLTYPE    PIC S9(4) COMP-5 VALUE +45.                        BLW=00000+374,0000004 2C          
    000190                    05 SQL-PROG-NAME   PIC X(8)  VALUE X"52445A4442322020".               BLW=00000+376,0000006 8C          
-   000191                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454013951.                 BLW=00000+37E,000000E 4C          
-   000192                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +7067906.                   BLW=00000+382,0000012 4C          
+   000191                    05 SQL-TIMESTAMP-1 PIC S9(9) COMP-5 VALUE +454075829.                 BLW=00000+37E,000000E 4C          
+   000192                    05 SQL-TIMESTAMP-2 PIC S9(9) COMP-5 VALUE +229566118.                 BLW=00000+382,0000012 4C          
    000193                    05 SQL-SECTION     PIC S9(4) COMP-5 VALUE +1.                         BLW=00000+386,0000016 2C          
    000194                    05 SQL-CODEPTR     PIC S9(9) COMP-5.                                  BLW=00000+388,0000018 4C          
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     5                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     5                
    LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference           
 0  000195                    05 SQL-VPARMPTR    PIC S9(9) COMP-5 VALUE +0.                         BLW=00000+38C,000001C 4C          
    000196                    05 SQL-APARMPTR    PIC S9(9) COMP-5 VALUE +0.                         BLW=00000+390,0000020 4C          
@@ -329,7 +329,7 @@
    000257                         WHEN OTHER                                                                                         
    000258      1                      PERFORM SQL-FAIL                                             296                               
    000259                    END-EVALUATE                                                                                            
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     6                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     6                
    LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-!--+----8 Map and Cross Reference           
 0  000260                    .                                                                                                       
    000261                                                                                                                            
@@ -375,7 +375,7 @@
    000301                    .                                                                                                       
    000302                                                                                                                            
  */ RDZDB2                                                                                                                           
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     7                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     7                
 0An "M" preceding a data-name reference indicates that the data-name is modified by this reference.                                  
                                                                                                                                      
   Defined   Cross-reference of data names   References                                                                               
@@ -442,7 +442,7 @@
       184   SQL-AVAR-NAME3                                                                                                           
       161   SQL-AVAR-TYPE1                                                                                                           
       170   SQL-AVAR-TYPE2                                                                                                           
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     8                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     8                
 0 Defined   Cross-reference of data names   References                                                                               
                                                                                                                                      
 0     179   SQL-AVAR-TYPE3                                                                                                           
@@ -508,7 +508,7 @@
        11   SQLCODE. . . . . . . . . . . .  254 271 288 298                                                                          
        16   SQLERRD                                                                                                                  
        12   SQLERRM                                                                                                                  
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page     9                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page     9                
 0 Defined   Cross-reference of data names   References                                                                               
                                                                                                                                      
 0      14   SQLERRMC . . . . . . . . . . .  299                                                                                      
@@ -534,7 +534,7 @@
        29   SQLWARN9                                                                                                                 
        85   SWITCHES                                                                                                                 
        70   WORKDEPT . . . . . . . . . . .  213 M225                                                                                 
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    10                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    10                
 0Context usage is indicated by the letter preceding a procedure-name reference.                                                      
  These letters and their meanings are:                                                                                               
      A = ALTER (procedure-name)                                                                                                      
@@ -555,14 +555,14 @@
       222   SQL-INIT-END . . . . . . . . .  G207                                                                                     
       208   SQL-INITIAL. . . . . . . . . .  P250 P267 P285                                                                           
       206   SQL-SKIP                                                                                                                 
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    11                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    11                
 0 Defined   Cross-reference of programs     References                                                                               
                                                                                                                                      
  EXTERNAL   DSNHADDR . . . . . . . . . . .  210 214 215 220 221                                                                      
  EXTERNAL   DSNHADD2 . . . . . . . . . . .  212 217                                                                                  
  EXTERNAL   DSNHLI . . . . . . . . . . . .  251 268 286                                                                              
         2   RDZDB2                                                                                                                   
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    12                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    12                
 0                                                                                                                                    
           COPY/BASIS cross-reference of text-names, library names and dataset information                                            
                                                                                                                                      
@@ -571,7 +571,7 @@
                                                                                                                                      
   SQLCA     SYSLIB    ZT4.SOURCE.COBCOPY                             0     2020/07/27   2020/07/27 16:17:47                          
                                                                                                                                      
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    13                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    13                
 0Data Division Map                                                                                                                   
 0Data Definition Attribute codes (rightmost column) have the following meanings:                                                     
      D = Object of OCCURS DEPENDING    G = GLOBAL                             S = Spanned file                                       
@@ -636,7 +636,7 @@
      97   77 DSNNROWS. . . . . . . . . . . . . . . . . . . BLW=00000  1D0               DS 4C           Binary                       
      98   77 DSNNTYPE. . . . . . . . . . . . . . . . . . . BLW=00000  1D8               DS 2C           Binary                       
      99   77 DSNNLEN . . . . . . . . . . . . . . . . . . . BLW=00000  1E0               DS 2C           Binary                       
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    14                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    14                
 0Source   Hierarchy and                                    Base       Hex-Displacement  Asmblr Data                    Data Def      
  LineID   Data Name                                        Locator    Blk   Structure   Definition      Data Type      Attributes    
     100   77 SQL-NULL. . . . . . . . . . . . . . . . . . . BLW=00000  1E8               DS 4C           Binary                       
@@ -703,7 +703,7 @@
     163           5  SQL-AVAR-ADDRS1 . . . . . . . . . . . BLW=00000  2EC   0 000 054   DS 0CL8         Group                        
     164             6  SQL-AVAR-ADDR1. . . . . . . . . . . BLW=00000  2EC   0 000 054   DS 4C           Binary                       
     165             6  SQL-AVAR-IND1 . . . . . . . . . . . BLW=00000  2F0   0 000 058   DS 4C           Binary                       
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    15                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    15                
 0Source   Hierarchy and                                    Base       Hex-Displacement  Asmblr Data                    Data Def      
  LineID   Data Name                                        Locator    Blk   Structure   Definition      Data Type      Attributes    
     166           5  SQL-AVAR-NAME1. . . . . . . . . . . . BLW=00000  2F4   0 000 05C   DS 0CL32        Group                        
@@ -742,7 +742,7 @@
     199     2  SQL-STMT-NUM. . . . . . . . . . . . . . . . BLW=00000  398   0 000 028   DS 4C           Binary                       
     200     2  SQL-PLIST-FLG . . . . . . . . . . . . . . . BLW=00000  39C   0 000 02C   DS 2C           Binary                       
     201     2  FILLER. . . . . . . . . . . . . . . . . . . BLW=00000  39E   0 000 02E   DS 18C          Display                      
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    16                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    16                
 0PROGRAM GLOBAL TABLE BEGINS AT LOCATION 0000FC FOR 000030 BYTES                                                                     
  THE PGT CONTAINS 000001 CELL(S) FOR ADDRESSABILITY TO THE CGT                                                                       
  PBL1    AT LOCATION 00034C FOR LINE 2                                                                                               
@@ -750,14 +750,14 @@
  LITERAL POOL MAP FOR SYSTEM LITERALS IN THE PGT:                                                                                    
  0000FC  (LIT+0)      00000001 00000000 40404040 40404040 40404040 40404040 40404040 40404040  !........                        !    
  00011C  (LIT+32)     40404040 4040                                                            !                                !    
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    17                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    17                
 0CONSTANT GLOBAL TABLE BEGINS AT LOCATION 00012C FOR 000220 BYTES                                                                    
  LITERAL POOL MAP FOR LITERALS IN THE CGT:                                                                                           
                                                                                                                                      
  000154  (LIT+0)      FFFFFFFC 00001000 00000001 00000076 00400000 00000094 00000066 00400400  !................. .....m..... ..!    
- 000174  (LIT+32)     0000003C 00000059 006BD902 1B0FB3FF 00404000 00000020 00000010 00000008  !.........,R......  .............!    
+ 000174  (LIT+32)     0000003C 00000059 0DAEE6A6 1B10A5B5 00404000 00000020 00000010 00000008  !..........Ww..v..  .............!    
  000194  (LIT+64)     00000002 FFFFFFFF 00000000 00640005 002D000F 000C01C0 00060004 001E01C4  !...............................D!    
- 0001B4  (LIT+96)     000304B8 0032F2F0 F2F060F0 F960F0F8 60F0F94B F1F14BF0 F14BF5F8 F0F6F4F4  !......2020-09-08-09.11.01.580644!    
+ 0001B4  (LIT+96)     000304B8 0032F2F0 F2F060F0 F960F1F4 60F0F94B F2F24BF1 F54BF3F4 F3F0F0F2  !......2020-09-14-09.22.15.343002!    
  0001D4  (LIT+128)    00000000 00000000 00000000 00000000 0000E2D8 D3C5D9D9 D4C37A40 D3C1E2E3  !..................SQLERRMC: LAST!    
  0001F4  (LIT+160)    D5C1D4C5 7A40C5D4 D7D5D67A 40404040 E2D8D3C3 D6C4C57A 40E2D8D3 40C6C1C9  !NAME: EMPNO:    SQLCODE: SQL FAI!    
  000214  (LIT+192)    D3C4E2D5 C8D3C940 40C4E2D5 C8C1C4C4 F2C4E2D5 C8C1C4C4 D9E2D8D3 C4C14040  !LDSNHLI  DSNHADD2DSNHADDRSQLDA  !    
@@ -799,7 +799,7 @@
        AUTO TABLE LOCATED AT 007074 FOR 0001B0 BYTES                                                                                 
   AUTO AREA TABLE LOCATED AT 007224 FOR 0001D2 BYTES                                                                                 
                                                                                                                                      
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    18                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    18                
 0                   *** TGT MEMORY MAP ***                                                                                           
                     TGTLOC                                                                                                           
                                                                                                                                      
@@ -866,7 +866,7 @@
                   00000000  REGISTER SAVE AREA                                                                                       
                   0000004C  STACK NAB (NEXT AVAILABLE BYTE)                                                                          
                   00000058  ADDRESS OF INLINE-CODE PRIMARY DSA                                                                       
-1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/08/2020  Time 11:11:01   Page    19                
+1PP 5655-S71 IBM Enterprise COBOL for z/OS  4.2.0               RDZDB2    Date 09/14/2020  Time 11:22:15   Page    19                
 0                 0000005C  ADDRESS OF TGT                                                                                           
                   00000060  ADDRESS OF CAA                                                                                           
                   00000080  XML PARSE WORK AREA ANCHOR                                                                               

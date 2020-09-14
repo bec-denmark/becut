@@ -20,6 +20,20 @@ public class FunctionsTest {
 	}
 
 	@Test
+	public void shouldReturnFalseForDB2Program() throws Exception {
+		File file = new File("./src/test/resources/compilelistings/RDZDB2.txt");
+		CompileListing compileListing = Parse.parse(file);
+		assertTrue(!Functions.compiledWithCoprocessor(compileListing));
+	}
+
+	@Test
+	public void shouldReturnTrueForDB2ProgramCompiledWithCoprocessor() throws Exception {
+		File file = new File("./src/test/resources/compilelistings/RDZDB2-COPROCESSOR.txt");
+		CompileListing compileListing = Parse.parse(file);
+		assertTrue(Functions.compiledWithCoprocessor(compileListing));
+	}
+	
+	@Test
 	public void shouldReturnFalseForNotDB2Program() throws Exception {
 		//TODO
 	}

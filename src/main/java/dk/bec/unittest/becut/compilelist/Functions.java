@@ -1,6 +1,7 @@
 package dk.bec.unittest.becut.compilelist;
 
 import dk.bec.unittest.becut.Constants;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import koopa.core.trees.Tree;
 import koopa.core.trees.jaxen.Jaxen;
 
@@ -13,6 +14,10 @@ public class Functions {
 			.filter(Constants.IBMHostVariableMemoryAllocationPrograms::contains)
 			.findFirst()
 			.isPresent();
+	}
+
+	static public boolean compiledWithCoprocessor(CompileListing listing) {
+		return listing.getCompileOptions().getOptions().containsKey("SQL(DB2)");
 	}
 	
 	public static String stripQuotes(String s) {

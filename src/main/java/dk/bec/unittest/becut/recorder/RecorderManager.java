@@ -59,7 +59,7 @@ public class RecorderManager {
 		// 2. Generate JCL
 		Path scriptPath = ctx.getRecordScriptPath();
 		if (!Files.exists(scriptPath)) {
-    		List<String> jcl = JCLTemplate.recording(ctx.getAst());
+    		List<String> jcl = JCLTemplate.recording(compileListing);
     		Files.write(scriptPath, jcl);
 		}
 		List<String> jclTemplate = Files.readAllLines(scriptPath);
