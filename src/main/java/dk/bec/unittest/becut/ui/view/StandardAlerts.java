@@ -8,12 +8,16 @@ public class StandardAlerts {
 	
 	private StandardAlerts() {}
 
-	public static void unimplemented() {
+	public static void unimplemented(String content) {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Unimplemented");
 		alert.setHeaderText("Unimplemented functionality");
-		alert.setContentText("The thing you are trying to do has not been implemented yet");
+		alert.setContentText(content);
 		alert.showAndWait();
+	}
+	
+	public static void unimplemented() {
+		unimplemented("The thing you are trying to do has not been implemented yet");
 	}
 
 	public static void warningDialog(String title, String header, String content) {

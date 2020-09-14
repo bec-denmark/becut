@@ -43,6 +43,7 @@ public class DebugToolLogParserTest {
 		assertEquals("Session calls count", 4, recording.getSessionCalls().size());
 	}
 
+	@Ignore
 	@Test
 	public void testRDZDB2() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get(

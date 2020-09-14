@@ -9,6 +9,7 @@ import java.util.List;
 import dk.bec.unittest.becut.debugscript.JCLTemplate;
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
+import dk.bec.unittest.becut.ui.view.StandardAlerts;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -169,18 +170,7 @@ public class MenuController extends AbstractBECutController {
 
 	@FXML
 	public void recordProgramExecution() {
-		Stage recordProgramExecutionStage = new Stage();
-		recordProgramExecutionStage.initModality(Modality.WINDOW_MODAL);
-		recordProgramExecutionStage.initOwner(menuBar.getScene().getWindow());
-		
-		try {
-			Parent parent = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/RecordProgramExecution.fxml"));
-			Scene scene = new Scene(parent, 600, 400);
-			recordProgramExecutionStage.setScene(scene);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} 
-		recordProgramExecutionStage.showAndWait();
+		StandardAlerts.unimplemented("For now: right click on the test case->Record execution");
 	}
 
 	@FXML

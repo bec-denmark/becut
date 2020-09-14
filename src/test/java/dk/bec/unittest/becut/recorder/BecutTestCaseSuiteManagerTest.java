@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import dk.bec.unittest.becut.compilelist.Parse;
@@ -14,6 +15,7 @@ import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 
 public class BecutTestCaseSuiteManagerTest {
+	@Ignore
 	@Test
 	public void testRDZDB2() throws Exception {
 		byte[] fileContentsUnencoded = Files.readAllBytes(
