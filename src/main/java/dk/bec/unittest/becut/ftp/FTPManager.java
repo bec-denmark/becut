@@ -7,13 +7,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
+import dk.bec.unittest.becut.DDNAME;
 import dk.bec.unittest.becut.Settings;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
@@ -21,6 +29,7 @@ import dk.bec.unittest.becut.ftp.model.HostJob;
 import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.ftp.model.HostJobStatus;
 import dk.bec.unittest.becut.ftp.model.JESFTPDataset;
+import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
 
 public class FTPManager {
 	
@@ -31,62 +40,46 @@ public class FTPManager {
 
 	public static void connectAndLogin(FTPClient ftp, Credential credential) throws Exception {
 		ftp.connect(credential.getHost());
-		if (!ftp.getReplyString().substring(0, 3).equals("220")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "220");
 		ftp.enterLocalPassiveMode();
 		ftp.login(credential.getUsername(), credential.getPassword());
-		if (!ftp.getReplyString().substring(0, 3).equals("230")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "230");
 	}
 
 	public static byte[] retrieveVBMember(FTPClient ftp, String datasetName) throws Exception {
 		ftp.setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
 		ftp.site("rdw");
-		if (!ftp.getReplyString().substring(0, 3).equals("200")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "200");
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(Settings.OUTPUTSTREAM_BUFFER_INITIAL_CAPACITY);
-		ftp.retrieveFile("'" + datasetName + "'", outputStream);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		retrieveFile(ftp, "'" + datasetName + "'", outputStream);
 		outputStream.close();
 		return outputStream.toByteArray();
 	}
 
 	public static String retrieveMember(FTPClient ftp, String datasetName) throws Exception {
 		ftp.site("filetype=seq");
-		if (!ftp.getReplyString().substring(0, 3).equals("200")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "200");
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(Settings.OUTPUTSTREAM_BUFFER_INITIAL_CAPACITY);
-		ftp.retrieveFile("'" + datasetName + "'", outputStream);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		retrieveFile(ftp, "'" + datasetName + "'", outputStream);
 		outputStream.close();
 		return outputStream.toString();
 	}
 	
-	public static Boolean sendDataset(FTPClient ftp, String datasetName, File file, DatasetProperties datasetProperties) throws Exception {
+	public static void sendDataset(FTPClient ftp, String datasetName, File file, DatasetProperties datasetProperties) {
 		setUp(ftp, datasetProperties);
-		return ftp.storeFile("'" + datasetName + "'", new FileInputStream(file));
+		storeFile(ftp, "'" + datasetName + "'", file);
 	}
 	
-	public static Boolean allocateDataset(FTPClient ftp, String datasetName, DatasetProperties datasetProperties) throws Exception {
+	public static void allocateDataset(FTPClient ftp, String datasetName, DatasetProperties datasetProperties) {
 		setUp(ftp, datasetProperties);
-		return ftp.storeFile("'" + datasetName + "'", new ByteArrayInputStream("".getBytes()));
+		storeEmptyFile(ftp, "'" + datasetName + "'");
 	}
 	
 	public static Boolean deleteMember(FTPClient ftp, String datasetName) throws Exception {
 		ftp.site("filetype=seq");
-		if (!ftp.getReplyString().substring(0, 3).equals("200")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "200");
 		Boolean result = ftp.deleteFile("'" + datasetName + "'");
 		if (!result) {
 			throw new Exception("FTP delete command failed for deleting dataset: " + datasetName);
@@ -97,7 +90,7 @@ public class FTPManager {
 	public static HostJob getJob(FTPClient ftpClient, String jobId, boolean downloadContent) throws Exception {
 		HostJob job = new HostJob();
 		job.setId(jobId);
-
+		
 		JESFTPDataset[] datasets = listJES(ftpClient, jobId);
 		if (datasets.length > 0) {
 			job = datasets[0].getJob();
@@ -110,9 +103,28 @@ public class FTPManager {
 		for (int i = 0; i < datasets.length; i++) {
 			HostJobDataset jobDataset = datasets[i].toJobDataset();
 			if (downloadContent) {
-				jobDataset.setContents(retrieveJESDataset(ftpClient, jobDataset));
+				//jobDataset.setContents(files.get(i));
+				//jobDataset.setContents(retrieveJESDataset(ftpClient, jobDataset));
 			}
 			job.getDatasets().put(datasets[i].getDdname(), jobDataset);
+		}
+		
+		if(downloadContent) {
+			//downloading all dss takes time, get only those needed
+			if(job.getReturnCode().equals("RC=0000")) {
+				final HostJob finaljob = job;
+				Arrays.asList(DDNAME.INSPLOG, DDNAME.SYSOUT)
+					.forEach(dsName -> {
+						HostJobDataset ds = finaljob.getDataset(dsName);
+						if(ds != null) {
+							ds.setContents(retrieveJESDataset(ftpClient, finaljob.getDataset(dsName)));
+						}
+					});
+			} else {
+				//get all DDs
+				String dds = retrieveJESDataset(ftpClient, jobId,  "X");
+				throw new ReturnCodeDifferentFromCC000(job.getReturnCode() +"\n" + dds);
+			}
 		}
 		return job;		
 	}
@@ -123,9 +135,7 @@ public class FTPManager {
 		ftp.site("JESOWNER=*");
 		ftp.site("JESJOBNAME=*");
 		FTPFile[] files = ftp.listFiles(jobId);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		checkReply(ftp, "250");
 		return Arrays.copyOf(files, files.length, JESFTPDataset[].class);
 	}
 	
@@ -134,29 +144,26 @@ public class FTPManager {
 		ftp.site("JESOWNER=*");
 		ftp.site("JESJOBNAME=*");
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(Settings.OUTPUTSTREAM_BUFFER_INITIAL_CAPACITY);
-		ftp.retrieveFile(jobId, outputStream);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
-		}
-		outputStream.close();
+		retrieveFile(ftp, jobId, outputStream);
 		return outputStream.toString();
 	}
 	
-	public static String retrieveJESDataset(FTPClient ftp, HostJobDataset dataset) throws Exception {
+	public static String retrieveJESDataset(FTPClient ftp, HostJobDataset dataset) {
 		return retrieveJESDataset(ftp, dataset.getJob().getId(), dataset.getId().toString());
 	}
 	
-	public static String retrieveJESDataset(FTPClient ftp, String jobId, String datasetID) throws Exception {
-		ftp.site("FILETYPE=JES");
-		ftp.site("JESOWNER=*");
-		ftp.site("JESJOBNAME=*");
+	public static String retrieveJESDataset(FTPClient ftp, String jobId, String datasetID) {
+		site(ftp, "FILETYPE=JES");
+		site(ftp, "JESOWNER=*");
+		site(ftp, "JESJOBNAME=*");
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(Settings.OUTPUTSTREAM_BUFFER_INITIAL_CAPACITY);
-		ftp.retrieveFile(jobId + "." + datasetID, outputStream);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
+		retrieveFile(ftp, jobId + "." + datasetID, outputStream);
+		//FIXME should be set by -Dfile.encoding=Cp1252 but somewhere it is set to UTF-8
+		try {
+			return outputStream.toString("Cp1252");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
 		}
-		outputStream.close();
-		return outputStream.toString();
 	}
 	
 	public static String submitJob(FTPClient ftp, InputStream jcl) {
@@ -167,10 +174,8 @@ public class FTPManager {
 			String reply = ftp.getReplyString();
 			jobId = getJobId(reply);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		
 		return jobId;
 	}
 	
@@ -178,18 +183,17 @@ public class FTPManager {
 		try {
 			return submitJob(ftp, new FileInputStream(jcl));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return "";
 	}
 	
 	public static HostJob submitJobAndWaitToComplete(FTPClient ftp, InputStream jcl, Integer waitInSeconds, Boolean downloadContent) throws Exception {
 		String jobId = submitJob(ftp, jcl);
 		boolean jobCompleted = false;
 		
+		HostJob hostJob = null;
 		for (int i = 0; i < Math.ceil(waitInSeconds.doubleValue()/Settings.JOB_POLLING_RATE); i++) {
-			HostJob hostJob = FTPManager.getJob(ftp, jobId, false);
+			hostJob = FTPManager.getJob(ftp, jobId, false);
 			if (hostJob.getStatus().equals(HostJobStatus.OUTPUT)) {
 				jobCompleted = true;
 				break;
@@ -197,27 +201,22 @@ public class FTPManager {
 			Thread.sleep(Settings.JOB_POLLING_RATE * 1000);
 		}
 		
-		//We can't download the content if the job never finished
-		if (!jobCompleted) {
-			downloadContent = false;
-		}
+		hostJob = getJob(ftp, jobId, jobCompleted);
 		
-		return getJob(ftp, jobId, downloadContent);
+		return hostJob;
 	}
 	
 	public static HostJob submitJobAndWaitToComplete(FTPClient ftp, File jcl, Integer waitInSeconds, Boolean downloadContent) throws Exception {
 		return submitJobAndWaitToComplete(ftp, new FileInputStream(jcl), waitInSeconds, downloadContent);
 	}
 	
-	private static void setUp(FTPClient ftp, DatasetProperties datasetProperties) throws Exception {
+	private static void setUp(FTPClient ftp, DatasetProperties datasetProperties) {
 		for (String siteCommand: datasetProperties.getFTPSiteCommands()) {
-			ftp.sendSiteCommand(siteCommand);
-			if (!ftp.getReplyString().substring(0, 3).equals("200")) {
-				throw new Exception(ftp.getReplyString());
-			}
+			sendSiteCommand(ftp, siteCommand);
+			checkReply(ftp, "200");
 		}
 	}
-	
+
 	private static String getJobId(String reply) {
 		String jobId = "";
 		Matcher matcher = JOB_ID_PATTERN.matcher(reply);
@@ -226,5 +225,69 @@ public class FTPManager {
 		}
 		return jobId;
 	}
+
+	private static void site(FTPClient ftp, String parameters) {
+		try {
+			ftp.site(parameters);
+			checkReply(ftp, "200");			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
+	private static void retrieveFile(FTPClient ftp, String file, OutputStream os) {
+		try {
+			if(!ftp.retrieveFile(file, os)) {
+				throw new FTPRetrieveFileException(replyStrings(ftp));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void storeFile(FTPClient ftp, String fileName, File file) {
+		try {
+			try(InputStream is = new FileInputStream(file)) {
+				if(!ftp.storeFile(fileName, is)) {
+					throw new FTPRetrieveFileException(replyStrings(ftp));
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void storeEmptyFile(FTPClient ftp, String fileName) {
+		try {
+			try(InputStream is = new ByteArrayInputStream(new byte[0])) {
+				if(!ftp.storeFile(fileName, is)) {
+					throw new FTPRetrieveFileException(replyStrings(ftp));
+				}
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private static void checkReply(FTPClient ftp, String status) {
+		if (!ftp.getReplyString().substring(0, 3).equals(status)) {
+			throw new RuntimeException(replyStrings(ftp));
+		}
+	}
+
+	private static void sendSiteCommand(FTPClient ftp, String siteCommand) {
+		try {
+			if(!ftp.sendSiteCommand(siteCommand)) {
+				throw new FTPRetrieveFileException(replyStrings(ftp));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private static String replyStrings(FTPClient ftp) {
+		return Arrays.asList(ftp.getReplyStrings())
+				.stream()
+				.collect(Collectors.joining(" "));		
+	}
 }

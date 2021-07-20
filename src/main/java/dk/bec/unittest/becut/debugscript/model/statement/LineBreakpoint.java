@@ -3,7 +3,7 @@ package dk.bec.unittest.becut.debugscript.model.statement;
 import dk.bec.unittest.becut.debugscript.model.DebugEntity;
 import dk.bec.unittest.becut.debugscript.model.Perform;
 
-public class LineBreakpoint implements DebugEntity, Statement {
+public class LineBreakpoint extends StatementBase implements DebugEntity {
 
 	private Integer lineNumber;
 	private Perform perform;

@@ -3,15 +3,20 @@ package dk.bec.unittest.becut.ui.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import dk.bec.unittest.becut.compilelist.Parse;
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
+import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.LoadCompileListing;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
@@ -31,6 +36,12 @@ public class LoadCompileListingController implements Initializable {
 	
 	private Map<CompileListType, Pair<Node, LoadCompileListing>> compileListingSource = new HashMap<CompileListType, Pair<Node,LoadCompileListing>>();
 
+	@FXML
+	private Button ok;
+	@FXML
+	public void ok() {
+		loadCompileListingIntoContext();
+	}
 
 	public LoadCompileListing getCurrentCompileListing() {
 		return currentCompileListing;
@@ -38,7 +49,18 @@ public class LoadCompileListingController implements Initializable {
 	
 	public void loadCompileListingIntoContext() {
 		currentCompileListing.updateStatus();
-		BECutAppContext.getContext().getUnitTest().setCompileListing(currentCompileListing.getCompileListing());
+		
+		CompileListing compileListing = Parse.parse(currentCompileListing.getCompileListing());
+		
+		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		becutTestCaseSuite.setCompileListing(compileListing);
+		
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
+		
+		List<String> lines = compileListing.getSourceMapAndCrossReference().getOriginalSource();
+		BECutAppContext.getContext().getSourceCode().setValue(lines);
+		
+		ok.getScene().getWindow().hide();
 	}
 
 	@Override
@@ -52,7 +74,7 @@ public class LoadCompileListingController implements Initializable {
 			currentCompileListing = currentType.getValue();
 		});
 		
-		//Setup all subnode
+		//Setup all subnodes
 		try {
 			//compilingListFile = FXMLLoader.load(getClass().getResource("/dk/bec/unittest/becut/ui/view/LoadCompileListingFile.fxml"));
 			FXMLLoader datasetLoader =  new FXMLLoader();
@@ -68,8 +90,7 @@ public class LoadCompileListingController implements Initializable {
 			compileListingSource.put(CompileListType.JES, new Pair<Node, LoadCompileListing>(compilingListJES, JESLoader.getController()));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		compileListingMethod.getSelectionModel().selectFirst();
 	}

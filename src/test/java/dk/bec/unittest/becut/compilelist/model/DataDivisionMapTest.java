@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.List;
 
 import dk.bec.unittest.becut.compilelist.Parse;
 import junit.framework.TestCase;
@@ -154,4 +156,28 @@ public class DataDivisionMapTest extends TestCase {
 		}	
 	}
 
+	public void testShouldParseLastRecordDescription() {
+		String listingPart = "Data Definition Attribute codes (rightmost column) have the following meanings:                                                     \r\n" + 
+				"    D = Object of OCCURS DEPENDING    G = GLOBAL                             S = Spanned file                                       \r\n" + 
+				"    E = EXTERNAL                      O = Has OCCURS clause                  U = Undefined format file                              \r\n" + 
+				"    F = Fixed-length file             OG= Group has own length definition    V = Variable-length file                               \r\n" + 
+				"    FB= Fixed-length blocked file     R = REDEFINES                          VB= Variable-length blocked file                       \r\n" + 
+				"Source   Hierarchy and                                    Base       Hex-Displacement  Asmblr Data                    Data Def      \r\n" + 
+				"LineID   Data Name                                        Locator    Blk   Structure   Definition      Data Type      Attributes    \r\n" + 
+				"     4  PROGRAM-ID SUMMER------------------------------------------------------------------------------------------------------*    \r\n" + 
+				"    16   FD NUM-LIST. . . . . . . . . . . . . . . . . . .                                              QSAM           F             \r\n" + 
+				"    17   1  NUM-LIST-FIELDS . . . . . . . . . . . . . . . BLF=00000  000               DS 0CL80        Group                        \r\n" + 
+				"    18     2  NUM-VALUE . . . . . . . . . . . . . . . . . BLF=00000  000   0 000 000   DS 4C           Disp-Num                     \r\n" + 
+				"    19     2  FILLER. . . . . . . . . . . . . . . . . . . BLF=00000  004   0 000 004   DS 76C          Display                      \r\n" + 
+				"    22   1  WS-LIST-FIELDS. . . . . . . . . . . . . . . . BLW=00000  000               DS 0CL80        Group                        \r\n" + 
+				"    23     2  WS-NUM. . . . . . . . . . . . . . . . . . . BLW=00000  000   0 000 000   DS 4C           Disp-Num                     \r\n" + 
+				"    24     2  FILLER. . . . . . . . . . . . . . . . . . . BLW=00000  004   0 000 004   DS 76C          Display                      \r\n" + 
+				"    25   1  WS-EOF. . . . . . . . . . . . . . . . . . . . BLW=00000  050               DS 1C           Alphabetic                   \r\n" + 
+				"    26   1  WS-SUM. . . . . . . . . . . . . . . . . . . . BLW=00000  058               DS 5C           Disp-Num                     ";
+		
+		List<String> lines = Arrays.asList(listingPart.split("\\r\\n"));
+
+		DataDivisionMap dd = new DataDivisionMap(lines);
+		assertTrue(dd.getRecord("WS-SUM") != null);
+	}
 }

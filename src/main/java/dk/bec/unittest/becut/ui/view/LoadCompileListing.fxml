@@ -15,5 +15,6 @@
 	
 	<Pane fx:id="content" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3" />
 	
+	<Button mnemonicParsing="false" fx:id="ok" defaultButton="true" onAction="#ok" text="Ok" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 </GridPane>
 

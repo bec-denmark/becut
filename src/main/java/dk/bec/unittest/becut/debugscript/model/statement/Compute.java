@@ -3,7 +3,7 @@ package dk.bec.unittest.becut.debugscript.model.statement;
 import dk.bec.unittest.becut.debugscript.model.Expression;
 import dk.bec.unittest.becut.debugscript.model.variable.Variable;
 
-public class Compute implements Statement {
+public class Compute extends StatementBase {
 
 	private Variable leftSide;
 	private Expression rightSide;

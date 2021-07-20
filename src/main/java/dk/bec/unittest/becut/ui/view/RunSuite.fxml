@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.Pane?>
 
-<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.RunDebugScriptController" 
+<GridPane fx:controller="dk.bec.unittest.becut.ui.controller.RunSuiteController" 
 	xmlns:fx="http://javafx.com/fxml/1"
 	alignment="center"
 	hgap="10"
@@ -21,14 +21,14 @@
 	
 	<Label text="Run the current testcase on the host" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="3"/>
 	
-	<Label text="Load moodule name (if different than progrman name)" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+	<Label text="Load module name (if different than program name)" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 	<TextField id="LoadModuleName" fx:id="loadModuleName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 	<ComboBox id="RuntimeEnvironments" fx:id="runtimeEnviromentsBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 		
 	<Label text="Job name" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
 	<TextField id="JobName" fx:id="jobName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 		
-	<Button mnemonicParsing="false" onAction="#ok" text="Ok" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+	<Button mnemonicParsing="false" defaultButton="true" onAction="#ok" text="Ok" GridPane.columnIndex="2" GridPane.rowIndex="4" />
 	<Button mnemonicParsing="false" onAction="#cancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.Halignment="RIGHT"/>
 </GridPane>
 

@@ -1,9 +1,17 @@
 package dk.bec.unittest.becut.ui.model;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import com.google.common.eventbus.EventBus;
 
 import dk.bec.unittest.becut.ftp.model.Credential;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,26 +22,54 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class BECutAppContext {
-	
 	private static BECutAppContext context;
 	
-	private UnitTest unitTest;
+	private UnitTestSuite unitTestSuite;
+	
+	private Path unitTestSuiteFolder;
 	
 	private Credential credential;
 	
 	private Stage primaryStage;
 	
 	private SimpleStringProperty compileListStatus = new SimpleStringProperty("None");
+	private SimpleObjectProperty<List<String>> sourceCode = new SimpleObjectProperty<>();
 	
+	EventBus eventBus = new EventBus(); 
+	
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+
 	private BECutAppContext(Stage primaryStage) {
-		this.unitTest = new UnitTest();
+		this.unitTestSuite = new UnitTestSuite("Test suite", "", "");
 		this.primaryStage = primaryStage;
 	}
 
-	public UnitTest getUnitTest() {
-		return unitTest;
+	public UnitTestSuite getUnitTestSuite() {
+		return unitTestSuite;
 	}
 	
+	public Path getUnitTestSuiteFolder() {
+		if(unitTestSuiteFolder == null || !Files.exists(unitTestSuiteFolder)) {
+			try {
+				unitTestSuiteFolder = Files.createTempDirectory("becut");
+				return unitTestSuiteFolder;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return unitTestSuiteFolder;
+	}
+
+	public Path getDebugScriptPath() {
+		return Paths.get(getUnitTestSuiteFolder().toString(), "debug_script.txt");
+	}
+	
+	public void setUnitTestSuiteFolder(Path unitTestSuiteFolder) {
+		this.unitTestSuiteFolder = unitTestSuiteFolder;
+	}
+
 	public Credential getCredential() {
 		Credential c;
 		if (credential == null) {
@@ -70,6 +106,10 @@ public class BECutAppContext {
 		return compileListStatus;
 	}
 
+	public ObjectProperty<List<String>> getSourceCode() {
+		return sourceCode;
+	}
+	
 	public static BECutAppContext getContext() {
 		if (context == null) {
 			Alert alert = new Alert(AlertType.ERROR, "No primary stage set");

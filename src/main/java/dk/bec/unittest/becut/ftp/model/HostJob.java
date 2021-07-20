@@ -3,6 +3,8 @@ package dk.bec.unittest.becut.ftp.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import dk.bec.unittest.becut.DDNAME;
+
 public class HostJob {
 
 	private String name;
@@ -69,4 +71,12 @@ public class HostJob {
 		this.datasets = datasets;
 	}
 
+	public HostJobDataset getDataset(DDNAME ddname) {
+		return datasets.get(ddname.name());
+	}
+	
+	@Override
+	public String toString() {
+		return getId() + " " + getReturnCode();
+	}
 }
