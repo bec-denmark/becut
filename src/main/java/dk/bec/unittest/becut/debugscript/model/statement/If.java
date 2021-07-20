@@ -5,7 +5,7 @@ import java.util.List;
 
 import dk.bec.unittest.becut.debugscript.model.conditional.Conditional;
 
-public class If implements Statement {
+public class If extends StatementBase {
 
 	private Conditional conditional;
 	private List<Statement> body;

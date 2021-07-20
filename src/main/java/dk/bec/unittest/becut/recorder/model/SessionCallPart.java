@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dk.bec.unittest.becut.recorder.DebugToolLogParser;
-
-
 public class SessionCallPart {
 
 	private List<SessionRecord> records = new ArrayList<SessionRecord>();
@@ -15,8 +12,7 @@ public class SessionCallPart {
 	private Map<String, SessionRecord> sessionRecordMap = new HashMap<String, SessionRecord>();
 	
 	public SessionCallPart(List<String> callBlock) {
-		int i = 0;
-		while (!(callBlock.get(i).startsWith(DebugToolLogParser.END_CALL_MARKER) || callBlock.get(i).startsWith(DebugToolLogParser.END_AFTER_CALL_MARKER))) {
+		for(int i = 0; i < callBlock.size(); ) {
 			if (callBlock.get(i).matches("^\\d{2}.*$")) {
 				SessionRecord sessionRecord = new SessionRecord(callBlock.get(i));
 				if (sessionRecord.getLevel() == 1) {

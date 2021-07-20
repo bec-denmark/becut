@@ -1,21 +1,42 @@
 package dk.bec.unittest.becut.testcase.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import dk.bec.unittest.becut.debugscript.model.DebugScript;
 
 public class BecutTestCase {
-
 	private String testCaseName;
 	private String testCaseId;
 	private String programName;
 	private PreCondition preCondition;
 	private List<ExternalCall> externalCalls = new ArrayList<>();
 	private PostCondition postCondition;
+	private DebugScript debugScript;
 
+	//SELECT NUM-LIST ASSIGN TO INPUT1.
+	//NUM-LIST and INPUT1 assosiation needed for getting record size info from the AST of the source
+	private Map<String, String> fileControlAssignments = new HashMap<>();
+	
+	public Map<String, String> getFileControlAssignments() {
+		return fileControlAssignments;
+	}
+
+	public void setFileControlAssignments(Map<String, String> fileControlAssignments) {
+		this.fileControlAssignments = fileControlAssignments;
+	}
+
+	@JsonIgnore
 	public String getTestCaseName() {
 		return testCaseName;
 	}
 
+	@JsonProperty
 	public void setTestCaseName(String testCaseName) {
 		this.testCaseName = testCaseName;
 	}
@@ -82,5 +103,12 @@ public class BecutTestCase {
 	public void setPostCondition(PostCondition postCondition) {
 		this.postCondition = postCondition;
 	}
+	
+	public DebugScript getDebugScript() {
+		return debugScript;
+	}
 
+	public void setDebugScript(DebugScript debugScript) {
+		this.debugScript = debugScript;
+	}
 }

@@ -6,6 +6,6 @@
 <HBox fx:controller="dk.bec.unittest.becut.ui.controller.StatusBarController" 
 	xmlns:fx="http://javafx.com/fxml/1"
 	>
-	<Label text="Currently loaded compile lisitng: " />
+	<Label text="Currently loaded compile listing: " />
 	<Label fx:id="currentCompileListingLabel" />
 </HBox>

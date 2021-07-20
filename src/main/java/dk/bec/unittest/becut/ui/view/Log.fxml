@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.TextArea?>
+
+<BorderPane fx:controller="dk.bec.unittest.becut.ui.controller.LogController" 
+		xmlns:fx="http://javafx.com/fxml/1" fx:id="pane"/>

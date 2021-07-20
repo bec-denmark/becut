@@ -9,15 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
 public class StatusBarController implements Initializable {
-	
 	@FXML
 	private Label currentCompileListingLabel;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		currentCompileListingLabel.textProperty().bind(BECutAppContext.getContext().getCompileListStatus());
-		// TODO Auto-generated method stub
-		
 	}
-
 }

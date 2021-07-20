@@ -34,7 +34,19 @@ public class Parse {
 	
 	//Remove pagination titles from compile listing
 	public static List<String> clearPaginationHeaders(List<String> compileListing) {
-		return compileListing.stream().filter(paginationHeadersPredicate).collect(Collectors.<String>toList());
+		//FIXME temp logic for removing 
+		//mysterious first column containing either WS, 1 or 0 
+		//this column is present when listing comes from FTP
+		boolean cutoffFirstColumn = !compileListing.isEmpty() 
+				&& compileListing.get(0) != null
+				&& compileListing.get(0).startsWith("1PP");
+		return compileListing
+				.stream()
+				.map(line -> (cutoffFirstColumn && !line.isEmpty())
+						? line.substring(1)
+						: line)
+				.filter(paginationHeadersPredicate)
+				.collect(Collectors.toList());
 	}
 	
 	public static CompileListing parse(File file) throws FileNotFoundException {
@@ -43,7 +55,7 @@ public class Parse {
 	
 	public static CompileListing parse(InputStream inputStream) {
 		List<String> compileListing = new ArrayList<String>();
-		try (Scanner s = new Scanner(inputStream, "UTF-8")) {
+		try (Scanner s = new Scanner(inputStream)) {
 			while (s.hasNextLine()) {
 				compileListing.add(s.nextLine());
 			}
@@ -72,7 +84,7 @@ public class Parse {
 		int dataDivisionStart = 0;
 		int dataDivisionEnd = 0;
 		boolean dataDivisionEndFound = false;
-
+		
 		for (int i = 0; i < cleanCompileList.size(); i++) {
 			String line = cleanCompileList.get(i);
 			if ("Invocation parameters:".equals(line)) {
@@ -82,13 +94,18 @@ public class Parse {
 				invocationEnd = count;
 				compileOptionStart = count + 1;
 			}
-			else if (line.matches("^.*ID.* DIVISION.*$")) {
+			//one may try to find source code start by matching ID DIVISION, 
+			//but thus starting comments may got lost and confuse the user
+			//or even better look for sequence:
+			//'/* %PROGNAME%'                                                                                                                           
+			//' 000001'                                                                                     
+			else if (line.matches(" {2}000001C?\\s+.*")) {
 				compileOptionEnd = count - 1;
 				sourceStart = count;
 			}
 			else if (line.startsWith("An \"M\" preceding a data-name reference indicates that the data-name is modified by this reference.")) {
 				if (cleanCompileList.get(i-1).startsWith("*/")) {
-					sourceEnd = count -1;
+					sourceEnd = count - 1;
 				} else {
 					sourceEnd = count;
 				}
@@ -120,7 +137,7 @@ public class Parse {
 				if (procedureStartFound) {
 					procedureEnd = count;
 				}
-				programStart = count + 1;
+				programStart = count;
 				programStartFound = true;
 			}
 			else if (line.startsWith("Data Division Map")) {
@@ -135,14 +152,23 @@ public class Parse {
 			count++;
 		}
 		
-		InvocationParameters invocationParameters = new InvocationParameters(cleanCompileList.subList(invocationStart, invocationEnd));
-		CompileOptions compileOptions = new CompileOptions(cleanCompileList.subList(compileOptionStart, compileOptionEnd));
-		SourceMapAndCrossReference sourceMapAndCrossReference = new SourceMapAndCrossReference(cleanCompileList.subList(sourceStart, sourceEnd));
-		DataNamesCrossReference dataNamesCrossReference = new DataNamesCrossReference(cleanCompileList.subList(dataNamesStart, dataNamesEnd));
-		ProceduresCrossReference proceduresCrossReference = new ProceduresCrossReference(cleanCompileList.subList(procedureStart, procedureEnd));
-		ProgramsCrossReference programsCrossReference = new ProgramsCrossReference(cleanCompileList.subList(programStart, programEnd));
-		DataDivisionMap dataDivisionMap = new DataDivisionMap(cleanCompileList.subList(dataDivisionStart, dataDivisionEnd));
-		return new CompileListing(invocationParameters, compileOptions, sourceMapAndCrossReference, dataNamesCrossReference, proceduresCrossReference, programsCrossReference, dataDivisionMap, compileListing);
+		InvocationParameters invocationParameters 
+			= new InvocationParameters(cleanCompileList.subList(invocationStart, invocationEnd));
+		CompileOptions compileOptions 
+			= new CompileOptions(cleanCompileList.subList(compileOptionStart, compileOptionEnd));
+		SourceMapAndCrossReference sourceMapAndCrossReference 
+			= new SourceMapAndCrossReference(cleanCompileList.subList(sourceStart, sourceEnd));
+		DataNamesCrossReference dataNamesCrossReference 
+			= new DataNamesCrossReference(cleanCompileList.subList(dataNamesStart, dataNamesEnd));
+		ProceduresCrossReference proceduresCrossReference 
+			= new ProceduresCrossReference(cleanCompileList.subList(procedureStart, procedureEnd));
+		ProgramsCrossReference programsCrossReference 
+			= new ProgramsCrossReference(cleanCompileList.subList(programStart, programEnd));
+		DataDivisionMap dataDivisionMap 
+			= new DataDivisionMap(cleanCompileList.subList(dataDivisionStart, dataDivisionEnd));
+		return new CompileListing(invocationParameters, compileOptions, sourceMapAndCrossReference, 
+				dataNamesCrossReference, proceduresCrossReference, programsCrossReference, 
+				dataDivisionMap, compileListing);
 		
 	}
 

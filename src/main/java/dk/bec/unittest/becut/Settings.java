@@ -23,6 +23,7 @@ public class Settings {
 	private static final String PROPERTIES_FILENAME = "becut.properties";
 	private static final String RESOURCES_ROOT = "/";
 	private static final String JAR_FOLDER;
+	private static final String JAR_LOCATION = Settings.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 	
 	public static String FTP_HOST = "localhost";
 	public static String USERNAME = "";
@@ -61,6 +62,13 @@ public class Settings {
 		}
 		if (inputStream == null) {
 			inputStream = Settings.class.getResourceAsStream(RESOURCES_ROOT + PROPERTIES_FILENAME);
+		}
+		if(inputStream == null) {
+			try {
+				inputStream = new FileInputStream(JAR_LOCATION + "/" + PROPERTIES_FILENAME);
+			} catch (FileNotFoundException e) {
+				System.err.println(e);
+			}
 		}
 		if (inputStream != null) {
 			try {

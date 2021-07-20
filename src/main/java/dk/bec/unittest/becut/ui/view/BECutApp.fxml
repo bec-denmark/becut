@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
 
 <BorderPane fx:controller="dk.bec.unittest.becut.ui.controller.BECutAppController" xmlns:fx="http://javafx.com/fxml/1">
 	<top>
 		<fx:include source="/dk/bec/unittest/becut/ui/view/Menu.fxml"/>
 	</top>
 	<center>
-		<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCase.fxml"/>
+		<SplitPane id="SplitPane" dividerPositions="0.8" orientation="VERTICAL">
+			<items>
+				<SplitPane id="SplitPane" dividerPositions="0.3" orientation="HORIZONTAL">
+					<items>
+						<fx:include fx:id="sourceCode" source="/dk/bec/unittest/becut/ui/view/SourceCode.fxml"/>
+						<fx:include source="/dk/bec/unittest/becut/ui/view/BecutTestCaseSuite.fxml"/>
+					</items>
+				</SplitPane>
+				<fx:include fx:id="Log" source="/dk/bec/unittest/becut/ui/view/Log.fxml" />
+			</items>
+		</SplitPane>
 	</center>
 	<bottom>
 		<fx:include fx:id="statusBar" source="/dk/bec/unittest/becut/ui/view/StatusBar.fxml" />

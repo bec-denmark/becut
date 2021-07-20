@@ -19,7 +19,6 @@ public class CompileListing extends AbstractCompileListingSection {
 			SourceMapAndCrossReference sourceMapAndCrossReference, DataNamesCrossReference dataNamesCrossReference,
 			ProceduresCrossReference proceduresCrossReference, ProgramsCrossReference programsCrossReference,
 			DataDivisionMap dataDivisionMap, List<String> originalSource) {
-		super();
 		this.originalSource = originalSource;
 		this.invocationParameters = invocationParameters;
 		this.compileOptions = compileOptions;
@@ -28,7 +27,8 @@ public class CompileListing extends AbstractCompileListingSection {
 		this.proceduresCrossReference = proceduresCrossReference;
 		this.programsCrossReference = programsCrossReference;
 		this.dataDivisionMap = dataDivisionMap;
-		this.programName = TreeUtil.stripQuotes(TreeUtil.getFirst(sourceMapAndCrossReference.getAst(), "programName").getProgramText());
+		this.programName = TreeUtil.stripQuotes(
+				TreeUtil.getFirst(sourceMapAndCrossReference.getAst(), "programName").getProgramText());
 	}
 
 	public InvocationParameters getInvocationParameters() {

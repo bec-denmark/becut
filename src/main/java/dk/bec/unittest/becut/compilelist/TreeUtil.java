@@ -11,13 +11,13 @@ public class TreeUtil {
 	private TreeUtil() {}
 	
 	public static List<Tree> getDescendents(Tree tree, String nodeType) {
-		if (tree == null) {
-			return Collections.emptyList();
-		}
-		List<Tree> descendents = new ArrayList<>();
+		return getDescendents(tree, nodeType, new ArrayList<Tree>());
+	}
+
+	private static List<Tree> getDescendents(Tree tree, String nodeType, List<Tree> descendents) {
 		descendents.addAll(tree.getChildren(nodeType));
 		for (Tree t : tree.getChildren()) {
-			descendents.addAll(getDescendents(t, nodeType));
+			getDescendents(t, nodeType, descendents);
 		}
 		return descendents;
 	}

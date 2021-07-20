@@ -1,33 +1,35 @@
 package dk.bec.unittest.becut.recorder;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-import dk.bec.unittest.becut.recorder.model.SessionCall;
-import dk.bec.unittest.becut.recorder.model.SessionRecord;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
-import junit.framework.TestCase;
 
-public class DebugToolLogParserTest extends TestCase {
+public class DebugToolLogParserTest {
+	@Ignore
+	@Test
+	public void testParseMAT561Recording() throws Exception {
+		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/mat561.txt"));
+		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents, "filename");
+		assertEquals("Program name", "MAT561", recording.getProgramName());
+		assertEquals("Session calls count", 3, recording.getSessionCalls().size());
+	}
 
-	public void testParseMAT510Recording() {
-		try {
-			byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/mat510.txt"));
-			String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
-			SessionRecording recording = DebugToolLogParser.Parse(fileContents, "filename");
-			List<SessionRecord> changedSessionRecords = new ArrayList<SessionRecord>();
-			for (SessionCall sessionCall: recording.getSessionCalls()) {
-				changedSessionRecords.addAll(sessionCall.getChangedParameters());
-			}
-			System.out.println("We're done");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	@Test
+	public void testParseSameCallDifferentLines() throws Exception {
+		byte[] fileContentsUnencoded = Files.readAllBytes(Paths.get("./src/test/resources/parameter_recordings/same_call_different_lines.txt"));
+		String fileContents = new String(fileContentsUnencoded, StandardCharsets.UTF_8);
+		SessionRecording recording = DebugToolLogParser.parseRecording(fileContents, "filename");
+		assertEquals("Program name", "MAT561", recording.getProgramName());
+		assertEquals("Session calls count", 4, recording.getSessionCalls().size());
 	}
 	
+	//TODO another test cases for more than one external call
 }

@@ -1,12 +1,16 @@
 package dk.bec.unittest.becut.testcase.model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +18,7 @@ import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,11 +34,15 @@ public class ExternalCall {
 	private String name;
 	private String displayableName;
 	private Integer lineNumber;
+	private String statementId;
 	private CallType callType;
+
 	@JsonSerialize(using = IterationsSerializer.class)
 	@JsonDeserialize(using = IterationDeserializer.class)
 	private Map<String, ExternalCallIteration> iterations = new LinkedHashMap<String, ExternalCallIteration>();
-	public ExternalCall(String name, String displayableName, Integer lineNumber, CallType callType, Integer iterationOrder, String iterationName, List<Parameter> parameters) {
+
+	public ExternalCall(String name, String displayableName, Integer lineNumber, CallType callType, 
+			Integer iterationOrder, String iterationName, List<Parameter> parameters) {
 		this.name = name;
 		this.displayableName = displayableName;
 		this.lineNumber = lineNumber;
@@ -72,6 +81,14 @@ public class ExternalCall {
 		this.lineNumber = lineNumber;
 	}
 
+	public String getStatementId() {
+		return statementId;
+	}
+	
+	public void setStatementId(String statementId) {
+		this.statementId = statementId;
+	}
+	
 	public CallType getCallType() {
 		return callType;
 	}
@@ -117,6 +134,17 @@ public class ExternalCall {
 		throw new java.lang.UnsupportedOperationException("Not supported yet.");
 	}
 
+	public static ExternalCall mkCopy(ExternalCall externalCall) {
+			ObjectMapper mapper = new ObjectMapper();
+			ByteArrayOutputStream os = new ByteArrayOutputStream(); 
+			try {
+				mapper.writer().writeValue(os, externalCall);
+				return mapper.readValue(new ByteArrayInputStream(os.toByteArray()), ExternalCall.class);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+	}
+	
 	@Override
 	public String toString() {
 		String parameters = "";
@@ -126,9 +154,21 @@ public class ExternalCall {
 		return "CALL " + name + " USING " + parameters;
 	}
 
+	@Override
+	public boolean equals(Object that) {
+		if(!(that instanceof ExternalCall)) {
+			return false;
+		}
+		return equals((ExternalCall)that);
+	}
+	
+	public boolean equals(ExternalCall that) {
+		return this.name.equals(that.name) 
+				&& this.lineNumber.equals(that.lineNumber)
+				&& this.iterations.equals(that.iterations);
+	}
 	
 	private static class IterationsSerializer extends JsonSerializer<Map<String, ExternalCallIteration>> {
-
 		@Override
 		public void serialize(Map<String, ExternalCallIteration> value, JsonGenerator gen,
 				SerializerProvider serializers) throws IOException {
@@ -137,7 +177,6 @@ public class ExternalCall {
 				gen.writeObject(iteration);
 			}
 			gen.writeEndArray();
-			
 		}
 	}
 	

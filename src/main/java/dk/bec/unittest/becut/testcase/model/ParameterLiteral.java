@@ -33,4 +33,8 @@ public class ParameterLiteral extends Parameter {
 	public String guiString() {
 		return "Literal";
 	}
+	
+	public boolean matches(String s) {
+		return value.equals(s);
+	}
 }
