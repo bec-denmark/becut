@@ -1,0 +1,41 @@
+
+        01 BECUT-IC-53-1 PIC 9(9) COMP;
+        MOVE 0 TO BECUT-IC-53-1;
+
+           SET DYNDEBUG OFF;
+        SET LOG ON FILE DUMMY;
+      * Setup preconditions
+
+      * Setup postconditions
+           AT EXIT CALLER
+           PERFORM
+       LIST ("Start BECUT PostCondition");
+       LIST (CALLEE-RETURCODE-OK);
+       LIST ("End BECUT PostCondition");
+
+           END-PERFORM;
+           AT CALL *
+           PERFORM
+       IF %LINE = '53.1' THEN
+       IF BECUT-IC-53-1 = 0 THEN
+       SET CALLEE-RETURCODE-OK TO TRUE;
+       MOVE 0 TO CALLEE-RESULT;
+       END-IF;
+
+       IF BECUT-IC-53-1 = 1 THEN
+       SET CALLEE-RETURCODE-OK TO TRUE;
+       MOVE 0 TO CALLEE-RESULT;
+       END-IF;
+
+       IF BECUT-IC-53-1 = 2 THEN
+       MOVE 1 TO CALLEE-RESULT;       END-IF;
+
+        COMPUTE BECUT-IC-53-1 = 
+        BECUT-IC-53-1 + 1;
+           GO BYPASS;
+       END-IF;
+
+           END-PERFORM;
+           GO;
+      * kilroy was here
+          QUIT;

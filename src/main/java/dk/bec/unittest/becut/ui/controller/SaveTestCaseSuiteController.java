@@ -3,7 +3,7 @@ package dk.bec.unittest.becut.ui.controller;
 import java.io.File;
 
 import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -36,7 +36,7 @@ public class SaveTestCaseSuiteController {
 	@FXML 
 	void save() {
 		testCaseSuiteFolder = new File(testCaseSuitePath.getText());
-		BecutTestCaseSuite becutTestCaseSuite = BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get();
+		BecutTestSuite becutTestCaseSuite = BECutAppContext.getContext().getUnitTestSuite().getBecutTestSuite().get();
 		BecutTestCaseSuiteManager.saveTestCaseSuite(becutTestCaseSuite, testCaseSuiteFolder.toPath());
 		close();
 	}

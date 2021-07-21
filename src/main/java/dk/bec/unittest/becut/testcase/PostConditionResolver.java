@@ -8,7 +8,6 @@ import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.Parameter;
-import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PostConditionComparison;
 import dk.bec.unittest.becut.testcase.model.PostConditionResult;
 

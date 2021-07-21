@@ -3,11 +3,7 @@ package dk.bec.unittest.becut.compilelist;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import koopa.app.CobolParserFactory;
 import koopa.cobol.parser.ParseResults;

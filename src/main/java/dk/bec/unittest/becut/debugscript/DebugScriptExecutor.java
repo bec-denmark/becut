@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,47 +30,58 @@ import org.apache.commons.net.ftp.FTPFileEntryParser;
 import org.apache.commons.net.ftp.parser.FTPFileEntryParserFactory;
 import org.apache.commons.net.ftp.parser.ParserInitializationException;
 
+import dk.bec.unittest.becut.compilelist.CobolNodeType;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.FTPManager;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import dk.bec.unittest.becut.ftp.model.DatasetProperties;
-import dk.bec.unittest.becut.ftp.model.JobResult;
 import dk.bec.unittest.becut.ftp.model.RecordFormat;
 import dk.bec.unittest.becut.ftp.model.SequentialDatasetProperties;
 import dk.bec.unittest.becut.ftp.model.SpaceUnits;
-import dk.bec.unittest.becut.recorder.RecorderManager;
+import dk.bec.unittest.becut.testcase.BecutTestCaseSuiteManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.testcase.model.Parameter;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 
 public class DebugScriptExecutor {
-	public static JobResult testBatch(BecutTestCase becutTestCase, String jobName, String programName) {
+	public static String testBatch(BECutAppContext ctx, BecutTestCase becutTestCase, String jobName, String programName) throws Exception {
+		//TODO cleanup files in finally
 		FTPClient ftpClient = new FTPClient();
-		try {
-			Credential credential = BECutAppContext.getContext().getCredential();
-			FTPManager.connectAndLogin(ftpClient, credential);
-			
-    		Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
-    		if (!Files.exists(debugScriptPath)) {
-        		List<String> jcl = DebugScriptTemplate.createJCLTemplate();
-        		Files.write(debugScriptPath, jcl);
-    		}
-			
-			String user = credential.getUsername();
-			CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
-			Map<String, String> datasetNames = generateDDnames(compileListing, user);
-			putDatasets(ftpClient, becutTestCase, datasetNames, user);
-			List<String> jclTemplate = Files.readAllLines(debugScriptPath);
-			String DDs = jclDDs(datasetNames);
-			String debugScript = ScriptGenerator.generateDebugScript(becutTestCase).generate();
-			String jcl = DebugScriptTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript);
-			
-			InputStream is = new ByteArrayInputStream(jcl.getBytes());
-			String jobId = submitJob(ftpClient, is);
-			return retriveJobResult(ftpClient, jobId, TimeUnit.SECONDS, 60);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		Credential credential = ctx.getCredential();
+		FTPManager.connectAndLogin(ftpClient, credential);
+		
+		Path scriptPath = ctx.getTestScriptPath();
+		if (!Files.exists(scriptPath)) {
+    		List<String> jcl = JCLTemplate.generic();
+    		Files.write(scriptPath, jcl);
 		}
+		List<String> jclTemplate = Files.readAllLines(scriptPath);
+		
+		String user = credential.getUsername();
+		CompileListing compileListing = ctx.getUnitTestSuite().getCompileListing();
+		
+		Map<String, String> datasetNames = generateDDnames(compileListing, user, programName);
+		Path base = Paths.get(ctx.getUnitTestSuiteFolder().toString(), becutTestCase.getTestCaseName());
+		putDatasets(compileListing, ftpClient, base, datasetNames, user);
+		
+		String insplog = randomDDName(user, programName);
+		allocateInspLog(ftpClient, insplog);
+
+		String debugScript = ScriptGenerator.generateDebugScript(compileListing, becutTestCase, insplog).generate();
+		
+		String DDs = jclDDs(datasetNames);
+		String jcl = JCLTemplate.fillTemplate(jclTemplate, user, programName, jobName, DDs, debugScript, "");
+		
+		FTPManager.submitJobAndWaitToComplete(ftpClient, new ByteArrayInputStream(jcl.getBytes()), 60, false);
+		
+		return FTPManager.retrieveMember(ftpClient, insplog);
+	}
+
+	private static void allocateInspLog(FTPClient ftpClient, String inspLog) {
+		DatasetProperties datasetProperties = 
+				new SequentialDatasetProperties(
+						RecordFormat.FIXED_BLOCK, 80, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
+		FTPManager.allocateDataset(ftpClient, inspLog, datasetProperties);
 	}
 	
 	static String submitJob(FTPClient ftp, InputStream jcl) throws Exception {
@@ -80,8 +93,8 @@ public class DebugScriptExecutor {
 		return getJobId(ftp.getReplyString());
 	}
 	
-	static JobResult retriveJobResult(FTPClient ftp, String jobId, TimeUnit units, int time) throws Exception {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(100000);
+	static String retriveJobResult(FTPClient ftp, String jobId, String inspLog, TimeUnit units, int time) throws Exception {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(16384);
 		ftp.setBufferSize(16384);
 		
 		ftp.site("JESOWNER=*");
@@ -125,12 +138,12 @@ public class DebugScriptExecutor {
 			};
 			
 			@Override
-			public FTPFileEntryParser createFileEntryParser(String arg0) throws ParserInitializationException {
+			public FTPFileEntryParser createFileEntryParser(String key) throws ParserInitializationException {
 				return parser;
 			}
 
 			@Override
-			public FTPFileEntryParser createFileEntryParser(FTPClientConfig arg0) throws ParserInitializationException {
+			public FTPFileEntryParser createFileEntryParser(FTPClientConfig config) throws ParserInitializationException {
 				return parser;
 			}
 		}
@@ -139,42 +152,50 @@ public class DebugScriptExecutor {
 		
 		while(!jobIsDone.get()) {
 			ftp.listFiles(jobId);
-			Thread.sleep(500);
+			Thread.sleep(200);
 		}
 		
-		ftp.retrieveFile(jobId, outputStream);
-		if (!ftp.getReplyString().substring(0, 3).equals("250")) {
-			throw new Exception(ftp.getReplyString());
-		}
+		ftp.site("FILETYP=SEQ");
+		ftp.retrieveFile(inspLog, outputStream);
 		
-		return new JobResult(rc.get(), Arrays.asList(outputStream.toString("Cp1252").split("\\r?\\n")));
+		return outputStream.toString("Cp1252");
 	}
 	
-	private static Map<String, String> generateDDnames(CompileListing compileListing, String userName) {
+	public static Map<String, String> generateDDnames(CompileListing compileListing, String... parts) {
+		return generateDDnames(compileListing, new ArrayList<>(Arrays.asList(parts)));
+	}
+	
+	private static Map<String, String> generateDDnames(CompileListing compileListing, List<String> parts) {
 		return compileListing.getSourceMapAndCrossReference().getFileControlAssignment().entrySet()
 				.stream()
 				.map(entry -> {
-						//TODO put all files in one PDS username.becut.random(assign to name)
-						String datasetName =  
-								userName.toUpperCase() + 
-								".BECUT.T" + 
-								RecorderManager.get6DigitNumber();
+						parts.add(entry.getValue());
+						String datasetName =  randomDDName(parts);
 						return new String[] {entry.getValue(), datasetName};
 				})
 				.collect(Collectors.toMap(e -> e[0], e -> e[1]));
 		
 	}
+
+	public static String randomDDName(String... parts) {
+		return randomDDName(new ArrayList<>(Arrays.asList(parts)));
+	}
 	
-	private static String jclDDs(Map<String, String> datasetNames) {
+	private static String randomDDName(List<String> parts) {
+		return parts
+				.stream()
+				.map(String::toUpperCase)
+				.collect(Collectors.joining(".", "", ".BECUT.T" + get6DigitNumber()));
+	}
+	
+	public static String jclDDs(Map<String, String> datasetNames) {
 		return datasetNames.entrySet()
 			.stream()
-			.map(e -> "//" + e.getKey() + "    DD DSN=" + e.getValue() + ",DISP=SHR")
+			.map(e -> "//" + e.getKey() + "   DD DSN=" + e.getValue() + ",DISP=SHR")
 			.collect(Collectors.joining("\n", "", ""));
 	}
 	
-	private static void putDatasets(FTPClient ftpClient, BecutTestCase becutTestCase, 
-			Map<String, String> datasetNames, String userName) {
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
+	public static void putDatasets(CompileListing compileListing, FTPClient ftpClient, Path basePath, Map<String, String> datasetNames, String userName) {
 		compileListing.getSourceMapAndCrossReference().getFileControlAssignment()
 			.entrySet()
 			.stream()
@@ -182,7 +203,7 @@ public class DebugScriptExecutor {
 				String fileName = entry.getKey();
 				String recordName = compileListing.getSourceMapAndCrossReference().getFileSection().get(fileName);
 				
-				List<Parameter> params = becutTestCase.getPreCondition().getFileSection();
+				List<Parameter> params = BecutTestCaseSuiteManager.parseRecordsFromSection(compileListing, CobolNodeType.FILE_SECTION);
 				Optional<Parameter> op = params
 						.stream()
 						.filter(p -> p.getName().equals(recordName))
@@ -194,10 +215,7 @@ public class DebugScriptExecutor {
 				DatasetProperties datasetProperties = 
 						new SequentialDatasetProperties(
 								RecordFormat.FIXED_BLOCK, size, 0, "", "", SpaceUnits.CYLINDERS, 2, 2);
-				Path localPath = Paths.get(
-						BECutAppContext.getContext().getUnitTestSuiteFolder().toString(),
-						becutTestCase.getTestCaseName(),
-						entry.getValue() + ".txt");
+				Path localPath = Paths.get(basePath.toString(), entry.getValue() + ".txt");
 				if(Files.exists(localPath)) {
 					checkRecordsLength(localPath, size);
 					FTPManager.sendDataset(ftpClient, datasetName, localPath.toFile(), datasetProperties);
@@ -222,9 +240,7 @@ public class DebugScriptExecutor {
 			throw new RuntimeException(e);
 		}
 		if(lines.size() > 0) {
-			System.out.println(String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
-//			throw new RuntimeException(
-//					String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
+			System.err.println(String.format("records in %s file are too short, possible ABEND S0C7\n%s", file, lines));
 		}
 	}
 
@@ -238,16 +254,9 @@ public class DebugScriptExecutor {
 		}
 		return jobId;
 	}
-	
-	private static void checkReply(FTPClient ftp, String status) {
-		if (!ftp.getReplyString().substring(0, 3).equals(status)) {
-			throw new RuntimeException(replyStrings(ftp));
-		}
-	}
-	
-	private static String replyStrings(FTPClient ftp) {
-		return Arrays.asList(ftp.getReplyStrings())
-				.stream()
-				.collect(Collectors.joining(" "));		
+
+	private static Random random = new Random();
+	private static String get6DigitNumber() {
+		return String.format("%06d", random.nextInt(999999));
 	}
 }

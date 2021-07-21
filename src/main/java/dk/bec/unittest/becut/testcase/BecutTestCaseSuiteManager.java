@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dk.bec.unittest.becut.Constants;
+import dk.bec.unittest.becut.Either;
 import dk.bec.unittest.becut.compilelist.CobolNodeType;
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.TreeUtil;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
@@ -28,10 +30,11 @@ import dk.bec.unittest.becut.compilelist.model.Record;
 import dk.bec.unittest.becut.compilelist.sql.SQLParse;
 import dk.bec.unittest.becut.debugscript.model.CallType;
 import dk.bec.unittest.becut.recorder.model.SessionCall;
+import dk.bec.unittest.becut.recorder.model.SessionCallPart;
 import dk.bec.unittest.becut.recorder.model.SessionRecord;
 import dk.bec.unittest.becut.recorder.model.SessionRecording;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
 import dk.bec.unittest.becut.testcase.model.ExternalCallIteration;
 import dk.bec.unittest.becut.testcase.model.Parameter;
@@ -39,9 +42,8 @@ import dk.bec.unittest.becut.testcase.model.ParameterLiteral;
 import dk.bec.unittest.becut.testcase.model.PostCondition;
 import dk.bec.unittest.becut.testcase.model.PreCondition;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import koopa.core.trees.Tree;
+import koopa.core.trees.jaxen.Jaxen;
 
 public class BecutTestCaseSuiteManager {
 
@@ -50,15 +52,15 @@ public class BecutTestCaseSuiteManager {
 	private BecutTestCaseSuiteManager() {
 	}
 
-	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing) {
+	public static BecutTestSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing) {
 		String testCaseName = "becut-" + compileListing.getProgramName();
 		String testCaseId = "becut-" + compileListing.getProgramName() + "-" + UUID.randomUUID().toString();
 		return createTestCaseSuiteFromCompileListing(compileListing, testCaseName, testCaseId);
 	}
 
-	public static BecutTestCaseSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing, String testCaseName,
+	public static BecutTestSuite createTestCaseSuiteFromCompileListing(CompileListing compileListing, String testCaseName,
 			String testCaseId) {
-		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		BecutTestSuite becutTestCaseSuite = new BecutTestSuite();
 		becutTestCaseSuite.setCompileListing(compileListing);
 		
 		BecutTestCase becutTestCase = new BecutTestCase();
@@ -72,7 +74,7 @@ public class BecutTestCaseSuiteManager {
 		List<Tree> callStatements = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
 				CobolNodeType.CALL_STATEMENT);
 		for (Tree callStatement : callStatements) {
-			String callProgramName = TreeUtil
+			String callProgramName = Functions
 					.stripQuotes(TreeUtil.getDescendents(callStatement, "programName").get(0).getProgramText());
 			// We are skipping the SQL generated calls
 			if (!Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
@@ -110,12 +112,26 @@ public class BecutTestCaseSuiteManager {
 	}
 
 	public static BecutTestCase createTestCaseFromSessionRecording(CompileListing compileListing, SessionRecording sessionRecording) {
-		BecutTestCaseSuite becutTestCaseSuite = createTestCaseSuiteFromCompileListing(compileListing);
+		BecutTestSuite becutTestCaseSuite = createTestCaseSuiteFromCompileListing(compileListing);
 		BecutTestCase becutTestCase = becutTestCaseSuite.get(0);
 
 		Map<Integer, ExternalCall> callCache = new HashMap<>();
 
-		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
+a:		for (SessionCall sessionCall : sessionRecording.getSessionCalls()) {
+			List<Tree> callStatements = TreeUtil.getDescendents(
+					compileListing.getSourceMapAndCrossReference().getAst(), CobolNodeType.CALL_STATEMENT);
+			for (Tree callStatement : callStatements) {
+				if(callStatement.getStartPosition().getLinenumber() == sessionCall.getLineNumber()) {
+					String callProgramName = Jaxen.evaluate(callStatement, "programName//text()")
+							.stream()
+							.map(Tree.class::cast)
+							.map(Tree::getText).collect(Collectors.joining());
+					if (Constants.IBMHostVariableMemoryAllocationPrograms.contains(callProgramName)) {
+						continue a;
+					}
+				}
+			}			
+			
 			Integer lineNumber = sessionCall.getLineNumber();
 			// first iteration
 			if (!callCache.containsKey(lineNumber)) {
@@ -124,17 +140,17 @@ public class BecutTestCaseSuiteManager {
 						.collect(Collectors.collectingAndThen(Collectors.toList(), list -> {
 							if (list.isEmpty())
 								throw new SessionRecordingException(
-										"cannot match the call; a mismatch between the listing and the program?");
+										"Can't match the call; a mismatch between the listing and the program?");
 							if (list.size() > 1)
 								throw new SessionRecordingException(
-										"an inconclusive match: more than one call in the line " + lineNumber);
+										"An inconclusive match: more than one call in the line " + lineNumber);
 							return list.get(0);
 						}));
 
 				externalCall.setStatementId(sessionCall.getStatementId());
 
 				externalCall.getFirstIteration().getParameters()
-						.forEach(p -> setParameterValue(p, sessionCall.getAfter().getRecords()));
+						.forEach(p -> setParameterValue(p, sessionCall.getAfter()));
 
 				callCache.put(lineNumber, externalCall);
 			} else {
@@ -142,24 +158,30 @@ public class BecutTestCaseSuiteManager {
 				List<Parameter> iterationParameters = externalCall.getFirstIteration().getParameters().stream()
 						.map(Parameter::copyWithNoValues).collect(Collectors.toList());
 
-				iterationParameters.forEach(p -> setParameterValue(p, sessionCall.getAfter().getRecords()));
+				iterationParameters.forEach(p -> setParameterValue(p, sessionCall.getAfter()));
 
 				externalCall.addIteration(iterationParameters);
 			}
 		}
+		
+		becutTestCase.getPostCondition().getWorkingStorage()
+			.forEach(p -> setParameterValue(p, sessionRecording.getAfter()));
+		
 		return becutTestCase;
 	}
 
-	private static void setParameterValue(Parameter p, List<SessionRecord> records) {
-		records.stream().filter(sr -> sr.getName().equals(p.getName()) && sr.getLevel().equals(p.getLevel()))
-				.forEach(sr -> {
-					// TODO create an util function to exclude 'consts'
-					if (!DataType.GROUP.equals(p.getDataType()) && !DataType.BINARY.equals(p.getDataType())
-							&& !p.getName().equals("FILLER")) {
-						p.setValue(sr.getValue());
-					}
-					p.getSubStructure().forEach(sp -> setParameterValue(sp, sr.getChildren()));
-				});
+	private static void setParameterValue(Parameter p, SessionCallPart scp) {
+		SessionRecord sr = scp.getSessionRecord(p.getLevel(), p.getName());
+		if (!DataType.GROUP.equals(p.getDataType()) && !p.getName().equals("FILLER") 
+				&& !DataType.EIGHTYEIGHT.equals(p.getDataType())) {
+			if(sr == null) {
+				//TODO handle 'table' type
+				System.err.println("Cannot find session record for " + p);
+			} else {
+				p.setValue(sr.getValue());
+			}
+		}
+		p.getSubStructure().forEach(sp -> setParameterValue(sp, scp));
 	}
 
 	/**
@@ -170,7 +192,7 @@ public class BecutTestCaseSuiteManager {
 	 * @param dataSection    - CobolNodeType describing the desired section
 	 * @return List of parameters in the dataSection
 	 */
-	private static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
+	public static List<Parameter> parseRecordsFromSection(CompileListing compileListing, CobolNodeType dataSection) {
 		List<Parameter> parameterList = new ArrayList<Parameter>();
 
 		List<Tree> sourceSectionList = TreeUtil.getDescendents(compileListing.getSourceMapAndCrossReference().getAst(),
@@ -190,8 +212,8 @@ public class BecutTestCaseSuiteManager {
 		return parameterList;
 	}
 
-	public static BecutTestCaseSuite loadTestCaseSuite(Path folder) {
-		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+	public static Either<BecutTestSuite, String> loadTestCaseSuite(Path folder) {
+		BecutTestSuite becutTestCaseSuite = new BecutTestSuite();
 		
 		try {
 			CompileListing compileListing = Parse.parse(Paths.get(folder.toString(), "compile_listing.txt").toFile());
@@ -199,11 +221,7 @@ public class BecutTestCaseSuiteManager {
 			
 			Path suite = Paths.get(folder.toString(), "suite.txt");
 			if(!Files.exists(suite)) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Warning Dialog");
-				//alert.setHeaderText("Look, a Warning Dialog");
-				alert.setContentText(suite + " is missing.");
-				alert.showAndWait();
+				return Either.right(suite + " is missing.");
 			}
 			
 			Files.readAllLines(suite).forEach(line -> {
@@ -219,13 +237,13 @@ public class BecutTestCaseSuiteManager {
 				becutTestCaseSuite.add(becutTestCase);
 			});
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			return Either.right(e.getMessage());
 		}
 		
-		return becutTestCaseSuite;
+		return Either.left(becutTestCaseSuite);
 	}
 
-	public static void saveTestCaseSuite(BecutTestCaseSuite becutTestCaseSuite, Path folder) {
+	public static void saveTestCaseSuite(BecutTestSuite becutTestCaseSuite, Path folder) {
 		try {
 			Files.write(Paths.get(folder.toString(), "compile_listing.txt"), 
 					becutTestCaseSuite.getCompileListing().getOriginalSource(),
@@ -241,13 +259,13 @@ public class BecutTestCaseSuiteManager {
 				saveTestCase(testCase, path);
 			}
 
-			Path debugScriptPath = BECutAppContext.getContext().getDebugScriptPath();
+			Path debugScriptPath = BECutAppContext.getContext().getTestScriptPath();
     		if (Files.exists(debugScriptPath)) {
 				Files.copy(debugScriptPath, 
 						Paths.get(folder.toString(), debugScriptPath.getFileName().toString()), 
 						StandardCopyOption.REPLACE_EXISTING);
     		}
-			BECutAppContext.getContext().setUnitTestSuiteFolder(folder);
+			BECutAppContext.getContext().setTestSuiteFolder(folder);
 			//suite.txt defines which subfolders are tests definitions and 
 			//what is the order of execution (should it be really important?)
 			Files.write(Paths.get(folder.toString(), "suite.txt"), testCaseFolders);
@@ -281,7 +299,7 @@ public class BecutTestCaseSuiteManager {
 	}
 
 	private static ExternalCall createExternalCall(Tree callStatement, CompileListing compileListing) {
-		String callProgramName = TreeUtil.stripQuotes(
+		String callProgramName = Functions.stripQuotes(
 				TreeUtil.getDescendents(callStatement, CobolNodeType.PROGRAM_NAME).get(0).getProgramText());
 		// FIXME This is currently getting the absolute line number (from the expanded
 		// source).

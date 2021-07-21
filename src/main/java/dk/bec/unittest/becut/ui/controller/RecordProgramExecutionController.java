@@ -3,8 +3,8 @@ package dk.bec.unittest.becut.ui.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
-import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.recorder.RecorderManager;
 import dk.bec.unittest.becut.testcase.model.BecutTestCase;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
@@ -46,14 +46,14 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 	@FXML
 	protected void ok() {
 		compileListingController.loadCompileListingIntoContext();
-		CompileListing compileListing = BECutAppContext.getContext().getUnitTestSuite().getCompileListing();
 		try {
-			jobNameRemembered = jobName.getText();
-			programNameRemembered = programName.getText();
+			Preferences pref = Preferences.userNodeForPackage(this.getClass());
+			pref.put("jobNameRemembered", jobName.getText());
+			pref.put("programNameRemembered", programName.getText());
 			
-			BecutTestCase becutTestCase = RecorderManager.recordBatch(compileListing, programName.getText(),
-					jobName.getText(), BECutAppContext.getContext().getCredential());
-			BECutAppContext.getContext().getUnitTestSuite().getBecutTestCaseSuite().get().add(becutTestCase);
+			BecutTestCase becutTestCase = RecorderManager.recordBatch(BECutAppContext.getContext(),
+					jobName.getText(), BECutAppContext.getContext().getUnitTestSuiteFolder());
+			BECutAppContext.getContext().getUnitTestSuite().getBecutTestSuite().get().add(becutTestCase);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -71,12 +71,9 @@ public class RecordProgramExecutionController extends AbstractBECutController im
 					getClass().getResource("/dk/bec/unittest/becut/ui/view/LoadCompileListing.fxml").openStream());
 			compileListingController = loader.getController();
 			compileListingPane.getChildren().add(compileListingNode);
-			if(jobNameRemembered != null) {
-				jobName.setText(jobNameRemembered);
-			}
-			if(programNameRemembered != null) {
-				programName.setText(programNameRemembered);
-			}
+			Preferences pref = Preferences.userNodeForPackage(this.getClass());
+			jobName.setText(pref.get("jobNameRemembered", ""));
+			programName.setText(pref.get("programNameRemembered", ""));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

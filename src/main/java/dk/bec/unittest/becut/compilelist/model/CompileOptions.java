@@ -10,6 +10,10 @@ public class CompileOptions extends AbstractCompileListingSection {
 	
 	private Map<String, List<CompileOption>> options = new HashMap<String, List<CompileOption>>();
 	
+	public Map<String, List<CompileOption>> getOptions() {
+		return options;
+	}
+
 	private static String optionSectionText = "^ \\w*$|^ \\w*\\(.*$";
 	private static Pattern optionSectionTextPattern = Pattern.compile(optionSectionText);
 	
@@ -37,6 +41,4 @@ public class CompileOptions extends AbstractCompileListingSection {
 	public String toString() {
 		return "CompileOptions [options=" + options + "]";
 	}
-	
-
 }

@@ -9,23 +9,24 @@
 <StackPane fx:controller="dk.bec.unittest.becut.ui.controller.MenuController" xmlns:fx="http://javafx.com/fxml/1">
 	<MenuBar fx:id="menuBar">
 		<Menu text="File">
-			<MenuItem text="Save test case suite" onAction="#save"/>
+			<MenuItem text="Save test case suite" onAction="#save" accelerator="Shortcut+S"/>
 			<MenuItem text="Save test case suite as..." onAction="#saveAs"/>
 			<SeparatorMenuItem />
 			<MenuItem text="Quit" onAction="#exit"/>
 		</Menu>
 		<Menu text="BECut">
-			<MenuItem text="Create test suite" onAction="#createTestCaseSuite"/>
-			<MenuItem text="Load test suite" onAction="#loadTestCaseSuite"/>
+			<MenuItem text="Create test suite" onAction="#createTestSuite"/>
+			<MenuItem text="Load test suite" onAction="#loadTestSuite"/>
+      <SeparatorMenuItem />
 			<MenuItem text="Load compile listing" onAction="#loadCompileListing"/>
+			<MenuItem text="Edit test script" onAction="#editTestScript"/>
+      <MenuItem text="Edit record script" onAction="#editRecordScript"/>
 			<SeparatorMenuItem />
-			<MenuItem text="Edit debug script" onAction="#editDebugScript"/>
-			<SeparatorMenuItem />
-			<MenuItem text="Record program execution" onAction="#recordProgramExecution"/>
 		</Menu>
 		<Menu text="Remote">
 			<MenuItem text="Setup credentials" onAction="#setupCredentials"/>
 			<MenuItem text="Retrieve file" onAction="#retrieveFile"/>
+      <MenuItem text="Record program execution" onAction="#recordProgramExecution"/>
 			<MenuItem text="Run suite" onAction="#runSuite"/>
 		</Menu>
 	</MenuBar>

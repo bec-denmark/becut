@@ -1,0 +1,19 @@
+//${jobname} JOB ,'${user}',
+//             SCHENV=TSTSYS,
+//             MSGCLASS=Q,
+//             NOTIFY=${user},
+//             UJOBCORR=${user}
+//PGMEXEC  EXEC PGM=${program}
+//STEPLIB   DD DSN=ZT4.COMP.LOAD,DISP=SHR
+//          DD DSN=SYS1.EQAW.SEQAMOD,DISP=SHR
+//          DD DSN=SYS4.BATCH.LINKLIB,DISP=SHR
+//          DD DSN=SYS5.BATCH.LINKLIB,DISP=SHR
+${dd}
+//INSPIN      DD *
+${debug}
+
+/*
+//INSPLOG   DD SYSOUT=*
+//CEEOPTS   DD *,DLM='/*'
+TEST(,INSPIN,,)
+/*

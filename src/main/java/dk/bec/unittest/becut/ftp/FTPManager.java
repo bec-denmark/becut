@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,7 +25,6 @@ import dk.bec.unittest.becut.ftp.model.HostJob;
 import dk.bec.unittest.becut.ftp.model.HostJobDataset;
 import dk.bec.unittest.becut.ftp.model.HostJobStatus;
 import dk.bec.unittest.becut.ftp.model.JESFTPDataset;
-import dk.bec.unittest.becut.ui.controller.ReturnCodeDifferentFromCC000;
 
 public class FTPManager {
 	
@@ -123,7 +118,7 @@ public class FTPManager {
 			} else {
 				//get all DDs
 				String dds = retrieveJESDataset(ftpClient, jobId,  "X");
-				throw new ReturnCodeDifferentFromCC000(job.getReturnCode() +"\n" + dds);
+				throw new RuntimeException(job.getReturnCode() +"\n" + dds);
 			}
 		}
 		return job;		
