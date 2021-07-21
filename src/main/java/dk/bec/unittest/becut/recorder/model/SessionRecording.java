@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SessionRecording {
-	
 	private String programName;
 
-	private List<SessionCall> sessionCalls = new ArrayList<SessionCall>();
-	private List<SessionPostCondition> sessionPostConditions = new ArrayList<SessionPostCondition>();
-
+	private List<SessionCall> sessionCalls = new ArrayList<>();
+	private List<SessionPostCondition> sessionPostConditions = new ArrayList<>();
+	
 	public SessionRecording() {
 	}
 
@@ -29,6 +28,15 @@ public class SessionRecording {
 		return sessionPostConditions;
 	}
 
+	private SessionCallPart sessionCallPart;
+	public SessionCallPart getAfter() {
+		return sessionCallPart;
+	}
+
+	public void setAfter(SessionCallPart sessionCallPart) {
+		this.sessionCallPart = sessionCallPart;
+	}
+	
 	@Override
 	public String toString() {
 		return "SessionRecording [programName=" + programName + ", sessionCalls=" + sessionCalls

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dk.bec.unittest.becut.compilelist.Functions;
 import dk.bec.unittest.becut.compilelist.ParseExpandedSource;
 import koopa.core.trees.Tree;
 import koopa.core.trees.jaxen.Jaxen;
@@ -22,7 +23,7 @@ public class SourceMapAndCrossReference extends AbstractCompileListingSection {
 		ast = new ParseExpandedSource(source).createTree();
 
 		if(ast == null) {
-			throw new AssertionError("ast is null, there is a problem with the compile listing");
+			throw new AssertionError("Ast is null, there is a problem with the compile listing - wrong DDNAME/StepName?");
 		}
 		
 		// In following assignment: SELECT NUM-LIST ASSIGN TO INPUT1.

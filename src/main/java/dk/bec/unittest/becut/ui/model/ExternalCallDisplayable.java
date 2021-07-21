@@ -1,7 +1,6 @@
 package dk.bec.unittest.becut.ui.model;
 
 import dk.bec.unittest.becut.testcase.model.ExternalCall;
-import javafx.scene.control.TreeItem;
 
 public class ExternalCallDisplayable extends UnitTestTreeObject {
 

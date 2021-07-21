@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.debugscript.model.DebugScript;
 
-public class BecutTestCaseSuite extends ArrayList<BecutTestCase> {
-	public BecutTestCaseSuite() {
+public class BecutTestSuite extends ArrayList<BecutTestCase> {
+	public BecutTestSuite() {
 	}
 	
 	private CompileListing compileListing;

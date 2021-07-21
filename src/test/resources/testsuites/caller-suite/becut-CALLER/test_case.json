@@ -1,0 +1,577 @@
+{
+  "testCaseId" : "becut-CALLER-f7dd54e2-8435-4144-b6d0-bc28505c3f46",
+  "programName" : "CALLER",
+  "preCondition" : {
+    "workingStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 13,
+      "name" : "WS-NUMBERS-FILE",
+      "dataType" : "GROUP",
+      "size" : 100,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 14,
+        "name" : "WS-DESCRIPTION",
+        "dataType" : "PIC",
+        "size" : 20,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 15,
+        "name" : "WS-NUM",
+        "dataType" : "PIC_NUMERIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 16,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 72,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      } ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 17,
+      "name" : "NUMBER-LIST-EOF",
+      "dataType" : "PIC",
+      "size" : 1,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 27,
+      "name" : "CALLEE-PGM-NAME",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 29,
+      "name" : "CALLEE-AREA",
+      "dataType" : "GROUP",
+      "size" : 22,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 30,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 31,
+        "name" : "CALLEE-DATA-LENGTH",
+        "dataType" : "BINARY",
+        "size" : 4,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 32,
+        "name" : "CALLEE-DATA",
+        "dataType" : "GROUP",
+        "size" : 10,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 3,
+          "lineNumber" : 33,
+          "name" : "CALLEE-RETURNCODE",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 88,
+            "lineNumber" : 34,
+            "name" : "CALLEE-RETURCODE-OK",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 88,
+            "lineNumber" : 35,
+            "name" : "CALLEE-RETURCODE-UNKNOWN",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          } ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 37,
+          "name" : "CALLEE-I-NUMBER",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 38,
+          "name" : "CALLEE-RESULT",
+          "dataType" : "BINARY",
+          "size" : 2,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        } ]
+      } ]
+    } ],
+    "localStorage" : [ ],
+    "linkageSection" : [ ],
+    "fileSection" : [ {
+      "level" : 1,
+      "lineNumber" : 10,
+      "name" : "NUMBERS-RECORD",
+      "dataType" : "PIC",
+      "size" : 80,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    } ]
+  },
+  "externalCalls" : [ {
+    "name" : "CALLEE-PGM-NAME",
+    "displayableName" : "000053 CALL CALLEE-PGM-NAME USING CALLEE-AREA",
+    "lineNumber" : 53,
+    "statementId" : null,
+    "callType" : "DYNAMIC",
+    "iterations" : [ {
+      "numericalOrder" : 0,
+      "name" : "iteration_0",
+      "isDefault" : true,
+      "parameters" : [ {
+        "level" : 1,
+        "lineNumber" : 29,
+        "name" : "CALLEE-AREA",
+        "dataType" : "GROUP",
+        "size" : 22,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 2,
+          "lineNumber" : 30,
+          "name" : "FILLER",
+          "dataType" : "PIC",
+          "size" : 8,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 31,
+          "name" : "CALLEE-DATA-LENGTH",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 32,
+          "name" : "CALLEE-DATA",
+          "dataType" : "GROUP",
+          "size" : 10,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 3,
+            "lineNumber" : 33,
+            "name" : "CALLEE-RETURNCODE",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ {
+              "level" : 88,
+              "lineNumber" : 34,
+              "name" : "CALLEE-RETURCODE-OK",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "TRUE",
+              "subStructure" : [ ]
+            }, {
+              "level" : 88,
+              "lineNumber" : 35,
+              "name" : "CALLEE-RETURCODE-UNKNOWN",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            } ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 37,
+            "name" : "CALLEE-I-NUMBER",
+            "dataType" : "BINARY",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 38,
+            "name" : "CALLEE-RESULT",
+            "dataType" : "BINARY",
+            "size" : 2,
+            "isSeventySeven" : false,
+            "value" : "0",
+            "subStructure" : [ ]
+          } ]
+        } ]
+      } ],
+      "default" : true
+    }, {
+      "numericalOrder" : 1,
+      "name" : "iteration_1",
+      "isDefault" : true,
+      "parameters" : [ {
+        "level" : 1,
+        "lineNumber" : 29,
+        "name" : "CALLEE-AREA",
+        "dataType" : "GROUP",
+        "size" : 22,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 2,
+          "lineNumber" : 30,
+          "name" : "FILLER",
+          "dataType" : "PIC",
+          "size" : 8,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 31,
+          "name" : "CALLEE-DATA-LENGTH",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 32,
+          "name" : "CALLEE-DATA",
+          "dataType" : "GROUP",
+          "size" : 10,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 3,
+            "lineNumber" : 33,
+            "name" : "CALLEE-RETURNCODE",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ {
+              "level" : 88,
+              "lineNumber" : 34,
+              "name" : "CALLEE-RETURCODE-OK",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "TRUE",
+              "subStructure" : [ ]
+            }, {
+              "level" : 88,
+              "lineNumber" : 35,
+              "name" : "CALLEE-RETURCODE-UNKNOWN",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            } ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 37,
+            "name" : "CALLEE-I-NUMBER",
+            "dataType" : "BINARY",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 38,
+            "name" : "CALLEE-RESULT",
+            "dataType" : "BINARY",
+            "size" : 2,
+            "isSeventySeven" : false,
+            "value" : "0",
+            "subStructure" : [ ]
+          } ]
+        } ]
+      } ],
+      "default" : true
+    }, {
+      "numericalOrder" : 2,
+      "name" : "iteration_2",
+      "isDefault" : true,
+      "parameters" : [ {
+        "level" : 1,
+        "lineNumber" : 29,
+        "name" : "CALLEE-AREA",
+        "dataType" : "GROUP",
+        "size" : 22,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 2,
+          "lineNumber" : 30,
+          "name" : "FILLER",
+          "dataType" : "PIC",
+          "size" : 8,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 31,
+          "name" : "CALLEE-DATA-LENGTH",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 2,
+          "lineNumber" : 32,
+          "name" : "CALLEE-DATA",
+          "dataType" : "GROUP",
+          "size" : 10,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 3,
+            "lineNumber" : 33,
+            "name" : "CALLEE-RETURNCODE",
+            "dataType" : "PIC_NUMERIC",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ {
+              "level" : 88,
+              "lineNumber" : 34,
+              "name" : "CALLEE-RETURCODE-OK",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            }, {
+              "level" : 88,
+              "lineNumber" : 35,
+              "name" : "CALLEE-RETURCODE-UNKNOWN",
+              "dataType" : "EIGHTYEIGHT",
+              "size" : 4,
+              "isSeventySeven" : false,
+              "value" : "",
+              "subStructure" : [ ]
+            } ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 37,
+            "name" : "CALLEE-I-NUMBER",
+            "dataType" : "BINARY",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          }, {
+            "level" : 3,
+            "lineNumber" : 38,
+            "name" : "CALLEE-RESULT",
+            "dataType" : "BINARY",
+            "size" : 2,
+            "isSeventySeven" : false,
+            "value" : "1",
+            "subStructure" : [ ]
+          } ]
+        } ]
+      } ],
+      "default" : true
+    } ]
+  } ],
+  "postCondition" : {
+    "workingStorage" : [ {
+      "level" : 1,
+      "lineNumber" : 13,
+      "name" : "WS-NUMBERS-FILE",
+      "dataType" : "GROUP",
+      "size" : 100,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 14,
+        "name" : "WS-DESCRIPTION",
+        "dataType" : "PIC",
+        "size" : 20,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 15,
+        "name" : "WS-NUM",
+        "dataType" : "PIC_NUMERIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 16,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 72,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      } ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 17,
+      "name" : "NUMBER-LIST-EOF",
+      "dataType" : "PIC",
+      "size" : 1,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 27,
+      "name" : "CALLEE-PGM-NAME",
+      "dataType" : "PIC",
+      "size" : 8,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    }, {
+      "level" : 1,
+      "lineNumber" : 29,
+      "name" : "CALLEE-AREA",
+      "dataType" : "GROUP",
+      "size" : 22,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ {
+        "level" : 2,
+        "lineNumber" : 30,
+        "name" : "FILLER",
+        "dataType" : "PIC",
+        "size" : 8,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 31,
+        "name" : "CALLEE-DATA-LENGTH",
+        "dataType" : "BINARY",
+        "size" : 4,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ ]
+      }, {
+        "level" : 2,
+        "lineNumber" : 32,
+        "name" : "CALLEE-DATA",
+        "dataType" : "GROUP",
+        "size" : 10,
+        "isSeventySeven" : false,
+        "value" : "",
+        "subStructure" : [ {
+          "level" : 3,
+          "lineNumber" : 33,
+          "name" : "CALLEE-RETURNCODE",
+          "dataType" : "PIC_NUMERIC",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ {
+            "level" : 88,
+            "lineNumber" : 34,
+            "name" : "CALLEE-RETURCODE-OK",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "TRUE",
+            "subStructure" : [ ]
+          }, {
+            "level" : 88,
+            "lineNumber" : 35,
+            "name" : "CALLEE-RETURCODE-UNKNOWN",
+            "dataType" : "EIGHTYEIGHT",
+            "size" : 4,
+            "isSeventySeven" : false,
+            "value" : "",
+            "subStructure" : [ ]
+          } ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 37,
+          "name" : "CALLEE-I-NUMBER",
+          "dataType" : "BINARY",
+          "size" : 4,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        }, {
+          "level" : 3,
+          "lineNumber" : 38,
+          "name" : "CALLEE-RESULT",
+          "dataType" : "BINARY",
+          "size" : 2,
+          "isSeventySeven" : false,
+          "value" : "",
+          "subStructure" : [ ]
+        } ]
+      } ]
+    } ],
+    "localStorage" : [ ],
+    "linkageSection" : [ ],
+    "fileSection" : [ {
+      "level" : 1,
+      "lineNumber" : 10,
+      "name" : "NUMBERS-RECORD",
+      "dataType" : "PIC",
+      "size" : 80,
+      "isSeventySeven" : false,
+      "value" : "",
+      "subStructure" : [ ]
+    } ]
+  },
+  "debugScript" : null,
+  "fileControlAssignments" : {
+    "NUMBER-LIST" : "NUMBERS"
+  }
+}

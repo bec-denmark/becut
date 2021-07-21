@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 import dk.bec.unittest.becut.compilelist.Parse;
 import dk.bec.unittest.becut.compilelist.model.CompileListing;
-import dk.bec.unittest.becut.testcase.model.BecutTestCaseSuite;
+import dk.bec.unittest.becut.testcase.model.BecutTestSuite;
 import dk.bec.unittest.becut.ui.model.BECutAppContext;
 import dk.bec.unittest.becut.ui.model.LoadCompileListing;
 import javafx.fxml.FXML;
@@ -52,10 +52,10 @@ public class LoadCompileListingController implements Initializable {
 		
 		CompileListing compileListing = Parse.parse(currentCompileListing.getCompileListing());
 		
-		BecutTestCaseSuite becutTestCaseSuite = new BecutTestCaseSuite();
+		BecutTestSuite becutTestCaseSuite = new BecutTestSuite();
 		becutTestCaseSuite.setCompileListing(compileListing);
 		
-		BECutAppContext.getContext().getUnitTestSuite().setBecutTestCaseSuite(becutTestCaseSuite);
+		BECutAppContext.getContext().getUnitTestSuite().setBecutTestSuite(becutTestCaseSuite);
 		
 		List<String> lines = compileListing.getSourceMapAndCrossReference().getOriginalSource();
 		BECutAppContext.getContext().getSourceCode().setValue(lines);

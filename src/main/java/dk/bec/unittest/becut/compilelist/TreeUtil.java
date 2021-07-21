@@ -1,7 +1,6 @@
 package dk.bec.unittest.becut.compilelist;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import koopa.core.trees.Tree;
@@ -42,11 +41,4 @@ public class TreeUtil {
 		}
 		return child;
 	}
-
-	public static String stripQuotes(String s) {
-		return s.replaceAll("^['\"]*", "").replaceAll("['\"]*$", ""); 
-	}
-	
-
-
 }

@@ -2,17 +2,22 @@ package dk.bec.unittest.becut.ui.view;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Window;
 
 public class StandardAlerts {
 	
 	private StandardAlerts() {}
 
-	public static void unimplemented() {
+	public static void unimplemented(String content) {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Unimplemented");
 		alert.setHeaderText("Unimplemented functionality");
-		alert.setContentText("The thing you are trying to do has not been implemented yet");
+		alert.setContentText(content);
 		alert.showAndWait();
+	}
+	
+	public static void unimplemented() {
+		unimplemented("The thing you are trying to do has not been implemented yet");
 	}
 
 	public static void warningDialog(String title, String header, String content) {
@@ -31,4 +36,11 @@ public class StandardAlerts {
 		alert.showAndWait();
 	}
 
+	public static void errorDialog(String content) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setContentText(content);
+		Window window = alert.getDialogPane().getScene().getWindow();
+		window.setOnCloseRequest(e -> alert.hide());
+		alert.showAndWait();
+	}
 }

@@ -6,8 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import com.google.common.eventbus.EventBus;
-
+import dk.bec.unittest.becut.compilelist.model.CompileListing;
 import dk.bec.unittest.becut.ftp.model.Credential;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -20,13 +19,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import koopa.core.trees.Tree;
 
 public class BECutAppContext {
 	private static BECutAppContext context;
 	
-	private UnitTestSuite unitTestSuite;
+	private TestSuite testSuite;
 	
-	private Path unitTestSuiteFolder;
+	private Path testSuiteFolder;
 	
 	private Credential credential;
 	
@@ -42,32 +42,44 @@ public class BECutAppContext {
 	}
 
 	private BECutAppContext(Stage primaryStage) {
-		this.unitTestSuite = new UnitTestSuite("Test suite", "", "");
+		this.testSuite = new TestSuite("Test suite", "", "");
 		this.primaryStage = primaryStage;
 	}
 
-	public UnitTestSuite getUnitTestSuite() {
-		return unitTestSuite;
+	public TestSuite getUnitTestSuite() {
+		return testSuite;
+	}
+	
+	public Tree getAst() {
+		return testSuite.getCompileListing().getSourceMapAndCrossReference().getAst();
+	}
+	
+	public CompileListing getCompileListing() {
+		return testSuite.getCompileListing();
 	}
 	
 	public Path getUnitTestSuiteFolder() {
-		if(unitTestSuiteFolder == null || !Files.exists(unitTestSuiteFolder)) {
+		if(testSuiteFolder == null || !Files.exists(testSuiteFolder)) {
 			try {
-				unitTestSuiteFolder = Files.createTempDirectory("becut");
-				return unitTestSuiteFolder;
+				testSuiteFolder = Files.createTempDirectory("becut");
+				return testSuiteFolder;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
-		return unitTestSuiteFolder;
+		return testSuiteFolder;
 	}
 
-	public Path getDebugScriptPath() {
-		return Paths.get(getUnitTestSuiteFolder().toString(), "debug_script.txt");
+	public Path getTestScriptPath() {
+		return Paths.get(getUnitTestSuiteFolder().toString(), "test_script.txt");
+	}
+
+	public Path getRecordScriptPath() {
+		return Paths.get(getUnitTestSuiteFolder().toString(), "record_script.txt");
 	}
 	
-	public void setUnitTestSuiteFolder(Path unitTestSuiteFolder) {
-		this.unitTestSuiteFolder = unitTestSuiteFolder;
+	public void setTestSuiteFolder(Path testSuiteFolder) {
+		this.testSuiteFolder = testSuiteFolder;
 	}
 
 	public Credential getCredential() {
