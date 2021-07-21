@@ -22,6 +22,6 @@ public class AtCallBreakpoint extends StatementBase implements DebugEntity {
 
 	@Override
 	public String generate() {
-		return "           AT CALL " + entryName + "\n" + perform.generate();
+		return "           AT CALL *\n" + perform.generate();
 	}
 }
