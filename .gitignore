@@ -6,6 +6,9 @@ syntax: glob
 *.class
 **/target/**
 
+# Intelij ignore
+.idea/
+
 # eclipse specific git ignore
 *.pydevproject
 .metadata
